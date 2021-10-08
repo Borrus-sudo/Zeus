@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import type { contentDescriptor } from "./types";
+import { formatDate, getFolderSize } from "./utils";
 
 export default class {
   private ignore: string[] = ["node_modules", ".git"];
@@ -22,17 +23,29 @@ export default class {
     return this.toStringDir(this.paddingCount + 2);
   }
   toStringDir(paddingCount: number): contentDescriptor[] {
-    const fullPath = this.getFullPath();
+    let stats: fs.Stats;
+    let isDir: boolean;
+    let size: number;
+    const fullPath: string = this.getFullPath();
     return fs.existsSync(fullPath)
       ? [
-          { name: "../", isDir: true },
+          { name: "../", isDir: true, size: "", lastModified: "" },
           ...fs
             .readdirSync(fullPath)
             .filter((elem) => !this.ignore.includes(elem))
-            .map((elem) => ({
-              name: " ".repeat(paddingCount) + elem,
-              isDir: fs.statSync(path.join(fullPath, elem)).isDirectory(),
-            })),
+            .map((elem) => {
+              stats = fs.statSync(path.join(fullPath, elem));
+              isDir = stats.isDirectory();
+              size = isDir
+                ? getFolderSize(path.join(fullPath, elem), this.ignore)
+                : stats.size;
+              return {
+                name: " ".repeat(paddingCount) + (isDir ? elem + "/" : elem),
+                isDir: isDir,
+                size: size.toString() + "B",
+                lastModified: formatDate(stats.mtime),
+              };
+            }),
         ]
       : [];
   }
@@ -41,7 +54,7 @@ export default class {
     contents: contentDescriptor[] | null;
   } {
     const pressedAtChild = actionDescriptor.name;
-    const commandVerb = actionDescriptor.verb;
+    const userActionTo = actionDescriptor.verb;
     if (pressedAtChild === "../") {
       // Order of currContent and ctx important
       this.currContent = path.basename(path.resolve(this.getFullPath(), "../"));
@@ -54,9 +67,9 @@ export default class {
     } else {
       const childPath = path.resolve(this.getFullPath(), "./" + pressedAtChild);
       if (fs.statSync(childPath).isDirectory()) {
-        if (commandVerb === "traverse") {
+        if (userActionTo === "traverse") {
           this.dispatchAction({ command: "traverse", path: childPath });
-        } else if (commandVerb === "display") {
+        } else if (userActionTo === "display") {
           //Order of ctx and currContent important
           this.ctx = this.getFullPath();
           this.currContent = pressedAtChild;
@@ -64,6 +77,7 @@ export default class {
           return { redraw: true, contents: this.getChildren() };
         }
       } else {
+        // for files the user option traverse is not possible
         this.dispatchAction({ command: "open", path: childPath });
       }
     }

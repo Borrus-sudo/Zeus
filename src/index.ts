@@ -8,6 +8,7 @@ const explorer = new MagicExplorer(
   path.basename(process.cwd()),
   []
 );
+const ESCAPE = "ESCAPE";
 const tableConfig = {
   x: 0,
   y: 0,
@@ -24,8 +25,26 @@ const tableConfig = {
         return content.name;
       },
       width: 20,
-      style(item) {
-        return item.isDir ? term.brightMagenta : term.cyan;
+      style(_item) {
+        return term.bold().brightYellow;
+      },
+    },
+    {
+      get(content) {
+        return content.size;
+      },
+      width: 10,
+      style() {
+        return term.bold().brightGreen;
+      },
+    },
+    {
+      get(content) {
+        return content.lastModified;
+      },
+      width:20,
+      style() {
+        return term.bold().red;
       },
     },
   ],
@@ -38,7 +57,7 @@ const submitCallback = (item) => {
   if (res.redraw) {
     term
       .DataTable(tableConfig)
-      .setData(explorer.getChildren()) //modified the node dependency to allow this chaining
+      .setData(res.contents)
       .promise.then(submitCallback);
   }
 };
@@ -47,3 +66,8 @@ clear(true); // Clear the full terminal screen
 const table = term.DataTable(tableConfig);
 table.setData(explorer.getChildren());
 table.promise.then(submitCallback);
+table._term.on("key", (key) => {
+  if (key === ESCAPE) {
+    process.exit();
+  }
+});
