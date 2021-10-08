@@ -1,26 +1,13 @@
-import * as fs from "fs";
+import * as path from "path";
 import { terminal as term } from "terminal-kit";
-import * as plugins from "terminal-kit-plugins";
+import MagicExplorer from "./VirtualExplorer";
+require("terminal-kit-plugins").plugin(term);
 
-const ignore = ["node_modules", ".git"];
-const flattenDirectory = (dir, paddingCount = 1) =>
-  fs.existsSync(dir)
-    ? fs
-        .readdirSync(dir)
-        .filter((elem) => !ignore.includes(elem))
-        .map((elem) => ({
-          name: " ".repeat(paddingCount) + elem,
-          isDir: fs.statSync(elem).isDirectory(),
-        }))
-    : [];
-plugins.plugin(term);
-const items = [
-  {
-    name: "../",
-    isDir: true,
-  },
-  ...flattenDirectory(process.cwd()),
-];
+const explorer = new MagicExplorer(
+  path.dirname(process.cwd()),
+  path.basename(process.cwd()),
+  []
+);
 const table = term.DataTable(
   {
     x: 0,
@@ -49,18 +36,14 @@ const table = term.DataTable(
   }
 );
 
-table.setData(items);
+table.setData(explorer.getChildren());
 table.promise.then((item) => {
-  console.log("Selected: " + item.name);
-  table.setData([{ name: "Crap", isDir: true }]);
-  table.promise.then((item) => {
-    console.log(item);
+  console.log(item);
+  const res = explorer.commitAction({
+    name: item.name.trim(),
+    verb: "display",
   });
-});
-table._term.on("key", (key) => {
-  console.log(key);
-  console.log(table._state.selected);
-});
-table._state.on("change", (newState) => {
-  console.log(newState);
+  if (res.redraw) {
+    table.setData(explorer.getChildren());
+  }
 });

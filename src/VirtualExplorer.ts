@@ -4,10 +4,10 @@ import type { contentDescriptor } from "./types";
 
 export default class {
   private ignore: string[] = ["node_modules", ".git"];
-  private paddingCountHist: number[] = [0];
+  private paddingCount: number = 0;
   private ctx: string;
   private currContent: string;
-  constructor(ctx: string, ignore: string[], currContent: string) {
+  constructor(ctx: string, currContent: string, ignore: string[]) {
     this.ignore.push(...ignore);
     this.ctx = ctx;
     this.currContent = currContent;
@@ -19,18 +19,21 @@ export default class {
     return path.resolve(this.ctx, this.currContent);
   }
   getChildren() {
-    return this.toStringDir(this.paddingCountHist.at(-1) + 2);
+    return this.toStringDir(this.paddingCount + 2);
   }
   toStringDir(paddingCount: number): contentDescriptor[] {
-    this.paddingCountHist.push(paddingCount);
-    return fs.existsSync(this.getFullPath())
-      ? fs
-          .readdirSync(this.getFullPath())
-          .filter((elem) => !this.ignore.includes(elem))
-          .map((elem) => ({
-            name: " ".repeat(paddingCount) + elem,
-            isDir: fs.statSync(elem).isDirectory(),
-          }))
+    const fullPath = this.getFullPath();
+    return fs.existsSync(fullPath)
+      ? [
+          { name: "../", isDir: true },
+          ...fs
+            .readdirSync(fullPath)
+            .filter((elem) => !this.ignore.includes(elem))
+            .map((elem) => ({
+              name: " ".repeat(paddingCount) + elem,
+              isDir: fs.statSync(path.join(fullPath, elem)).isDirectory(),
+            })),
+        ]
       : [];
   }
   commitAction(actionDescriptor): {
@@ -38,10 +41,12 @@ export default class {
     contents: contentDescriptor[] | null;
   } {
     const pressedAtChild = actionDescriptor.name;
+    const commandVerb = actionDescriptor.verb;
     if (pressedAtChild === "../") {
+      // Order of currContent and ctx important
+      this.currContent = path.basename(path.resolve(this.getFullPath(), "../"));
       this.ctx = path.resolve(this.ctx, "../");
-      this.currContent = path.resolve(this.currContent, "../");
-      this.paddingCountHist = [0];
+      this.paddingCount = 0;
       return {
         redraw: true,
         contents: this.getChildren(),
@@ -49,7 +54,15 @@ export default class {
     } else {
       const childPath = path.resolve(this.getFullPath(), "./" + pressedAtChild);
       if (fs.statSync(childPath).isDirectory()) {
-        this.dispatchAction({ command: "traverse", path: childPath });
+        if (commandVerb === "traverse") {
+          this.dispatchAction({ command: "traverse", path: childPath });
+        } else if (commandVerb === "display") {
+          //Order of ctx and currContent important
+          this.ctx = this.getFullPath();
+          this.currContent = pressedAtChild;
+          this.paddingCount = 0;
+          return { redraw: true, contents: this.getChildren() };
+        }
       } else {
         this.dispatchAction({ command: "open", path: childPath });
       }
@@ -59,5 +72,5 @@ export default class {
       contents: null,
     };
   }
-  dispatchAction(commandDescriptor) {}
+  private dispatchAction(commandDescriptor) {}
 }
