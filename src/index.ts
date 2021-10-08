@@ -1,9 +1,10 @@
-const term = require("terminal-kit").terminal;
-require("terminal-kit-plugins").plugin(term);
 import * as fs from "fs";
+import { terminal as term } from "terminal-kit";
+import * as plugins from "terminal-kit-plugins";
+
 const ignore = ["node_modules", ".git"];
-const flattenDirectory = (dir, paddingCount = 1) => {
-  return fs.existsSync(dir)
+const flattenDirectory = (dir, paddingCount = 1) =>
+  fs.existsSync(dir)
     ? fs
         .readdirSync(dir)
         .filter((elem) => !ignore.includes(elem))
@@ -12,7 +13,7 @@ const flattenDirectory = (dir, paddingCount = 1) => {
           isDir: fs.statSync(elem).isDirectory(),
         }))
     : [];
-};
+plugins.plugin(term);
 const items = [
   {
     name: "../",
