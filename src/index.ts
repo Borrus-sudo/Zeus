@@ -2,7 +2,7 @@ import * as path from "path";
 import { terminal as term } from "terminal-kit";
 import MagicExplorer from "./VirtualExplorer";
 require("terminal-kit-plugins").plugin(term);
-
+const clear = require("clear");
 const explorer = new MagicExplorer(
   path.dirname(process.cwd()),
   path.basename(process.cwd()),
@@ -32,7 +32,7 @@ const tableConfig = {
 };
 const submitCallback = (item) => {
   const res = explorer.commitAction({
-    name: item.name.trim(),
+    name: item.cells.name.trim(),
     verb: "display",
   });
   if (res.redraw) {
@@ -43,6 +43,7 @@ const submitCallback = (item) => {
   }
 };
 
+clear(true); // Clear the full terminal screen
 const table = term.DataTable(tableConfig);
 table.setData(explorer.getChildren());
 table.promise.then(submitCallback);
