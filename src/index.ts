@@ -10,7 +10,7 @@ const explorer = new MagicExplorer(
 );
 const tableConfig = {
   x: 0,
-  y: 5,
+  y: 0,
   width: null,
   height: term.height,
   style: term.brightWhite.bgBlack,
