@@ -67,22 +67,25 @@ export default class {
       };
     } else {
       const childPath = path.resolve(this.getFullPath(), "./" + pressedAtChild);
-        if (fs.statSync(childPath).isDirectory()) {
-          if (userActionTo === "open") {
-            this.dispatchAction({ command: "openFolder", path: childPath });
-          } else if (userActionTo === "display") {
-            //Order of ctx and currContent important
-            this.ctx = this.getFullPath();
-            this.currContent = pressedAtChild;
-            this.paddingCount = 0;
-            return { redraw: true, contents: this.getChildren() };
-          }
-        } else {
-          if (userActionTo === "open" || userActionTo === "display") {
-            this.dispatchAction({ command: "openFile", path: childPath });
-          }
+      if (fs.statSync(childPath).isDirectory()) {
+        if (userActionTo === "open") {
+          this.dispatchAction({ command: "openFolder", path: childPath });
+        } else if (userActionTo === "display") {
+          //Order of ctx and currContent important
+          this.ctx = this.getFullPath();
+          this.currContent = pressedAtChild;
+          this.paddingCount = 0;
+          return { redraw: true, contents: this.getChildren() };
+        }
+      } else {
+        if (userActionTo === "open") {
+          this.dispatchAction({ command: "openFile", path: childPath });
+        } else if (userActionTo === "display") {
+          this.dispatchAction({ command: "openFile", path: childPath });
+          return { redraw: true, contents: this.getChildren() };
         }
       }
+    }
     return {
       redraw: false,
       contents: null,

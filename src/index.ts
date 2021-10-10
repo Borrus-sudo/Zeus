@@ -1,9 +1,8 @@
 import * as path from "path";
 import { terminal as term } from "terminal-kit";
 import MagicExplorer from "./VirtualExplorer";
-require("terminal-kit-plugins").plugin(term);
+const DataTable = require("../utils/data-table.js").DataTableFactory;
 let table;
-const clear = require("clear");
 const explorer = new MagicExplorer(
   path.dirname(process.cwd()),
   path.basename(process.cwd()),
@@ -49,35 +48,32 @@ const tableConfig = {
     },
   ],
 };
-function termCallback(key, tableInstance) {
-  if (key === "ESCAPE") {
-    process.exit();
-  } else if (key === "CTRL_O" && tableInstance._state.selected) {
-    const selectedState = tableInstance._state.selected;
+
+//Important callbacks
+const keyCallBack = (key, table) => {
+  if (key === "CTRL_O" && table._state.selected) {
+    const selectedState = table._state.selected;
     explorer.commitAction({
       name: selectedState.cells.name.trim(),
       verb: "open",
     });
   }
-}
+};
 const submitCallback = (item) => {
   const res = explorer.commitAction({
     name: item.cells.name.trim(),
     verb: "display",
   });
   if (res.redraw) {
-    table = term.DataTable(tableConfig);
+    table = DataTable(term, tableConfig);
     table.setData(res.contents);
     table.promise.then(submitCallback);
-    table._term.on("key", (key) => {
-      termCallback(key, table);
-    });
+    table._term.on("key", (key) => keyCallBack(key, table));
   }
 };
 
-clear(true); // Clear the full terminal screen
-table = term.DataTable({ ...tableConfig, data: explorer.getChildren() });
+// Logic body
+term.clear(true);
+table = DataTable(term, { ...tableConfig, data: explorer.getChildren() });
 table.promise.then(submitCallback);
-table._term.on("key", (key) => {
-  termCallback(key, table);
-});
+table._term.on("key", (key) => keyCallBack(key, table));
