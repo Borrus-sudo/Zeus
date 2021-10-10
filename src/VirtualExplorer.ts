@@ -67,7 +67,6 @@ export default class {
       };
     } else {
       const childPath = path.resolve(this.getFullPath(), "./" + pressedAtChild);
-      if (fs.existsSync(childPath)) {
         if (fs.statSync(childPath).isDirectory()) {
           if (userActionTo === "open") {
             this.dispatchAction({ command: "openFolder", path: childPath });
@@ -84,7 +83,6 @@ export default class {
           }
         }
       }
-    }
     return {
       redraw: false,
       contents: null,
