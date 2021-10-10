@@ -21,7 +21,6 @@ export function getFolderSize(filePath: string, ignore: string[]): number {
   sizeMap.set(filePath, size);
   return size;
 }
-const remember = [];
 export function formatDate(date: Date) {
   const options = {
     weekday: "short",
