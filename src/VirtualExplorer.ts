@@ -1,3 +1,4 @@
+import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import type { contentDescriptor } from "./types";
@@ -66,19 +67,22 @@ export default class {
       };
     } else {
       const childPath = path.resolve(this.getFullPath(), "./" + pressedAtChild);
-      if (fs.statSync(childPath).isDirectory()) {
-        if (userActionTo === "traverse") {
-          this.dispatchAction({ command: "traverse", path: childPath });
-        } else if (userActionTo === "display") {
-          //Order of ctx and currContent important
-          this.ctx = this.getFullPath();
-          this.currContent = pressedAtChild;
-          this.paddingCount = 0;
-          return { redraw: true, contents: this.getChildren() };
+      if (fs.existsSync(childPath)) {
+        if (fs.statSync(childPath).isDirectory()) {
+          if (userActionTo === "open") {
+            this.dispatchAction({ command: "openFolder", path: childPath });
+          } else if (userActionTo === "display") {
+            //Order of ctx and currContent important
+            this.ctx = this.getFullPath();
+            this.currContent = pressedAtChild;
+            this.paddingCount = 0;
+            return { redraw: true, contents: this.getChildren() };
+          }
+        } else {
+          if (userActionTo === "open" || userActionTo === "display") {
+            this.dispatchAction({ command: "openFile", path: childPath });
+          }
         }
-      } else {
-        // for files the user option traverse is not possible
-        this.dispatchAction({ command: "open", path: childPath });
       }
     }
     return {
@@ -86,5 +90,13 @@ export default class {
       contents: null,
     };
   }
-  private dispatchAction(commandDescriptor) {}
+  private dispatchAction(commandDescriptor) {
+    switch (commandDescriptor.command) {
+      case "openFile":
+        execSync(`code ${commandDescriptor.path}`);
+        break;
+      default:
+        break;
+    }
+  }
 }

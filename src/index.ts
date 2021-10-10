@@ -8,7 +8,6 @@ const explorer = new MagicExplorer(
   path.basename(process.cwd()),
   []
 );
-const ESCAPE = "ESCAPE";
 const tableConfig = {
   x: 0,
   y: 0,
@@ -42,23 +41,36 @@ const tableConfig = {
       get(content) {
         return content.lastModified;
       },
-      width:20,
+      width: 20,
       style() {
         return term.bold().red;
       },
     },
   ],
 };
+function termCallback(key, tableInstance) {
+  if (key === "ESCAPE") {
+    process.exit();
+  } else if (key === "CTRL_O" && tableInstance._state.selected) {
+    const selectedState = tableInstance._state.selected;
+    explorer.commitAction({
+      name: selectedState.cells.name.trim(),
+      verb: "open",
+    });
+  }
+}
 const submitCallback = (item) => {
   const res = explorer.commitAction({
     name: item.cells.name.trim(),
     verb: "display",
   });
   if (res.redraw) {
-    term
-      .DataTable(tableConfig)
-      .setData(res.contents)
-      .promise.then(submitCallback);
+    const table = term.DataTable(tableConfig);
+    table.setData(res.contents);
+    table.promise.then(submitCallback);
+    table._term.on("key", (key) => {
+      termCallback(key, table);
+    });
   }
 };
 
@@ -67,7 +79,5 @@ const table = term.DataTable(tableConfig);
 table.setData(explorer.getChildren());
 table.promise.then(submitCallback);
 table._term.on("key", (key) => {
-  if (key === ESCAPE) {
-    process.exit();
-  }
+  termCallback(key, table);
 });
