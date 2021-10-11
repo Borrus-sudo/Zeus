@@ -8,6 +8,6 @@ A tool for demi-gods that aims to bring the file explorer and traversal to the t
 - [x]  Get a graph like view of the entire folder structure
 - [x]  Support moving and copying files from the command line
 - [x]  Support opening files as well
-- Allow showing files with a specific pattern in the folder structure
-- Allow copying and moving folders
-- Allow deleting stuff
+- [] Allow showing files with a specific pattern in the folder structure
+- [] Allow copying and moving folders
+- [] Allow deleting stuff
