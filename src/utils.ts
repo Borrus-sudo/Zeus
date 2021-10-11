@@ -31,3 +31,18 @@ export function formatDate(date: Date) {
   //@ts-ignore
   return date.toLocaleDateString("en-US", options);
 }
+export function removeDirectory(path: string) {
+  if (fs.existsSync(path)) {
+    const files = fs.readdirSync(path) || [];
+    files.forEach(function (filename) {
+      if (fs.statSync(path + "/" + filename).isDirectory()) {
+        removeDirectory(path + "/" + filename);
+      } else {
+        fs.unlinkSync(path + "/" + filename);
+      }
+    });
+  }
+  if (process.cwd() !== path) {
+    fs.rmdirSync(path);
+  }
+}

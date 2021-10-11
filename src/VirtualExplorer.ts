@@ -2,10 +2,14 @@ import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import type { contentDescriptor } from "./types";
-import { formatDate, getFolderSize } from "./utils";
+import { formatDate, getFolderSize, removeDirectory } from "./utils";
 
 export default class {
-  private ignore: string[] = ["node_modules", ".git"];
+  private ignore: string[] = [
+    "node_modules",
+    ".git",
+    "System Volume Information",
+  ];
   private paddingCount: number = 0;
   private ctx: string;
   private currContent: string;
@@ -54,49 +58,64 @@ export default class {
     redraw: Boolean;
     contents: contentDescriptor[] | null;
   } {
-    const pressedAtChild = actionDescriptor.name;
-    const userActionTo = actionDescriptor.verb;
-    if (pressedAtChild === "../") {
-      // Order of currContent and ctx important
-      this.currContent = path.basename(path.resolve(this.getFullPath(), "../"));
-      this.ctx = path.resolve(this.ctx, "../");
-      this.paddingCount = 0;
-      return {
-        redraw: true,
-        contents: this.getChildren(),
-      };
-    } else {
-      const childPath = path.resolve(this.getFullPath(), "./" + pressedAtChild);
-      if (fs.statSync(childPath).isDirectory()) {
-        if (userActionTo === "open") {
-          this.dispatchAction({ command: "openFolder", path: childPath });
-        } else if (userActionTo === "display") {
+    switch (actionDescriptor.verb) {
+      case "submit":
+        if (actionDescriptor.isDir) {
+          const folderName = actionDescriptor.name;
           //Order of ctx and currContent important
-          this.ctx = this.getFullPath();
-          this.currContent = pressedAtChild;
+          this.ctx = path.join(folderName, "../");
+          this.currContent = path.basename(folderName);
           this.paddingCount = 0;
+          return {
+            redraw: true,
+            contents: this.getChildren(),
+          };
+        } else {
+          this.dispatchAction({
+            command: "openFile",
+            path: actionDescriptor.name,
+          });
           return { redraw: true, contents: this.getChildren() };
         }
-      } else {
-        if (userActionTo === "open") {
-          this.dispatchAction({ command: "openFile", path: childPath });
-        } else if (userActionTo === "display") {
-          this.dispatchAction({ command: "openFile", path: childPath });
+      case "open":
+        if (actionDescriptor.isDir) {
+        } else {
+          this.dispatchAction({
+            command: "openFile",
+            path: actionDescriptor.name,
+          });
+        }
+        break;
+      default:
+        if (actionDescriptor.isDir) {
+        } else {
+          const from = actionDescriptor.from; // full filePath to copy
+          const toFolderLocation = actionDescriptor.to;
+          let counter = 1;
+          let { name, ext, base: destinationName } = path.parse(from);
+          // Choose the file name such that it does not exist
+          while (fs.existsSync(path.join(toFolderLocation, destinationName))) {
+            destinationName =
+              (counter > 1 ? name.slice(0, -1) : name) + counter + ext;
+            counter++;
+          }
+          const to = path.join(toFolderLocation, destinationName);
+          fs.copyFileSync(from, to);
+          if (actionDescriptor.verb === "cut") {
+            fs.unlinkSync(from);
+          }
           return { redraw: true, contents: this.getChildren() };
         }
-      }
+        break;
     }
-    return {
-      redraw: false,
-      contents: null,
-    };
+    return { redraw: false, contents: null };
   }
   private dispatchAction(commandDescriptor) {
     switch (commandDescriptor.command) {
       case "openFile":
         execSync(`code ${commandDescriptor.path}`);
         break;
-      default:
+      case "openFolder":
         break;
     }
   }
