@@ -1,6 +1,8 @@
 import * as path from "path";
+import { existsSync, writeFileSync } from "fs";
 import { terminal as term } from "terminal-kit";
 import MagicExplorer from "./VirtualExplorer";
+import { isGeneratorFunction } from "util/types";
 const DataTable = require("../utils/data-table.js").DataTableFactory;
 let table;
 const explorer = new MagicExplorer(
@@ -77,8 +79,9 @@ const returnCallBack = (table) => {
               explorer.getFullPath(),
               selectedState.cells.name.trim()
             ),
-            isDir: selectedState.isDir,
+            isDir: selectedState.cells.isDir,
           };
+          break;
         case "CTRL_C":
           state = `copy`;
           prevObj = {
@@ -86,7 +89,7 @@ const returnCallBack = (table) => {
               explorer.getFullPath(),
               selectedState.cells.name.trim()
             ),
-            isDir: selectedState.isDir,
+            isDir: selectedState.cells.isDir,
           };
           break;
         case "CTRL_P":
@@ -99,17 +102,16 @@ const returnCallBack = (table) => {
             name: "",
             isDir: undefined,
           };
-          if (from) {
+          if (existsSync(from)) {
             const res = explorer.commitAction({
               from,
               to: explorer.getFullPath(),
               verb,
               isDir,
             });
-            table = DataTable(term, tableConfig);
-            table.setData(res.contents);
-            table.promise.then(submitCallback);
-            table._term.on("key", returnCallBack(table));
+            if (res.redraw) {
+              table._state.resolve("redraw");
+            }
           }
           break;
       }
@@ -117,6 +119,15 @@ const returnCallBack = (table) => {
   };
 };
 const submitCallback = (item) => {
+  if (item === "redraw") {
+    table._destroy();
+    table = DataTable(term, tableConfig);
+    const contents = explorer.getChildren();
+    table.setData(contents);
+    table.promise.then(submitCallback);
+    table._term.on("key", returnCallBack(table));
+    return;
+  }
   const res = explorer.commitAction({
     name: path.join(explorer.getFullPath(), item.cells.name.trim()),
     verb: "submit",
