@@ -2,7 +2,7 @@ import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import type { contentDescriptor } from "./types";
-import { formatDate, getFolderSize, removeDirectory } from "./utils";
+import { formatDate, getFolderSize } from "./utils";
 
 export default class {
   private ignore: string[] = [

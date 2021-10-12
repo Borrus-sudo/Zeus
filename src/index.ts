@@ -1,8 +1,7 @@
+import { existsSync } from "fs";
 import * as path from "path";
-import { existsSync, writeFileSync } from "fs";
 import { terminal as term } from "terminal-kit";
 import MagicExplorer from "./VirtualExplorer";
-import { isGeneratorFunction } from "util/types";
 const DataTable = require("../utils/data-table.js").DataTableFactory;
 let table;
 const explorer = new MagicExplorer(
