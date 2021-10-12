@@ -46,7 +46,7 @@ export default class {
                 : stats.size;
               return {
                 name: " ".repeat(paddingCount) + (isDir ? elem + "/" : elem),
-                isDir: isDir,
+                isDir,
                 size: size.toString() + "B",
                 lastModified: formatDate(stats.mtime),
               };
@@ -61,6 +61,7 @@ export default class {
     switch (actionDescriptor.verb) {
       case "submit":
         if (actionDescriptor.isDir) {
+          console.log("Change folder view deteced");
           const folderName = actionDescriptor.name;
           //Order of ctx and currContent important
           this.ctx = path.join(folderName, "../");
