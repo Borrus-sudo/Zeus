@@ -27,8 +27,7 @@ export function formatDate(date: Date) {
     year: "numeric",
     month: "short",
     day: "numeric",
-  };
-  //@ts-ignore
+  } as const;
   return date.toLocaleDateString("en-US", options);
 }
 export function removeDirectory(path: string) {
