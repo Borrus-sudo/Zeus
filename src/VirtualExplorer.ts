@@ -4,7 +4,7 @@ import * as path from "path";
 import argv from "./config";
 import type { configDescriptor, contentDescriptor } from "./types";
 import { formatDate, getFolderSize, removeDirectory } from "./utils";
-
+const copydir = require("copy-dir");
 export default class {
   private ignore: string[] = [
     "node_modules",
@@ -64,7 +64,6 @@ export default class {
       case "submit":
         if (actionDescriptor.isDir) {
           const folderName = actionDescriptor.name;
-          //Order of ctx and currContent important
           this.ctx = path.join(folderName, "../");
           this.currContent = path.basename(folderName);
           this.paddingCount = 0;
@@ -96,6 +95,24 @@ export default class {
         };
       default:
         if (actionDescriptor.isDir) {
+          const toLocation = actionDescriptor.to;
+          const folderName = path.basename(actionDescriptor.from);
+          let destinationName = folderName;
+          let counter = 1;
+          while (fs.existsSync(path.join(toLocation, folderName))) {
+            destinationName =
+              (counter > 1 ? folderName.slice(0, -1) : folderName) + counter;
+            counter++;
+          }
+          const toPath = path.join(toLocation, destinationName);
+          copydir.sync(actionDescriptor.from, toPath, {
+            utimes: true,
+            mode: true,
+            cover: true,
+          });
+          if (actionDescriptor.verb === "cut") {
+            removeDirectory(actionDescriptor.from);
+          }
         } else {
           const from = actionDescriptor.from; // full filePath to copy
           const toFolderLocation = actionDescriptor.to;
@@ -112,9 +129,8 @@ export default class {
           if (actionDescriptor.verb === "cut") {
             fs.unlinkSync(from);
           }
-          return { redraw: true, contents: this.getChildren() };
         }
-        break;
+        return { redraw: true, contents: this.getChildren() };
     }
     return { redraw: false, contents: null };
   }

@@ -41,4 +41,5 @@ export function removeDirectory(path: string) {
       }
     });
   }
+  fs.rmdirSync(path);
 }
