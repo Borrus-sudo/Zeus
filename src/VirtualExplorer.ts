@@ -1,7 +1,8 @@
 import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
-import type { contentDescriptor } from "./types";
+import argv from "./config";
+import type { configDescriptor, contentDescriptor } from "./types";
 import { formatDate, getFolderSize, removeDirectory } from "./utils";
 
 export default class {
@@ -13,6 +14,7 @@ export default class {
   private paddingCount: number = 0;
   private ctx: string;
   private currContent: string;
+  private config: configDescriptor[] = argv();
   constructor(ctx: string, currContent: string, ignore: string[]) {
     this.ignore.push(...ignore);
     this.ctx = ctx;

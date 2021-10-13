@@ -4,3 +4,7 @@ export type contentDescriptor = {
   size: string;
   lastModified: string;
 };
+export type configDescriptor = {
+  flag: "filter";
+  value: RegExp;
+};
