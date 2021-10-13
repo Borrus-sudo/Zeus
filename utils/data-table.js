@@ -314,6 +314,7 @@ class DataTable extends events.EventEmitter {
     }
     setData(data) {
         this._state.items = data;
+        this._state.filter = "";
         this.promise = new Promise((resolve, reject) => {
             this._state.resolve = resolve;
             this._state.reject = reject;

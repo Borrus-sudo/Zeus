@@ -61,23 +61,18 @@ export default class {
     switch (actionDescriptor.verb) {
       case "submit":
         if (actionDescriptor.isDir) {
-          console.log("Change folder view deteced");
           const folderName = actionDescriptor.name;
           //Order of ctx and currContent important
           this.ctx = path.join(folderName, "../");
           this.currContent = path.basename(folderName);
           this.paddingCount = 0;
-          return {
-            redraw: true,
-            contents: this.getChildren(),
-          };
         } else {
           this.dispatchAction({
             command: "openFile",
             path: actionDescriptor.name,
           });
-          return { redraw: true, contents: this.getChildren() };
         }
+        return { redraw: true, contents: this.getChildren() };
       case "open":
         if (actionDescriptor.isDir) {
         } else {

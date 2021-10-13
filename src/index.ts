@@ -82,7 +82,10 @@ const returnCallBack = (table) => {
           break;
         case "CTRL_D":
           const res = explorer.commitAction({
-            name: selectedState.cells.name.trim(),
+            name: path.join(
+              explorer.getFullPath(),
+              selectedState.cells.name.trim()
+            ),
             verb: "delete",
             isDir: selectedState.cells.isDir,
           });
