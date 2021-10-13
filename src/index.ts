@@ -1,4 +1,3 @@
-import { existsSync } from "fs";
 import * as path from "path";
 import { terminal as term } from "terminal-kit";
 import MagicExplorer from "./VirtualExplorer";
@@ -81,6 +80,17 @@ const returnCallBack = (table) => {
             isDir: selectedState.cells.isDir,
           };
           break;
+        case "CTRL_D":
+          const res = explorer.commitAction({
+            name: selectedState.cells.name.trim(),
+            verb: "delete",
+            isDir: selectedState.cells.isDir,
+          });
+          if (res.redraw) {
+            table.setData(res.contents);
+            table.promise.then(submitCallback);
+          }
+          break;
         case "CTRL_C":
           state = `copy`;
           prevObj = {
@@ -101,7 +111,7 @@ const returnCallBack = (table) => {
             name: "",
             isDir: undefined,
           };
-          if (existsSync(from)) {
+          if (from) {
             const res = explorer.commitAction({
               from,
               to: explorer.getFullPath(),
@@ -109,7 +119,8 @@ const returnCallBack = (table) => {
               isDir,
             });
             if (res.redraw) {
-              table._state.resolve("redraw");
+              table.setData(res.contents);
+              table.promise.then(submitCallback);
             }
           }
           break;
@@ -118,25 +129,14 @@ const returnCallBack = (table) => {
   };
 };
 const submitCallback = (item) => {
-  if (item === "redraw") {
-    table._destroy();
-    table = DataTable(term, tableConfig);
-    const contents = explorer.getChildren();
-    table.setData(contents);
-    table.promise.then(submitCallback);
-    table._term.on("key", returnCallBack(table));
-    return;
-  }
   const res = explorer.commitAction({
     name: path.join(explorer.getFullPath(), item.cells.name.trim()),
     verb: "submit",
     isDir: item.cells.isDir,
   });
   if (res.redraw) {
-    table = DataTable(term, tableConfig);
     table.setData(res.contents);
     table.promise.then(submitCallback);
-    table._term.on("key", returnCallBack(table));
   }
 };
 

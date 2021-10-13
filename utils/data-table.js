@@ -180,7 +180,6 @@ class DataTable extends events.EventEmitter {
     }
     submit(isSubmit) {
         const data = isSubmit ? this._state.selected : null;
-        this._destroy();
         if (this._state.resolve) {
             this._state.resolve(data);
         }
@@ -300,10 +299,6 @@ class DataTable extends events.EventEmitter {
         }
         this._term.moveTo(this._state.displayArea.x, cursorPos++);
     }
-    abort() {
-        this._state.paused = true;
-        this._destroy();
-    }
     pause() {
         this._state.paused = true;
     }
@@ -319,10 +314,14 @@ class DataTable extends events.EventEmitter {
     }
     setData(data) {
         this._state.items = data;
-    }
-    _destroy() {
-        this._term.off("key", this._events.onKeyPress);
-        this.pause();
+        this.promise = new Promise((resolve, reject) => {
+            this._state.resolve = resolve;
+            this._state.reject = reject;
+            if (this._state.data.length) {
+                this.redraw();
+            }
+            this.emit("ready");
+        });
     }
 }
 

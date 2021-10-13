@@ -42,7 +42,4 @@ export function removeDirectory(path: string) {
       }
     });
   }
-  if (process.cwd() !== path) {
-    fs.rmdirSync(path);
-  }
 }

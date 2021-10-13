@@ -2,7 +2,7 @@ import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import type { contentDescriptor } from "./types";
-import { formatDate, getFolderSize } from "./utils";
+import { formatDate, getFolderSize, removeDirectory } from "./utils";
 
 export default class {
   private ignore: string[] = [
@@ -87,6 +87,16 @@ export default class {
           });
         }
         break;
+      case "delete":
+        if (actionDescriptor.isDir) {
+          removeDirectory(actionDescriptor.name);
+        } else {
+          fs.unlinkSync(actionDescriptor.name);
+        }
+        return {
+          redraw: true,
+          contents: this.getChildren(),
+        };
       default:
         if (actionDescriptor.isDir) {
         } else {
