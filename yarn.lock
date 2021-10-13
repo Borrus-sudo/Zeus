@@ -95,7 +95,7 @@ ndarray@^1.0.13, ndarray@^1.0.19:
     iota-array "^1.0.0"
     is-buffer "^1.0.2"
 
-nextgen-events@^1.4.0:
+nextgen-events@^1.5.2:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/nextgen-events/-/nextgen-events-1.5.2.tgz#72b2b6cbe6912d9be2165188d0169027e65d8ebe"
   integrity sha512-0ZEIRQywH5Oxt2IYYufRltQg/KjXhKM7f7MHve+ZIRaKnIR1PPYEXAl2WBmej5Sf0Qh2GgE/21sMRZVuOyxLzw==
@@ -144,29 +144,29 @@ shebang-regex@^3.0.0:
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
 
-string-kit@^0.12.5:
+string-kit@^0.12.8:
   version "0.12.8"
   resolved "https://registry.yarnpkg.com/string-kit/-/string-kit-0.12.8.tgz#6b35b3d873105c4b194757ecd66b0723ffb914af"
   integrity sha512-9UYXBbe/reAZI6cKiaNC7zEzdmA91Ih5/lVmbPGoMssSWZfqVcQvqAMlL0dTdMn+a7XCXBe8zV4BVopXlf+Aaw==
 
-terminal-kit@^2.1.6:
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/terminal-kit/-/terminal-kit-2.1.6.tgz#4fc12bd44fcf637183b66f6770299f6b17fb3b1d"
-  integrity sha512-BX8flJ97GG5s0g0rtLkqBYwg8LT9RhJ6DFpUAf3oZYmUPOO3aj5xktT+ys5Mg5Ot1/efvDbf9hcNfRz1ioEFvA==
+terminal-kit@^2.1.8:
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/terminal-kit/-/terminal-kit-2.1.8.tgz#d1a50613aa74ef67592e8b5accfd2e89879f7745"
+  integrity sha512-0mj+C3iuawIwUAV/WBOw1GZ50kgEUefS1Ew0KoaD8mVfkr1nuI1kceTafDHoT7Vi3Gg2U+5DIeVjlts2lSyLzg==
   dependencies:
     "@cronvel/get-pixels" "^3.4.0"
     chroma-js "^2.1.2"
     lazyness "^1.2.0"
     ndarray "^1.0.19"
-    nextgen-events "^1.4.0"
+    nextgen-events "^1.5.2"
     seventh "^0.7.40"
-    string-kit "^0.12.5"
-    tree-kit "^0.7.0"
+    string-kit "^0.12.8"
+    tree-kit "^0.7.4"
 
-tree-kit@^0.7.0:
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/tree-kit/-/tree-kit-0.7.3.tgz#92566fd0ae114c771534a7c32d6214c56d021eb1"
-  integrity sha512-BVxfUGNHKXS6TEOwKHioWSBivg6b5zfbdXtOWEE5ZpgQxG6gPtvFvjnsoKXTp2ASFmzSe6PhXemutmx8zUxFQQ==
+tree-kit@^0.7.4:
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/tree-kit/-/tree-kit-0.7.4.tgz#d6c9dba3e06188952282f196657f6bbbb454a39a"
+  integrity sha512-Of3tPmVs3b6BhzyUJ7t0olisf47kYr9qAm0XaUpURMjdBn6TwiVaaMuTFoKkkvPGojd9trKAHlrGGcGKcdR1DA==
 
 typescript@^4.4.3:
   version "4.4.3"
