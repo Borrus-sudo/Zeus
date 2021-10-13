@@ -9,5 +9,5 @@ A tool for demi-gods that aims to bring the file explorer and traversal to the t
 - [x]  Support moving and copying files from the command line
 - [x]  Support opening files as well
 - [ ] Allow filtering files following a specific pattern in the folder structure
-- [ ] Allow copying and moving folders
-- [ ] Allow deleting stuff
+- [x] Allow copying and moving folders
+- [x] Allow deleting stuff
