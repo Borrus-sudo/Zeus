@@ -33,11 +33,11 @@ export function formatDate(date: Date) {
 export function removeDirectory(path: string) {
   if (fs.existsSync(path)) {
     const files = fs.readdirSync(path) || [];
-    files.forEach(function (filename) {
-      if (fs.statSync(path + "/" + filename).isDirectory()) {
-        removeDirectory(path + "/" + filename);
+    files.forEach(function (fileName) {
+      if (fs.statSync(join(path, fileName)).isDirectory()) {
+        removeDirectory(join(path, fileName));
       } else {
-        fs.unlinkSync(path + "/" + filename);
+        fs.unlinkSync(join(path, fileName));
       }
     });
   }
