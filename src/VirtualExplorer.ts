@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import argv from "./config";
 import type { configDescriptor, contentDescriptor } from "./types";
-import { formatDate, rmDir, getMetaDetails } from "./utils";
+import { formatDate, getMetaDetails, rmDir } from "./utils";
 const copydir = require("copy-dir");
 export default class {
   private ignore: string[] = [
