@@ -1,25 +1,18 @@
 import * as fs from "fs";
 import { join } from "path";
 
-const sizeMap: Map<string, number> = new Map();
-export function getFolderSize(filePath: string, ignore: string[]): number {
-  const contents = fs.readdirSync(filePath);
-  let size: number = 0;
-  let stats: fs.Stats;
-  for (let content of contents) {
-    const contentPath = join(filePath, content);
-    stats = fs.statSync(contentPath);
-    if (stats.isDirectory()) {
-      if (!ignore.includes(content)) {
-        if (sizeMap.has(contentPath)) size += sizeMap.get(contentPath);
-        else size += getFolderSize(contentPath, ignore);
-      }
-    } else {
-      size += stats.size;
-    }
-  }
-  sizeMap.set(filePath, size);
-  return size;
+export function getMetaDetails(stats: fs.Stats) {
+  let stat = "";
+  stat += stats["mode"] & 1 ? "x" : "-";
+  stat += stats["mode"] & 2 ? "w" : "-";
+  stat += stats["mode"] & 4 ? "r" : "-";
+  stat += stats["mode"] & 10 ? "x" : "-";
+  stat += stats["mode"] & 20 ? "w" : "-";
+  stat += stats["mode"] & 40 ? "r" : "-";
+  stat += stats["mode"] & 100 ? "x" : "-";
+  stat += stats["mode"] & 200 ? "w" : "-";
+  stat += stats["mode"] & 400 ? "r" : "-";
+  return stat;
 }
 export function formatDate(date: Date) {
   const options = {

@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import argv from "./config";
 import type { configDescriptor, contentDescriptor } from "./types";
-import { formatDate, getFolderSize, rmDir } from "./utils";
+import { formatDate, rmDir, getMetaDetails } from "./utils";
 const copydir = require("copy-dir");
 export default class {
   private ignore: string[] = [
@@ -11,7 +11,6 @@ export default class {
     ".git",
     "System Volume Information",
   ];
-  private paddingCount: number = 0;
   private ctx: string;
   private currContent: string;
   private config: configDescriptor[] = argv();
@@ -27,30 +26,37 @@ export default class {
     return path.resolve(this.ctx, this.currContent);
   }
   getChildren() {
-    return this.toStringDir(this.paddingCount + 2);
+    return this.toStringDir();
   }
-  toStringDir(paddingCount: number): contentDescriptor[] {
+  toStringDir(): contentDescriptor[] {
     let stats: fs.Stats;
     let isDir: boolean;
-    let size: number;
+    let size: string;
     const fullPath: string = this.getFullPath();
-    return fs.existsSync(fullPath)
+    const exists = fs.existsSync(fullPath);
+    const fullPathStats: fs.Stats = exists ? fs.statSync(fullPath) : null;
+    return exists
       ? [
-          { name: "../", isDir: true, size: "", lastModified: "" },
+          {
+            name: "../",
+            isDir: true,
+            size: "",
+            lastModified: formatDate(fullPathStats.mtime),
+            meta: getMetaDetails(fullPathStats),
+          },
           ...fs
             .readdirSync(fullPath)
             .filter((elem) => !this.ignore.includes(elem))
             .map((elem) => {
               stats = fs.statSync(path.join(fullPath, elem));
               isDir = stats.isDirectory();
-              size = isDir
-                ? getFolderSize(path.join(fullPath, elem), this.ignore)
-                : stats.size;
+              size = isDir ? "" : String(stats.size) + "B";
               return {
-                name: " ".repeat(paddingCount) + (isDir ? elem + "/" : elem),
+                name: isDir ? elem + "/" : elem,
                 isDir,
-                size: size.toString() + "B",
+                size,
                 lastModified: formatDate(stats.mtime),
+                meta: getMetaDetails(stats),
               };
             }),
         ]
@@ -66,7 +72,6 @@ export default class {
           const folderName = actionDescriptor.name;
           this.ctx = path.join(folderName, "../");
           this.currContent = path.basename(folderName);
-          this.paddingCount = 0;
         } else {
           this.dispatchAction({
             command: "openFile",
@@ -76,6 +81,9 @@ export default class {
         return { redraw: true, contents: this.getChildren() };
       case "open":
         if (actionDescriptor.isDir) {
+          if (process.platform !== "win32") {
+          } else execSync(`start cmd.exe /K pushd ${actionDescriptor.name}`);
+          process.exit();
         } else {
           this.dispatchAction({
             command: "openFile",

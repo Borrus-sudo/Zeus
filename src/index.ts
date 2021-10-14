@@ -21,11 +21,20 @@ const tableConfig = {
   columns: [
     {
       get(content) {
-        return content.name;
+        return content.meta;
+      },
+      width: 10,
+      style() {
+        return term.bold().blue;
+      },
+    },
+    {
+      get(content) {
+        return content.lastModified;
       },
       width: 20,
-      style(_item) {
-        return term.bold().colorRgb(40, 182, 217);
+      style() {
+        return term.bold().red;
       },
     },
     {
@@ -39,11 +48,20 @@ const tableConfig = {
     },
     {
       get(content) {
-        return content.lastModified;
+        return content.isDir ? "<DIR>" : "<FILE>";
+      },
+      width: 9,
+      style() {
+        return term.italic();
+      },
+    },
+    {
+      get(content) {
+        return content.name;
       },
       width: 20,
-      style() {
-        return term.bold().red;
+      style(item) {
+        return item.isDir ? term.bold().colorRgb(40, 182, 217) : term.bold();
       },
     },
   ],
