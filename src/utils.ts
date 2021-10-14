@@ -30,12 +30,12 @@ export function formatDate(date: Date) {
   } as const;
   return date.toLocaleDateString("en-US", options);
 }
-export function removeDirectory(path: string) {
+export function rmDir(path: string) {
   if (fs.existsSync(path)) {
     const files = fs.readdirSync(path) || [];
     files.forEach(function (fileName) {
       if (fs.statSync(join(path, fileName)).isDirectory()) {
-        removeDirectory(join(path, fileName));
+        rmDir(join(path, fileName));
       } else {
         fs.unlinkSync(join(path, fileName));
       }

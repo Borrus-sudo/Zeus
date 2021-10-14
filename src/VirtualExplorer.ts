@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import argv from "./config";
 import type { configDescriptor, contentDescriptor } from "./types";
-import { formatDate, getFolderSize, removeDirectory } from "./utils";
+import { formatDate, getFolderSize, rmDir } from "./utils";
 const copydir = require("copy-dir");
 export default class {
   private ignore: string[] = [
@@ -85,7 +85,7 @@ export default class {
         break;
       case "delete":
         if (actionDescriptor.isDir) {
-          removeDirectory(actionDescriptor.name);
+          rmDir(actionDescriptor.name);
         } else {
           fs.unlinkSync(actionDescriptor.name);
         }
@@ -111,7 +111,7 @@ export default class {
             cover: true,
           });
           if (actionDescriptor.verb === "cut") {
-            removeDirectory(actionDescriptor.from);
+            rmDir(actionDescriptor.from);
           }
         } else {
           const from = actionDescriptor.from; // full filePath to copy
