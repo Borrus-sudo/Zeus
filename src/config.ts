@@ -6,8 +6,8 @@ export default function (): configDescriptor[] {
   for (let i = 0; i < arg.length - 1; i++) {
     const flag = arg[i],
       val = String(arg[i + 1]);
-    if (flag == "-F") {
-      flagTypes.push({ flag: "filter", value: new RegExp(val) });
+    if (flag == "-E") {
+      flagTypes.push({ flag: "filterExtensions", value:val });
     }
   }
   return flagTypes;

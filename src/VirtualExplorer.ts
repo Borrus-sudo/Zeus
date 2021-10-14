@@ -59,7 +59,19 @@ export default class {
                 meta: getMetaDetails(stats),
               };
             }),
-        ]
+        ].filter((elem) => {
+          if (
+            this.config.length > 0 &&
+            this.config[0].flag === "filterExtensions"
+          ) {
+            if (elem.isDir) {
+              return true;
+            } else {
+              return elem.name.endsWith(this.config[0].value);
+            }
+          }
+          return true;
+        })
       : [];
   }
   commitAction(actionDescriptor): {

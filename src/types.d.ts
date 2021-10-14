@@ -6,6 +6,6 @@ export type contentDescriptor = {
   meta:string;
 };
 export type configDescriptor = {
-  flag: "filter";
-  value: RegExp;
+  flag: "filterExtensions";
+  value: string;
 };
