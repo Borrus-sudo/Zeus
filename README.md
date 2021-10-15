@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/heroImage.svg" align="center" alt="Hero Graph Image" />
+  <img width="100px" src="./assets/heroImage.svg" align="center" alt="Hero Graph Image" />
   <h1 align="center">Zeus </h1>
   <p align="center">A tool for demi-gods that aims to bring the file explorer and traversal   to the terminal
   </p>
