@@ -90,10 +90,7 @@ export default class {
           this.ctx = path.join(folderName, "../");
           this.currContent = path.basename(folderName);
         } else {
-          this.dispatchAction({
-            command: "openFile",
-            path: actionDescriptor.name,
-          });
+          execSync(`code ${actionDescriptor.path}`);
         }
         return { redraw: true, contents: this.getChildren() };
       case "open":
@@ -102,10 +99,7 @@ export default class {
           } else execSync(`start cmd.exe /K pushd ${actionDescriptor.name}`);
           process.exit();
         } else {
-          this.dispatchAction({
-            command: "openFile",
-            path: actionDescriptor.name,
-          });
+          execSync(`code ${actionDescriptor.path}`);
         }
         break;
       case "delete":
@@ -158,14 +152,5 @@ export default class {
         return { redraw: true, contents: this.getChildren() };
     }
     return { redraw: false, contents: null };
-  }
-  private dispatchAction(commandDescriptor) {
-    switch (commandDescriptor.command) {
-      case "openFile":
-        execSync(`code ${commandDescriptor.path}`);
-        break;
-      case "openFolder":
-        break;
-    }
   }
 }
