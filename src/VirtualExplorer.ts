@@ -1,12 +1,13 @@
 import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
-import argv from "./config";
-import type { configDescriptor, contentDescriptor } from "./types";
+import prettyBytes from "pretty-bytes";
+import argv from "./flagParser";
+import { configDescriptor, contentDescriptor } from "./types";
 import { formatDate, getMetaDetails, rmDir } from "./utils";
 const copydir = require("copy-dir");
 export default class {
-  private ignore: string[] = [
+  private globalIgnores: string[] = [
     "node_modules",
     ".git",
     "System Volume Information",
@@ -15,7 +16,7 @@ export default class {
   private currContent: string;
   private config: configDescriptor[] = argv();
   constructor(ctx: string, currContent: string, ignore: string[]) {
-    this.ignore.push(...ignore);
+    this.globalIgnores.push(...ignore);
     this.ctx = ctx;
     this.currContent = currContent;
     if (!fs.existsSync(this.getFullPath())) {
@@ -31,48 +32,52 @@ export default class {
   toStringDir(): contentDescriptor[] {
     let stats: fs.Stats;
     let isDir: boolean;
-    let size: string;
     const fullPath: string = this.getFullPath();
     const exists = fs.existsSync(fullPath);
     const fullPathStats: fs.Stats = exists ? fs.statSync(fullPath) : null;
-    return exists
-      ? [
-          {
-            name: "../",
-            isDir: true,
-            size: "",
-            lastModified: formatDate(fullPathStats.mtime),
-            meta: getMetaDetails(fullPathStats),
-          },
-          ...fs
-            .readdirSync(fullPath)
-            .filter((elem) => !this.ignore.includes(elem))
-            .map((elem) => {
-              stats = fs.statSync(path.join(fullPath, elem));
+    if (exists) {
+      //globalIgnores+ .gitignore of the present dir
+      const files = [...fs.readdirSync(fullPath)];
+      let contentPath = "";
+      return [
+        {
+          name: "../",
+          isDir: true,
+          size: "",
+          lastModified: formatDate(fullPathStats.mtime),
+          meta: getMetaDetails(fullPathStats),
+          toPath: path.join(fullPath, "../"),
+          fullPath,
+        },
+        ...files
+          .filter((elem) => !this.globalIgnores.includes(elem))
+          .map((elem) => {
+            contentPath = path.join(fullPath, elem);
+            stats = fs.lstatSync(contentPath);
+            if (!stats.isSymbolicLink()) {
               isDir = stats.isDirectory();
-              size = isDir ? "" : String(stats.size) + "B";
               return {
                 name: isDir ? elem + "/" : elem,
                 isDir,
-                size,
+                size: prettyBytes(stats.size),
                 lastModified: formatDate(stats.mtime),
                 meta: getMetaDetails(stats),
+                toPath: path.join(fullPath, elem),
               };
-            }),
-        ].filter((elem) => {
-          if (
-            this.config.length > 0 &&
-            this.config[0].flag === "filterExtensions"
-          ) {
-            if (elem.isDir) {
-              return true;
             } else {
-              return elem.name.endsWith(this.config[0].value);
+              const target = fs.readlinkSync(contentPath);
+              return {
+                name: `${path.basename(contentPath)} -> ${target}`,
+                isDir: fs.statSync(target).isDirectory(),
+                size: "",
+                lastModified: formatDate(stats.mtime),
+                meta: "",
+                toPath: target,
+              };
             }
-          }
-          return true;
-        })
-      : [];
+          }),
+      ];
+    } else return [];
   }
   commitAction(actionDescriptor): {
     redraw: Boolean;
