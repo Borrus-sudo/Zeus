@@ -31,10 +31,7 @@ export default class {
   getFullPath(): string {
     return path.resolve(this.ctx, this.currContent);
   }
-  getChildren() {
-    return this.toStringDir();
-  }
-  toStringDir(): contentDescriptor[] {
+  getChildren(): contentDescriptor[] {
     let stats: fs.Stats;
     let isDir: boolean;
     const fullPath: string = this.getFullPath();
