@@ -61,17 +61,21 @@ export default class {
                 toPath: path.join(fullPath, elem),
               };
             } else {
-              const target = fs.readlinkSync(contentPath);
-              const targetStats = fs.statSync(target);
+              const target = path.resolve(
+                contentPath,
+                path.normalize(fs.readlinkSync(contentPath))
+              );
+              console.log(target);
               return {
-                name: `${path.basename(contentPath)} -> ${path.basename(
+                name: `${path.basename(contentPath)} -> ${path.relative(
+                  contentPath,
                   target
                 )}`,
-                isDir: targetStats.isDirectory(),
-                size: prettyBytes(targetStats.size),
+                isDir: stats.isDirectory(),
+                size: prettyBytes(stats.size),
                 lastModified: formatDate(stats.mtime),
-                meta: getMetaDetails(targetStats),
-                toPath: target,
+                meta: getMetaDetails(stats),
+                toPath: contentPath,
               };
             }
           }),
@@ -89,7 +93,7 @@ export default class {
           this.ctx = path.join(folderName, "../");
           this.currContent = path.basename(folderName);
         } else {
-          execSync(`code ${actionDescriptor.path}`);
+          execSync(`code ${actionDescriptor.name}`);
         }
         return { redraw: true, contents: this.getChildren() };
       case "open":
@@ -98,7 +102,7 @@ export default class {
           } else execSync(`start cmd.exe /K pushd ${actionDescriptor.name}`);
           process.exit();
         } else {
-          execSync(`code ${actionDescriptor.path}`);
+          execSync(`code ${actionDescriptor.name}`);
         }
         break;
       case "delete":
