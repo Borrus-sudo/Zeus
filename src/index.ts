@@ -141,7 +141,7 @@ const returnCallBack = (table) => {
 };
 const submitCallback = (item) => {
   const res = explorer.commitAction({
-    name: path.join(explorer.getFullPath(), item.cells.name.trim()),
+    name: item.cells.toPath,
     verb: "submit",
     isDir: item.cells.isDir,
   });

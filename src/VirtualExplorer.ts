@@ -68,19 +68,18 @@ export default class {
               };
             } else {
               const target = path.resolve(
-                contentPath,
+                path.dirname(contentPath),
                 path.normalize(fs.readlinkSync(contentPath))
               );
               return {
-                name: `${path.basename(contentPath)} -> ${path.relative(
-                  contentPath,
+                name: `${path.basename(contentPath)} -> ${path.basename(
                   target
                 )}`,
                 isDir: stats.isDirectory(),
                 size: prettyBytes(stats.size),
                 lastModified: formatDate(stats.mtime),
                 meta: getMetaDetails(stats),
-                toPath: contentPath,
+                toPath: target,
               };
             }
           }),
@@ -103,12 +102,7 @@ export default class {
         return { redraw: true, contents: this.getChildren() };
       case "open":
         if (actionDescriptor.isDir) {
-          if (process.platform !== "win32") {
-          } else
-            execSync(
-              this.openTerminal.replace("${PATH}", actionDescriptor.name)
-            );
-          process.exit();
+          execSync(this.openTerminal.replace("${PATH}", actionDescriptor.name));
         } else {
           execSync(this.openFile.replace("${PATH}", actionDescriptor.name));
         }
