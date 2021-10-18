@@ -6,7 +6,7 @@ const dotFileLocation = path.resolve(
   ".zeus"
 );
 let options: config = {
-  ignores: [],
+  ignores: ["node_modules", ".git"],
 };
 if (!fs.existsSync(dotFileLocation)) {
   const defaults = JSON.stringify(options, null, 2);

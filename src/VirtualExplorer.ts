@@ -7,11 +7,7 @@ import { formatDate, getMetaDetails, rmDir } from "./utils";
 const copydir = require("copy-dir");
 const prettyBytes = require("pretty-bytes");
 export default class {
-  private globalIgnores: string[] = [
-    "node_modules",
-    ".git",
-    "System Volume Information",
-  ];
+  private globalIgnores: string[] = ["System Volume Information"];
   private ctx: string;
   private currContent: string;
   private config: configDescriptor[] = argv();
