@@ -1,11 +1,11 @@
 import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
-import prettyBytes from "pretty-bytes";
 import argv from "./flagParser";
 import { configDescriptor, contentDescriptor } from "./types";
 import { formatDate, getMetaDetails, rmDir } from "./utils";
 const copydir = require("copy-dir");
+const prettyBytes = require("pretty-bytes");
 export default class {
   private globalIgnores: string[] = [
     "node_modules",
@@ -59,7 +59,7 @@ export default class {
               return {
                 name: isDir ? elem + "/" : elem,
                 isDir,
-                size: prettyBytes(stats.size),
+                size: isDir ? "" : prettyBytes(stats.size),
                 lastModified: formatDate(stats.mtime),
                 meta: getMetaDetails(stats),
                 toPath: path.join(fullPath, elem),
