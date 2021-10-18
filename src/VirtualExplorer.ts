@@ -11,10 +11,19 @@ export default class {
   private ctx: string;
   private currContent: string;
   private config: configDescriptor[] = argv();
-  constructor(ctx: string, currContent: string, ignore: string[]) {
+  readonly openFile: string;
+  readonly openTerminal: string;
+  constructor(
+    ctx: string,
+    currContent: string,
+    ignore: string[],
+    [openFile, openTerminal]
+  ) {
     this.globalIgnores.push(...ignore);
     this.ctx = ctx;
     this.currContent = currContent;
+    this.openFile = openFile;
+    this.openTerminal = openTerminal;
     if (!fs.existsSync(this.getFullPath())) {
       throw new Error(`Error: The path ${this.getFullPath()} does not exist.`);
     }
@@ -65,7 +74,6 @@ export default class {
                 contentPath,
                 path.normalize(fs.readlinkSync(contentPath))
               );
-              console.log(target);
               return {
                 name: `${path.basename(contentPath)} -> ${path.relative(
                   contentPath,
@@ -93,16 +101,19 @@ export default class {
           this.ctx = path.join(folderName, "../");
           this.currContent = path.basename(folderName);
         } else {
-          execSync(`code ${actionDescriptor.name}`);
+          execSync(this.openFile.replace("${PATH}", actionDescriptor.name));
         }
         return { redraw: true, contents: this.getChildren() };
       case "open":
         if (actionDescriptor.isDir) {
           if (process.platform !== "win32") {
-          } else execSync(`start cmd.exe /K pushd ${actionDescriptor.name}`);
+          } else
+            execSync(
+              this.openTerminal.replace("${PATH}", actionDescriptor.name)
+            );
           process.exit();
         } else {
-          execSync(`code ${actionDescriptor.name}`);
+          execSync(this.openFile.replace("${PATH}", actionDescriptor.name));
         }
         break;
       case "delete":

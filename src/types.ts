@@ -13,6 +13,8 @@ export type configDescriptor = {
 };
 export interface config {
   ignores: string[];
+  openTerminal:string;
+  openFile:string;
 }
 export enum FlagTypes {
   FilterExtension = 0,

@@ -36,3 +36,30 @@ export function rmDir(path: string) {
   }
   fs.rmdirSync(path);
 }
+
+export function isJsonString(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
+export function getTerminalDefaults() {
+  switch (process.platform) {
+    case "win32":
+      return "start cmd.exe /K pushd ${PATH}";
+    default:
+      return "open -a Terminal ${PATH}";
+  }
+}
+
+export function getFileDefaults() {
+  switch (process.platform) {
+    case "win32":
+      return "notepad ${PATH}";
+    default:
+      "";
+  }
+}

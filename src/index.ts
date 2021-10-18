@@ -7,7 +7,8 @@ let table;
 const explorer = new MagicExplorer(
   path.dirname(process.cwd()),
   path.basename(process.cwd()),
-  Config.ignores
+  Config.ignores,
+  [Config.openFile, Config.openTerminal]
 );
 const tableConfig = {
   x: 0,
@@ -42,7 +43,7 @@ const tableConfig = {
       get(content) {
         return content.size;
       },
-      width:5,
+      width: 10,
       style() {
         return term.bold().colorRgb(34, 196, 130);
       },
@@ -60,7 +61,7 @@ const tableConfig = {
       get(content) {
         return content.name;
       },
-      width: 27,
+      width: 30,
       style(item) {
         return item.isDir ? term.bold().colorRgb(40, 182, 217) : term.bold();
       },
