@@ -62,12 +62,15 @@ export default class {
               };
             } else {
               const target = fs.readlinkSync(contentPath);
+              const targetStats = fs.statSync(target);
               return {
-                name: `${path.basename(contentPath)} -> ${target}`,
-                isDir: fs.statSync(target).isDirectory(),
-                size: "",
+                name: `${path.basename(contentPath)} -> ${path.basename(
+                  target
+                )}`,
+                isDir: targetStats.isDirectory(),
+                size: prettyBytes(targetStats.size),
                 lastModified: formatDate(stats.mtime),
-                meta: "",
+                meta: getMetaDetails(targetStats),
                 toPath: target,
               };
             }

@@ -42,7 +42,7 @@ const tableConfig = {
       get(content) {
         return content.size;
       },
-      width: 10,
+      width:5,
       style() {
         return term.bold().colorRgb(34, 196, 130);
       },
@@ -60,7 +60,7 @@ const tableConfig = {
       get(content) {
         return content.name;
       },
-      width: 20,
+      width: 27,
       style(item) {
         return item.isDir ? term.bold().colorRgb(40, 182, 217) : term.bold();
       },
