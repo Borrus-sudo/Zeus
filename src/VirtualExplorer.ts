@@ -1,12 +1,13 @@
 import { exec, execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
+import fileQuery from "./fileQuery";
 import argv from "./flagParser";
 import { configDescriptor, contentDescriptor } from "./types";
 import { formatDate, getMetaDetails, rmDir } from "./utils";
 const copydir = require("copy-dir");
 const prettyBytes = require("pretty-bytes");
-export default class {
+class VirtualExplorer {
   private globalIgnores: string[] = ["System Volume Information"];
   private ctx: string;
   private currContent: string;
@@ -38,9 +39,39 @@ export default class {
     const exists = fs.existsSync(fullPath);
     const fullPathStats: fs.Stats = exists ? fs.statSync(fullPath) : null;
     if (exists) {
-      //globalIgnores+ .gitignore of the present dir
-      const files = [...fs.readdirSync(fullPath)];
       let contentPath = "";
+      const files = [...fs.readdirSync(fullPath)]
+        .filter((elem) => !this.globalIgnores.includes(elem))
+        .map((elem) => {
+          contentPath = path.join(fullPath, elem);
+          stats = fs.lstatSync(contentPath);
+          if (!stats.isSymbolicLink()) {
+            isDir = stats.isDirectory();
+            return {
+              name: isDir ? elem + "/" : elem,
+              isDir,
+              size: isDir ? "" : prettyBytes(stats.size),
+              lastModified: formatDate(stats.mtime),
+              meta: getMetaDetails(stats),
+              toPath: path.join(fullPath, elem),
+              created: stats.birthtime,
+            };
+          } else {
+            const target = path.resolve(
+              path.dirname(contentPath),
+              path.normalize(fs.readlinkSync(contentPath))
+            );
+            return {
+              name: `${path.basename(contentPath)} -> ${path.basename(target)}`,
+              isDir: stats.isDirectory(),
+              size: prettyBytes(stats.size),
+              lastModified: formatDate(stats.mtime),
+              meta: getMetaDetails(stats),
+              toPath: target,
+              created: stats.birthtime,
+            };
+          }
+        });
       return [
         {
           name: "../",
@@ -51,40 +82,7 @@ export default class {
           toPath: path.join(fullPath, "../"),
           fullPath,
         },
-        ...files
-          .filter((elem) => !this.globalIgnores.includes(elem))
-          .map((elem) => {
-            contentPath = path.join(fullPath, elem);
-            stats = fs.lstatSync(contentPath);
-            if (!stats.isSymbolicLink()) {
-              isDir = stats.isDirectory();
-              return {
-                name: isDir ? elem + "/" : elem,
-                isDir,
-                size: isDir ? "" : prettyBytes(stats.size),
-                lastModified: formatDate(stats.mtime),
-                meta: getMetaDetails(stats),
-                toPath: path.join(fullPath, elem),
-                created: stats.birthtime,
-              };
-            } else {
-              const target = path.resolve(
-                path.dirname(contentPath),
-                path.normalize(fs.readlinkSync(contentPath))
-              );
-              return {
-                name: `${path.basename(contentPath)} -> ${path.basename(
-                  target
-                )}`,
-                isDir: stats.isDirectory(),
-                size: prettyBytes(stats.size),
-                lastModified: formatDate(stats.mtime),
-                meta: getMetaDetails(stats),
-                toPath: target,
-                created: stats.birthtime,
-              };
-            }
-          }),
+        ...fileQuery.filter(this.config, files),
       ];
     } else return [];
   }
@@ -161,3 +159,4 @@ export default class {
     return { redraw: false, contents: null };
   }
 }
+export default VirtualExplorer;
