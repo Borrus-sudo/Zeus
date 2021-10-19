@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execSync, exec } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import argv from "./flagParser";
@@ -102,7 +102,7 @@ export default class {
         return { redraw: true, contents: this.getChildren() };
       case "open":
         if (actionDescriptor.isDir) {
-          execSync(this.openTerminal.replace("${PATH}", actionDescriptor.name));
+          exec(this.openTerminal.replace("${PATH}", actionDescriptor.name));
         } else {
           execSync(this.openFile.replace("${PATH}", actionDescriptor.name));
         }

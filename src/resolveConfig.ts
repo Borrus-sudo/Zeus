@@ -7,7 +7,7 @@ const dotFileLocation = path.resolve(
   ".zeus"
 );
 let options: config = {
-  ignores: ["node_modules", ".git"],
+  ignores: [],
   openTerminal: getTerminalDefaults(),
   openFile: getFileDefaults(),
 };
