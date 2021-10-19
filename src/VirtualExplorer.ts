@@ -65,6 +65,7 @@ export default class {
                 lastModified: formatDate(stats.mtime),
                 meta: getMetaDetails(stats),
                 toPath: path.join(fullPath, elem),
+                created: stats.birthtime,
               };
             } else {
               const target = path.resolve(
@@ -80,6 +81,7 @@ export default class {
                 lastModified: formatDate(stats.mtime),
                 meta: getMetaDetails(stats),
                 toPath: target,
+                created: stats.birthtime,
               };
             }
           }),

@@ -6,6 +6,7 @@ export type contentDescriptor = {
   meta: string;
   toPath: string;
   fullPath?: string;
+  created?: Date;
 };
 export type configDescriptor = {
   flag: "filterExtensions" | "after" | "before" | "gitignore";
