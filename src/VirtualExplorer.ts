@@ -1,4 +1,4 @@
-import { execSync, exec } from "child_process";
+import { exec, execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import argv from "./flagParser";

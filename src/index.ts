@@ -1,7 +1,7 @@
 import * as path from "path";
 import { terminal as term } from "terminal-kit";
-import MagicExplorer from "./VirtualExplorer";
 import Config from "./resolveConfig";
+import MagicExplorer from "./VirtualExplorer";
 const DataTable = require("../utils/data-table.js").DataTableFactory;
 let table;
 const explorer = new MagicExplorer(
