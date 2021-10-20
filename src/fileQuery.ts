@@ -23,7 +23,7 @@ export default {
           } else {
             // filter out files and eagerly walk through dirs till the appropriate project label
             // is found or filter it as well
-            files.filter((file) => {
+            files = files.filter((file) => {
               if (file.isDir && file.name !== "../") {
                 //instead of going through all depth, check if the dir is a parent of any of
                 // the projectLinks
