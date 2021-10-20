@@ -87,6 +87,7 @@ export function isProject(): [(content: string) => void, () => string[]] {
     },
   ];
 }
+
 export const matchingProjectLinks: string[] = [];
 export function findProjectDepth(
   folderPath: string,
