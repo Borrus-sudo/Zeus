@@ -1,5 +1,5 @@
 import { configDescriptor, contentDescriptor, FlagTypes } from "./types";
-import { findProjectDepth, isProject } from "./utils";
+import { findProjectDepth, isProject, matchingProjectLinks } from "./utils";
 export default {
   filter(
     config: configDescriptor[],
@@ -10,33 +10,34 @@ export default {
         config[FlagTypes.FilterExtension] &&
         config[FlagTypes.FilterExtension].flag === "filterExtensions"
       ) {
-        const [addFile, getProjectsLabels] = isProject();
-        const dirs = [];
-        for (let file of files) {
-          if (file.name !== "../" && !file.name.includes("->")) {
-            addFile(file.name);
-          }
-          if (file.name !== "../" && file.isDir) {
-            dirs.push(file.toPath);
-          }
-        }
-        const projectLabels = getProjectsLabels();
-        if (projectLabels.includes(config[FlagTypes.FilterExtension].value)) {
-          // Nothing to filter
-          //Check for before and after flag and accordingly keep or delete it
-        } else {
-          // filter out files and eagerly walk through dirs till the appropriate project label
-          // is found or filter it as well
-          for (let dir of dirs) {
-            const res = findProjectDepth(
-              dir,
-              config[FlagTypes.FilterExtension].value
-            );
-            if (res) {
-              // dep has the proj
-            } else {
-              // dep does not have proj
+        if (!matchingProjectLinks.includes(files[0].fullPath)) {
+          const [addFile, getProjectsLabels] = isProject();
+          for (let file of files) {
+            if (file.name !== "../" && !file.name.includes("->")) {
+              addFile(file.name);
             }
+          }
+          const projectLabels = getProjectsLabels();
+          if (projectLabels.includes(config[FlagTypes.FilterExtension].value)) {
+            matchingProjectLinks.push(files[0].fullPath);
+          } else {
+            // filter out files and eagerly walk through dirs till the appropriate project label
+            // is found or filter it as well
+            files.filter((file) => {
+              if (file.isDir && file.name !== "../") {
+                //instead of going through all depth, check if the dir is a parent of any of
+                // the projectLinks
+                return matchingProjectLinks.some((elem) => {
+                  elem.startsWith(file.toPath);
+                })
+                  ? true
+                  : findProjectDepth(
+                      file.toPath,
+                      config[FlagTypes.FilterExtension].value
+                    );
+              }
+              return file.name !== "../";
+            });
           }
         }
       } else {

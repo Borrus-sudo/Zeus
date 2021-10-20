@@ -87,7 +87,7 @@ export function isProject(): [(content: string) => void, () => string[]] {
     },
   ];
 }
-
+export const matchingProjectLinks: string[] = [];
 export function findProjectDepth(
   folderPath: string,
   ...projects: string[]
@@ -109,12 +109,14 @@ export function findProjectDepth(
   if (res) {
     return true;
   } else {
+    let returnValue: boolean = false;
     for (let dir of dirs) {
       const res = findProjectDepth(dir, ...projects);
       if (res) {
-        return true;
+        returnValue = true;
+        matchingProjectLinks.push(dir);
       }
     }
+    return returnValue;
   }
-  return false;
 }
