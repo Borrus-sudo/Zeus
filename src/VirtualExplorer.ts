@@ -7,7 +7,7 @@ import { configDescriptor, contentDescriptor } from "./types";
 import { formatDate, getMetaDetails, rmDir } from "./utils";
 const copydir = require("copy-dir");
 const prettyBytes = require("pretty-bytes");
-class VirtualExplorer {
+export default class {
   private globalIgnores: string[] = ["System Volume Information"];
   private ctx: string;
   private currContent: string;
@@ -159,4 +159,3 @@ class VirtualExplorer {
     return { redraw: false, contents: null };
   }
 }
-export default VirtualExplorer;
