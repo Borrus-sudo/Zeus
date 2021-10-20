@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import { join } from "path";
+import path = require("path");
 
 export function getMetaDetails(stats: fs.Stats) {
   let stat = "";
@@ -62,4 +63,58 @@ export function getFileDefaults() {
     default:
       "";
   }
+}
+
+export function isProject(): [(content: string) => void, () => string[]] {
+  let nodeProjects = ["node_modules", "package.json"];
+  let rustProjects = [];
+  return [
+    (content: string) => {
+      if (nodeProjects.includes(content))
+        nodeProjects.splice(nodeProjects.indexOf(content), 1);
+      if (rustProjects.includes(content))
+        rustProjects.splice(rustProjects.indexOf(content), 1);
+    },
+    () => {
+      const isTheFollowingProjects = [];
+      if (nodeProjects.length === 0) {
+        isTheFollowingProjects.push("node");
+      }
+      if (rustProjects.length === 0) {
+        isTheFollowingProjects.push("rust");
+      }
+      return isTheFollowingProjects;
+    },
+  ];
+}
+
+export function findProjectDepth(
+  folderPath: string,
+  ...projects: string[]
+): boolean {
+  const contents = fs.readdirSync(folderPath);
+  const [addFile, getProjectsLabels] = isProject();
+  const dirs = [];
+  for (let content of contents) {
+    const contentPath = path.join(folderPath, content);
+    addFile(content);
+    if (fs.statSync(contentPath).isDirectory()) {
+      dirs.push(contentPath);
+    }
+  }
+  const projectLabels = getProjectsLabels();
+  const res = projects.some(
+    (item: string) => projectLabels.indexOf(item) !== 0
+  );
+  if (res) {
+    return true;
+  } else {
+    for (let dir of dirs) {
+      const res = findProjectDepth(dir, ...projects);
+      if (res) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
