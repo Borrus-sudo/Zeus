@@ -40,39 +40,7 @@ export default class {
     const fullPathStats: fs.Stats = exists ? fs.statSync(fullPath) : null;
     if (exists) {
       let contentPath = "";
-      const files = [...fs.readdirSync(fullPath)]
-        .filter((elem) => !this.globalIgnores.includes(elem))
-        .map((elem) => {
-          contentPath = path.join(fullPath, elem);
-          stats = fs.lstatSync(contentPath);
-          if (!stats.isSymbolicLink()) {
-            isDir = stats.isDirectory();
-            return {
-              name: isDir ? elem + "/" : elem,
-              isDir,
-              size: isDir ? "" : prettyBytes(stats.size),
-              lastModified: formatDate(stats.mtime),
-              meta: getMetaDetails(stats),
-              toPath: path.join(fullPath, elem),
-              created: stats.birthtime,
-            };
-          } else {
-            const target = path.resolve(
-              path.dirname(contentPath),
-              path.normalize(fs.readlinkSync(contentPath))
-            );
-            return {
-              name: `${path.basename(contentPath)} -> ${path.basename(target)}`,
-              isDir: stats.isDirectory(),
-              size: prettyBytes(stats.size),
-              lastModified: formatDate(stats.mtime),
-              meta: getMetaDetails(stats),
-              toPath: target,
-              created: stats.birthtime,
-            };
-          }
-        });
-      return [
+      const files = [
         {
           name: "../",
           isDir: true,
@@ -82,8 +50,42 @@ export default class {
           toPath: path.join(fullPath, "../"),
           fullPath,
         },
-        ...fileQuery.filter(this.config, files),
+        ...[...fs.readdirSync(fullPath)]
+          .filter((elem) => !this.globalIgnores.includes(elem))
+          .map((elem) => {
+            contentPath = path.join(fullPath, elem);
+            stats = fs.lstatSync(contentPath);
+            if (!stats.isSymbolicLink()) {
+              isDir = stats.isDirectory();
+              return {
+                name: isDir ? elem + "/" : elem,
+                isDir,
+                size: isDir ? "" : prettyBytes(stats.size),
+                lastModified: formatDate(stats.mtime),
+                meta: getMetaDetails(stats),
+                toPath: path.join(fullPath, elem),
+                created: stats.birthtime,
+              };
+            } else {
+              const target = path.resolve(
+                path.dirname(contentPath),
+                path.normalize(fs.readlinkSync(contentPath))
+              );
+              return {
+                name: `${path.basename(contentPath)} -> ${path.basename(
+                  target
+                )}`,
+                isDir: stats.isDirectory(),
+                size: prettyBytes(stats.size),
+                lastModified: formatDate(stats.mtime),
+                meta: getMetaDetails(stats),
+                toPath: target,
+                created: stats.birthtime,
+              };
+            }
+          }),
       ];
+      return [...fileQuery.filter(this.config, files)];
     } else return [];
   }
   commitAction(actionDescriptor): {

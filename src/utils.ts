@@ -67,7 +67,7 @@ export function getFileDefaults() {
 
 export function isProject(): [(content: string) => void, () => string[]] {
   let nodeProjects = ["node_modules", "package.json"];
-  let rustProjects = [];
+  let rustProjects = ["cargo.toml"];
   return [
     (content: string) => {
       if (nodeProjects.includes(content))
@@ -77,19 +77,15 @@ export function isProject(): [(content: string) => void, () => string[]] {
     },
     () => {
       const isTheFollowingProjects = [];
-      if (nodeProjects.length === 0) {
-        isTheFollowingProjects.push("node");
-      }
-      if (rustProjects.length === 0) {
-        isTheFollowingProjects.push("rust");
-      }
+      if (nodeProjects.length === 0) isTheFollowingProjects.push("node");
+      if (rustProjects.length === 0) isTheFollowingProjects.push("rust");
       return isTheFollowingProjects;
     },
   ];
 }
 
 export const matchingProjectLinks: string[] = [];
-export function findProjectDepth(
+export function existsInDepth(
   folderPath: string,
   ...projects: string[]
 ): boolean {
@@ -105,14 +101,14 @@ export function findProjectDepth(
   }
   const projectLabels = getProjectsLabels();
   const res = projects.some(
-    (item: string) => projectLabels.indexOf(item) !== 0
+    (item: string) => projectLabels.indexOf(item) !== -1
   );
   if (res) {
     return true;
   } else {
     let returnValue: boolean = false;
     for (let dir of dirs) {
-      const res = findProjectDepth(dir, ...projects);
+      const res = existsInDepth(dir, ...projects);
       if (res) {
         returnValue = true;
         matchingProjectLinks.push(dir);

@@ -6,7 +6,7 @@ export default function (): configDescriptor[] {
   for (let i = 0; i < arg.length - 1; i++) {
     const flag = arg[i],
       val = String(arg[i + 1]);
-    if (flag == "-E") {
+    if (flag === "-P") {
       flagTypes[FlagTypes.FilterExtension] = {
         flag: "filterExtensions",
         value: val,

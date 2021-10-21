@@ -1,5 +1,7 @@
 import { configDescriptor, contentDescriptor, FlagTypes } from "./types";
-import { findProjectDepth, isProject, matchingProjectLinks } from "./utils";
+import { existsInDepth, isProject, matchingProjectLinks } from "./utils";
+import * as fs from "fs";
+import { normalize } from "path";
 export default {
   filter(
     config: configDescriptor[],
@@ -10,33 +12,33 @@ export default {
         config[FlagTypes.FilterExtension] &&
         config[FlagTypes.FilterExtension].flag === "filterExtensions"
       ) {
-        if (!matchingProjectLinks.includes(files[0].fullPath)) {
+        const currFolderPath = files[0].fullPath;
+        if (!matchingProjectLinks.includes(currFolderPath)) {
           const [addFile, getProjectsLabels] = isProject();
-          for (let file of files) {
-            if (file.name !== "../" && !file.name.includes("->")) {
-              addFile(file.name);
-            }
+          const pathContents = fs.readdirSync(currFolderPath);
+          for (let content of pathContents) {
+            addFile(content);
           }
           const projectLabels = getProjectsLabels();
-          if (projectLabels.includes(config[FlagTypes.FilterExtension].value)) {
-            matchingProjectLinks.push(files[0].fullPath);
+          if (
+            projectLabels.includes(
+              config[FlagTypes.FilterExtension].value.trim()
+            )
+          ) {
+            matchingProjectLinks.push(currFolderPath);
           } else {
-            // filter out files and eagerly walk through dirs till the appropriate project label
-            // is found or filter it as well
             files = files.filter((file) => {
               if (file.isDir && file.name !== "../") {
-                //instead of going through all depth, check if the dir is a parent of any of
-                // the projectLinks
                 return matchingProjectLinks.some((elem) => {
-                  elem.startsWith(file.toPath);
+                  elem.startsWith(normalize(file.toPath));
                 })
                   ? true
-                  : findProjectDepth(
+                  : existsInDepth(
                       file.toPath,
-                      config[FlagTypes.FilterExtension].value
+                      config[FlagTypes.FilterExtension].value.trim()
                     );
               }
-              return file.name !== "../";
+              return file.name === "../";
             });
           }
         }
