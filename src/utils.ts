@@ -68,17 +68,21 @@ export function getFileDefaults() {
 export function isProject(): [(content: string) => void, () => string[]] {
   let nodeProjects = ["node_modules", "package.json"];
   let rustProjects = ["cargo.toml"];
+  let gitFolder = [".git"];
   return [
     (content: string) => {
       if (nodeProjects.includes(content))
         nodeProjects.splice(nodeProjects.indexOf(content), 1);
       if (rustProjects.includes(content))
         rustProjects.splice(rustProjects.indexOf(content), 1);
+      if (gitFolder.includes(content))
+        gitFolder.splice(gitFolder.indexOf(content), 1);
     },
     () => {
       const isTheFollowingProjects = [];
       if (nodeProjects.length === 0) isTheFollowingProjects.push("node");
       if (rustProjects.length === 0) isTheFollowingProjects.push("rust");
+      if (gitFolder.length === 0) isTheFollowingProjects.push("git");
       return isTheFollowingProjects;
     },
   ];
@@ -100,7 +104,7 @@ export function existsInDepth(
     }
   }
   const gotLabels = getProjectsLabels();
-  const res = askedForLabels.some(
+  const res = askedForLabels.every(
     (item: string) => gotLabels.indexOf(item) !== -1
   );
   if (res) {

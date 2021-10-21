@@ -13,14 +13,23 @@ export default {
         config[FlagTypes.FilterExtension].flag === "filterExtensions"
       ) {
         const currFolderPath = files[0].fullPath;
-        if (!matchingProjectLinks.includes(currFolderPath)) {
+        if (
+          !matchingProjectLinks.includes(currFolderPath) &&
+          !matchingProjectLinks.some((link) => currFolderPath.startsWith(link))
+        ) {
           const [addFile, getProjectsLabels] = isProject();
           const pathContents = fs.readdirSync(currFolderPath);
           for (let content of pathContents) {
             addFile(content);
           }
-          const projectLabels = getProjectsLabels();
-          if (projectLabels.includes(config[FlagTypes.FilterExtension].value)) {
+          const askedForLabels =
+            config[FlagTypes.FilterExtension].value.split(",");
+          const gotLabels = getProjectsLabels();
+          if (
+            askedForLabels.every(
+              (item: string) => gotLabels.indexOf(item) !== -1
+            )
+          ) {
             matchingProjectLinks.push(currFolderPath);
           } else {
             files = files.filter((file) => {
@@ -33,10 +42,7 @@ export default {
                   elem.startsWith(file.toPath);
                 })
                   ? true
-                  : existsInDepth(
-                      file.toPath,
-                      config[FlagTypes.FilterExtension].value
-                    );
+                  : existsInDepth(file.toPath, askedForLabels);
               }
               return file.name === "../";
             });
