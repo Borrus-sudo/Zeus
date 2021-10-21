@@ -117,7 +117,7 @@ export function existsInDepth(
     return true;
   } else {
     for (let dir of dirs) {
-      if (!queryIgnores.includes("dir")) {
+      if (!queryIgnores.includes(dir)) {
         const res = existsInDepth(dir, askedForLabels);
         if (res) {
           matchingProjectLinks.push(dir);
