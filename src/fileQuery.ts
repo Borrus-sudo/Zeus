@@ -2,6 +2,7 @@ import { configDescriptor, contentDescriptor, FlagTypes } from "./types";
 import { existsInDepth, isProject, matchingProjectLinks } from "./utils";
 import * as fs from "fs";
 import { normalize } from "path";
+const queryIgnores = ["$RECYCLE.BIN"];
 export default {
   filter(
     config: configDescriptor[],
@@ -28,7 +29,11 @@ export default {
             matchingProjectLinks.push(currFolderPath);
           } else {
             files = files.filter((file) => {
-              if (file.isDir && file.name !== "../") {
+              if (
+                file.isDir &&
+                file.name !== "../" &&
+                !queryIgnores.includes(file.name)
+              ) {
                 return matchingProjectLinks.some((elem) => {
                   elem.startsWith(normalize(file.toPath));
                 })

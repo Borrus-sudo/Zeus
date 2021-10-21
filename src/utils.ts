@@ -104,16 +104,16 @@ export function existsInDepth(
     (item: string) => projectLabels.indexOf(item) !== -1
   );
   if (res) {
+    matchingProjectLinks.push(folderPath);
     return true;
   } else {
-    let returnValue: boolean = false;
     for (let dir of dirs) {
       const res = existsInDepth(dir, ...projects);
       if (res) {
-        returnValue = true;
         matchingProjectLinks.push(dir);
+        return true;
       }
     }
-    return returnValue;
+    return false;
   }
 }
