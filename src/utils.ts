@@ -65,36 +65,41 @@ export function getFileDefaults() {
   }
 }
 
-export function isProject(): [(content: string) => void, () => string[]] {
+export function isProject(
+  isGit: boolean
+): [(content: string) => void, () => string[]] {
   let nodeProjects = ["node_modules", "package.json"];
-  let rustProjects = ["cargo.toml"];
-  let gitFolder = [".git"];
+  let rustProjects = ["Cargo.toml"];
+  if (isGit) {
+    nodeProjects.push(".git");
+    rustProjects.push(".git");
+  }
   return [
     (content: string) => {
       if (nodeProjects.includes(content))
         nodeProjects.splice(nodeProjects.indexOf(content), 1);
       if (rustProjects.includes(content))
         rustProjects.splice(rustProjects.indexOf(content), 1);
-      if (gitFolder.includes(content))
-        gitFolder.splice(gitFolder.indexOf(content), 1);
     },
     () => {
       const isTheFollowingProjects = [];
       if (nodeProjects.length === 0) isTheFollowingProjects.push("node");
       if (rustProjects.length === 0) isTheFollowingProjects.push("rust");
-      if (gitFolder.length === 0) isTheFollowingProjects.push("git");
       return isTheFollowingProjects;
     },
   ];
 }
 
+export const queryIgnores = ["$RECYCLE.BIN", "node_modules", ".git"];
 export const matchingProjectLinks: string[] = [];
 export function existsInDepth(
   folderPath: string,
   askedForLabels: string[]
 ): boolean {
   const contents = fs.readdirSync(folderPath);
-  const [addFile, getProjectsLabels] = isProject();
+  const [addFile, getProjectsLabels] = isProject(
+    askedForLabels.includes("git")
+  );
   const dirs = [];
   for (let content of contents) {
     const contentPath = path.join(folderPath, content);
@@ -104,7 +109,7 @@ export function existsInDepth(
     }
   }
   const gotLabels = getProjectsLabels();
-  const res = askedForLabels.every(
+  const res = askedForLabels.some(
     (item: string) => gotLabels.indexOf(item) !== -1
   );
   if (res) {
@@ -112,10 +117,12 @@ export function existsInDepth(
     return true;
   } else {
     for (let dir of dirs) {
-      const res = existsInDepth(dir, askedForLabels);
-      if (res) {
-        matchingProjectLinks.push(dir);
-        return true;
+      if (!queryIgnores.includes("dir")) {
+        const res = existsInDepth(dir, askedForLabels);
+        if (res) {
+          matchingProjectLinks.push(dir);
+          return true;
+        }
       }
     }
     return false;

@@ -1,7 +1,11 @@
-import { configDescriptor, contentDescriptor, FlagTypes } from "./types";
-import { existsInDepth, isProject, matchingProjectLinks } from "./utils";
 import * as fs from "fs";
-const queryIgnores = ["$RECYCLE.BIN", "node_modules", ".git"];
+import { configDescriptor, contentDescriptor, FlagTypes } from "./types";
+import {
+  existsInDepth,
+  isProject,
+  matchingProjectLinks,
+  queryIgnores,
+} from "./utils";
 export default {
   filter(
     config: configDescriptor[],
@@ -17,16 +21,18 @@ export default {
           !matchingProjectLinks.includes(currFolderPath) &&
           !matchingProjectLinks.some((link) => currFolderPath.startsWith(link))
         ) {
-          const [addFile, getProjectsLabels] = isProject();
+          const askedForLabels =
+            config[FlagTypes.FilterExtension].value.split(",");
+          const [addFile, getProjectsLabels] = isProject(
+            askedForLabels.includes("git")
+          );
           const pathContents = fs.readdirSync(currFolderPath);
           for (let content of pathContents) {
             addFile(content);
           }
-          const askedForLabels =
-            config[FlagTypes.FilterExtension].value.split(",");
           const gotLabels = getProjectsLabels();
           if (
-            askedForLabels.every(
+            askedForLabels.some(
               (item: string) => gotLabels.indexOf(item) !== -1
             )
           ) {
