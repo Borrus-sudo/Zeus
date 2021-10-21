@@ -87,7 +87,7 @@ export function isProject(): [(content: string) => void, () => string[]] {
 export const matchingProjectLinks: string[] = [];
 export function existsInDepth(
   folderPath: string,
-  ...projects: string[]
+  askedForLabels: string[]
 ): boolean {
   const contents = fs.readdirSync(folderPath);
   const [addFile, getProjectsLabels] = isProject();
@@ -99,16 +99,16 @@ export function existsInDepth(
       dirs.push(contentPath);
     }
   }
-  const projectLabels = getProjectsLabels();
-  const res = projects.some(
-    (item: string) => projectLabels.indexOf(item) !== -1
+  const gotLabels = getProjectsLabels();
+  const res = askedForLabels.some(
+    (item: string) => gotLabels.indexOf(item) !== -1
   );
   if (res) {
     matchingProjectLinks.push(folderPath);
     return true;
   } else {
     for (let dir of dirs) {
-      const res = existsInDepth(dir, ...projects);
+      const res = existsInDepth(dir, askedForLabels);
       if (res) {
         matchingProjectLinks.push(dir);
         return true;
