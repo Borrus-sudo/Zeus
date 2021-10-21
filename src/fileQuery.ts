@@ -1,7 +1,6 @@
 import { configDescriptor, contentDescriptor, FlagTypes } from "./types";
 import { existsInDepth, isProject, matchingProjectLinks } from "./utils";
 import * as fs from "fs";
-import { normalize } from "path";
 const queryIgnores = ["$RECYCLE.BIN"];
 export default {
   filter(
@@ -21,11 +20,7 @@ export default {
             addFile(content);
           }
           const projectLabels = getProjectsLabels();
-          if (
-            projectLabels.includes(
-              config[FlagTypes.FilterExtension].value.trim()
-            )
-          ) {
+          if (projectLabels.includes(config[FlagTypes.FilterExtension].value)) {
             matchingProjectLinks.push(currFolderPath);
           } else {
             files = files.filter((file) => {
@@ -35,12 +30,12 @@ export default {
                 !queryIgnores.includes(file.name)
               ) {
                 return matchingProjectLinks.some((elem) => {
-                  elem.startsWith(normalize(file.toPath));
+                  elem.startsWith(file.toPath);
                 })
                   ? true
                   : existsInDepth(
                       file.toPath,
-                      config[FlagTypes.FilterExtension].value.trim()
+                      config[FlagTypes.FilterExtension].value
                     );
               }
               return file.name === "../";
