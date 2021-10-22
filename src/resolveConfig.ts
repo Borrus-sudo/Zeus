@@ -1,14 +1,13 @@
 import * as fs from "fs";
 import * as path from "path";
 import { config } from "./types";
-import { getFileDefaults, getTerminalDefaults, isJsonString } from "./utils";
+import { getFileDefaults, isJsonString } from "./utils";
 const dotFileLocation = path.resolve(
   process.env[process.platform === "win32" ? "USERPROFILE" : "HOME"],
   ".zeus"
 );
 let options: config = {
   ignores: [],
-  openTerminal: getTerminalDefaults(),
   openFile: getFileDefaults(),
 };
 if (!fs.existsSync(dotFileLocation)) {
@@ -27,7 +26,6 @@ if (!fs.existsSync(dotFileLocation)) {
       const parsedConfig = JSON.parse(dotFileConfig);
       options.ignores = parsedConfig.ignores || [];
       options.openFile = parsedConfig.openFile || getFileDefaults();
-      options.openTerminal = parsedConfig.openTerminal || getTerminalDefaults();
     } else {
       console.log(
         ".zeus file is corrupted. Please resolve the issue for Zeus to pick the config from it"

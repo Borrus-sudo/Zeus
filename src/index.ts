@@ -8,7 +8,7 @@ const explorer = new MagicExplorer(
   path.dirname(process.cwd()),
   path.basename(process.cwd()),
   Config.ignores,
-  [Config.openFile, Config.openTerminal]
+  Config.openFile
 );
 const tableConfig = {
   x: 0,

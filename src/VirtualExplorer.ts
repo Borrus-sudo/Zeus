@@ -7,6 +7,7 @@ import { configDescriptor, contentDescriptor } from "./types";
 import { formatDate, getMetaDetails, rmDir } from "./utils";
 import copydir = require("copy-dir");
 import prettyBytes = require("pretty-bytes");
+import clipboard = require("clipboardy");
 export default class {
   private globalIgnores: string[] = ["System Volume Information"];
   private ctx: string;
@@ -14,17 +15,11 @@ export default class {
   private config: configDescriptor[] = argv();
   readonly openFile: string;
   readonly openTerminal: string;
-  constructor(
-    ctx: string,
-    currContent: string,
-    ignore: string[],
-    [openFile, openTerminal]
-  ) {
+  constructor(ctx: string, currContent: string, ignore: string[], openFile) {
     this.globalIgnores.push(...ignore);
     this.ctx = ctx;
     this.currContent = currContent;
     this.openFile = openFile;
-    this.openTerminal = openTerminal;
     if (!fs.existsSync(this.getFullPath())) {
       throw new Error(`Error: The path ${this.getFullPath()} does not exist.`);
     }
@@ -104,7 +99,15 @@ export default class {
         return { redraw: true, contents: this.getChildren() };
       case "open":
         if (actionDescriptor.isDir) {
-          exec(this.openTerminal.replace("${PATH}", actionDescriptor.name));
+          switch (process.platform) {
+            case "win32":
+              clipboard.writeSync(`pushd ${actionDescriptor.name}`);
+              break;
+            default:
+              clipboard.writeSync(`cd ${actionDescriptor.name}`);
+              "";
+          }
+          process.exit();
         } else {
           exec(this.openFile.replace("${PATH}", actionDescriptor.name));
         }
