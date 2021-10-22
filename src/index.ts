@@ -117,11 +117,6 @@ const returnCallBack = (table) => {
             state === "cut"
               ? ["cut", prevObj.name, prevObj.isDir]
               : ["copy", prevObj.name, prevObj.isDir];
-          state = "";
-          prevObj = {
-            name: "",
-            isDir: undefined,
-          };
           if (from) {
             const res = explorer.commitAction({
               from,
