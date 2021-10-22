@@ -47,15 +47,6 @@ export function isJsonString(str) {
   return true;
 }
 
-export function getTerminalDefaults() {
-  switch (process.platform) {
-    case "win32":
-      return "start cmd.exe /K pushd ${PATH}";
-    default:
-      return "open -a Terminal ${PATH}";
-  }
-}
-
 export function getFileDefaults() {
   switch (process.platform) {
     case "win32":
@@ -68,7 +59,7 @@ export function getFileDefaults() {
 export function isProject(
   isGit: boolean
 ): [(content: string) => void, () => string[]] {
-  let nodeProjects = ["node_modules", "package.json"];
+  let nodeProjects = ["package.json"];
   let rustProjects = ["Cargo.toml"];
   if (isGit) {
     nodeProjects.push(".git");
