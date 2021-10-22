@@ -18,7 +18,7 @@ const tableConfig = {
   style: term.brightWhite.bgBlack,
   selectedStyle: term.bgBrightWhite.black,
   scrollPadding: 3,
-  padding: 1,
+  padding: 0.1,
   filterTextSize: 16,
   columns: [
     {
@@ -34,7 +34,7 @@ const tableConfig = {
       get(content) {
         return content.lastModified;
       },
-      width: 20,
+      width: 19,
       style() {
         return term.bold().red;
       },
@@ -43,7 +43,7 @@ const tableConfig = {
       get(content) {
         return content.size;
       },
-      width: 10,
+      width: 9,
       style() {
         return term.bold().colorRgb(34, 196, 130);
       },
@@ -52,7 +52,7 @@ const tableConfig = {
       get(content) {
         return content.isDir ? "<DIR>" : "<FILE>";
       },
-      width: 9,
+      width: 8,
       style() {
         return term.italic();
       },
