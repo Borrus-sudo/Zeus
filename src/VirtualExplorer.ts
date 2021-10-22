@@ -5,8 +5,8 @@ import fileQuery from "./fileQuery";
 import argv from "./flagParser";
 import { configDescriptor, contentDescriptor } from "./types";
 import { formatDate, getMetaDetails, rmDir } from "./utils";
-const copydir = require("copy-dir");
-const prettyBytes = require("pretty-bytes");
+import copydir = require("copy-dir");
+import prettyBytes = require("pretty-bytes");
 export default class {
   private globalIgnores: string[] = ["System Volume Information"];
   private ctx: string;
@@ -125,9 +125,10 @@ export default class {
           const folderName = path.basename(actionDescriptor.from);
           let destinationName = folderName;
           let counter = 1;
-          while (fs.existsSync(path.join(toLocation, folderName))) {
+          while (fs.existsSync(path.join(toLocation, destinationName))) {
             destinationName =
-              (counter > 1 ? folderName.slice(0, -1) : folderName) + counter;
+              (counter > 1 ? destinationName.replace(/\d+$/, "") : folderName) +
+              counter;
             counter++;
           }
           const toPath = path.join(toLocation, destinationName);
@@ -143,14 +144,13 @@ export default class {
           const from = actionDescriptor.from; // full filePath to copy
           const toFolderLocation = actionDescriptor.to;
           let counter = 1;
-          let { name, ext, base: destinationName } = path.parse(from);
+          let { name, ext } = path.parse(from);
           // Choose the file name such that it does not exist
-          while (fs.existsSync(path.join(toFolderLocation, destinationName))) {
-            destinationName =
-              (counter > 1 ? name.slice(0, -1) : name) + counter + ext;
+          while (fs.existsSync(path.join(toFolderLocation, name + ext))) {
+            name = (counter > 1 ? name.replace(/\d+$/, "") : name) + counter;
             counter++;
           }
-          const to = path.join(toFolderLocation, destinationName);
+          const to = path.join(toFolderLocation, name + ext);
           fs.copyFileSync(from, to);
           if (actionDescriptor.verb === "cut") {
             fs.unlinkSync(from);
