@@ -5,7 +5,8 @@
     "outDir": "dist",
     "experimentalDecorators": true,
     "downlevelIteration": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "moduleResolution": "node"
   },
   "exclude": ["node_modules"],
   "include": ["./src/**/*"]
