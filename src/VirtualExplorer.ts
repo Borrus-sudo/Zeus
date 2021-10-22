@@ -1,4 +1,4 @@
-import { exec, execSync } from "child_process";
+import { exec } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import fileQuery from "./fileQuery";
@@ -99,14 +99,14 @@ export default class {
           this.ctx = path.join(folderName, "../");
           this.currContent = path.basename(folderName);
         } else {
-          execSync(this.openFile.replace("${PATH}", actionDescriptor.name));
+          exec(this.openFile.replace("${PATH}", actionDescriptor.name));
         }
         return { redraw: true, contents: this.getChildren() };
       case "open":
         if (actionDescriptor.isDir) {
           exec(this.openTerminal.replace("${PATH}", actionDescriptor.name));
         } else {
-          execSync(this.openFile.replace("${PATH}", actionDescriptor.name));
+          exec(this.openFile.replace("${PATH}", actionDescriptor.name));
         }
         break;
       case "delete":
