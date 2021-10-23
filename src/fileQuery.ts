@@ -3,8 +3,8 @@ import { configDescriptor, contentDescriptor, FlagTypes } from "./types";
 import {
   existsInDepth,
   isProject,
-  matchingProjectLinks,
-  queryIgnores,
+  cache,
+  queryIgnores
 } from "./utils";
 export default {
   filter(
@@ -22,8 +22,8 @@ export default {
         : undefined;
       if (config[FlagTypes.FilterExtension]) {
         const currFolderPath = files[0].fullPath;
-        const isFoundProject = matchingProjectLinks.includes(currFolderPath);
-        const isChildOfProject = matchingProjectLinks.some((link) =>
+        const isFoundProject = cache.includes(currFolderPath);
+        const isChildOfProject = cache.some((link) =>
           currFolderPath.startsWith(link)
         );
         if (!isFoundProject && !isChildOfProject) {
@@ -47,7 +47,7 @@ export default {
             ? descriptor.after < created
             : true;
           if (res && inTimeLimit) {
-            matchingProjectLinks.push(currFolderPath);
+            cache.push(currFolderPath);
           } else {
             return files.filter((file) => {
               if (
@@ -55,7 +55,7 @@ export default {
                 file.name !== "../" &&
                 !queryIgnores.includes(file.name.slice(0, -1))
               ) {
-                return matchingProjectLinks.some((elem) => {
+                return cache.some((elem) => {
                   elem.startsWith(file.toPath);
                 })
                   ? true

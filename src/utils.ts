@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import { join } from "path";
+import { contentDescriptor } from "./types";
 import path = require("path");
 
 export function getMetaDetails(stats: fs.Stats) {
@@ -82,7 +83,7 @@ export function isProject(
 }
 
 export const queryIgnores = ["$RECYCLE.BIN", "node_modules", ".git"];
-export const matchingProjectLinks: string[] = [];
+export const cache: string[] = [];
 export function existsInDepth(
   folderPath: string,
   askedForLabels: string[],
@@ -111,7 +112,7 @@ export function existsInDepth(
     ? descriptor.after < created
     : true;
   if (res && inTimeLimit) {
-    matchingProjectLinks.push(folderPath);
+    cache.push(folderPath);
     return true;
   } else {
     for (let dir of dirs) {
@@ -124,7 +125,7 @@ export function existsInDepth(
           ? descriptor.after < created
           : true;
         if (res && inTimeLimit) {
-          matchingProjectLinks.push(dir);
+          cache.push(dir);
           return true;
         }
       }
