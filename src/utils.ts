@@ -60,7 +60,7 @@ function getQueryIgnores(): string[] {
   const queryIgnores = ["node_modules", ".git"];
   switch (process.platform) {
     case "win32":
-      return ["$RECYLCLE.BIN", "System Volume Information", ...queryIgnores];
+      return ["$RECYCLE.BIN", "System Volume Information", ...queryIgnores];
     default:
       return [".Trash", ...queryIgnores];
   }
