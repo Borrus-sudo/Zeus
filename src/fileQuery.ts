@@ -12,15 +12,21 @@ export default {
     files: contentDescriptor[]
   ): contentDescriptor[] {
     if (config.length > 0) {
-      if (
-        config[FlagTypes.FilterExtension] &&
-        config[FlagTypes.FilterExtension].flag === "filterExtensions"
-      ) {
+      const descriptor: { before: undefined | Date; after: undefined | Date } =
+        { before: undefined, after: undefined };
+      descriptor.before = config[FlagTypes.Before]
+        ? new Date(config[FlagTypes.Before].value)
+        : undefined;
+      descriptor.after = config[FlagTypes.After]
+        ? new Date(config[FlagTypes.After].value)
+        : undefined;
+      if (config[FlagTypes.FilterExtension]) {
         const currFolderPath = files[0].fullPath;
-        if (
-          !matchingProjectLinks.includes(currFolderPath) &&
-          !matchingProjectLinks.some((link) => currFolderPath.startsWith(link))
-        ) {
+        const isFoundProject = matchingProjectLinks.includes(currFolderPath);
+        const isChildOfProject = matchingProjectLinks.some((link) =>
+          currFolderPath.startsWith(link)
+        );
+        if (!isFoundProject && !isChildOfProject) {
           const askedForLabels =
             config[FlagTypes.FilterExtension].value.split(",");
           const [addFile, getProjectsLabels] = isProject(
@@ -31,14 +37,19 @@ export default {
             addFile(content);
           }
           const gotLabels = getProjectsLabels();
-          if (
-            askedForLabels.some(
-              (item: string) => gotLabels.indexOf(item) !== -1
-            )
-          ) {
+          const res = askedForLabels.some(
+            (item: string) => gotLabels.indexOf(item) !== -1
+          );
+          const created = fs.statSync(currFolderPath).birthtime;
+          const inTimeLimit = descriptor.before
+            ? descriptor.before > created
+            : true && descriptor.after
+            ? descriptor.after < created
+            : true;
+          if (res && inTimeLimit) {
             matchingProjectLinks.push(currFolderPath);
           } else {
-            files = files.filter((file) => {
+            return files.filter((file) => {
               if (
                 file.isDir &&
                 file.name !== "../" &&
@@ -48,51 +59,23 @@ export default {
                   elem.startsWith(file.toPath);
                 })
                   ? true
-                  : existsInDepth(file.toPath, askedForLabels);
+                  : existsInDepth(file.toPath, askedForLabels, descriptor);
               }
               return file.name === "../";
             });
           }
         }
       } else {
-        if (
-          config[FlagTypes.Before] &&
-          config[FlagTypes.Before].flag === "before"
-        ) {
-          files = files.filter((file) => {
-            if (file.isDir) {
-              return true;
-            }
-            if (file.created) {
-              const date: Date = new Date(
-                config[FlagTypes.Before].value.trim()
-              );
-              if (date > file.created) {
-                return true;
-              } else {
-                return false;
-              }
-            }
-            return false;
-          });
-        }
-        if (
-          config[FlagTypes.After] &&
-          config[FlagTypes.After].flag === "after"
-        ) {
-          files = files.filter((file) => {
-            if (file.isDir) {
-              return true;
-            }
-            if (file.created) {
-              const date: Date = new Date(config[FlagTypes.Before].value);
-              if (date < file.created) {
-                return true;
-              }
-            }
-            return false;
-          });
-        }
+        return files.filter(
+          (file) =>
+            file.isDir ||
+            (file.created &&
+              (descriptor.before
+                ? descriptor.before > file.created
+                : true && descriptor.after
+                ? descriptor.after < file.created
+                : true))
+        );
       }
     }
     return files;

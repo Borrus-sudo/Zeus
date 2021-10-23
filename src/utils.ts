@@ -85,7 +85,8 @@ export const queryIgnores = ["$RECYCLE.BIN", "node_modules", ".git"];
 export const matchingProjectLinks: string[] = [];
 export function existsInDepth(
   folderPath: string,
-  askedForLabels: string[]
+  askedForLabels: string[],
+  descriptor: { before: undefined | Date; after: undefined | Date }
 ): boolean {
   const contents = fs.readdirSync(folderPath);
   const [addFile, getProjectsLabels] = isProject(
@@ -103,14 +104,26 @@ export function existsInDepth(
   const res = askedForLabels.some(
     (item: string) => gotLabels.indexOf(item) !== -1
   );
-  if (res) {
+  const created = fs.statSync(folderPath).birthtime;
+  const inTimeLimit = descriptor.before
+    ? descriptor.before > created
+    : true && descriptor.after
+    ? descriptor.after < created
+    : true;
+  if (res && inTimeLimit) {
     matchingProjectLinks.push(folderPath);
     return true;
   } else {
     for (let dir of dirs) {
       if (!queryIgnores.includes(path.basename(dir))) {
-        const res = existsInDepth(dir, askedForLabels);
-        if (res) {
+        const res = existsInDepth(dir, askedForLabels, descriptor);
+        const created = fs.statSync(dir).birthtime;
+        const inTimeLimit = descriptor.before
+          ? descriptor.before > created
+          : true && descriptor.after
+          ? descriptor.after < created
+          : true;
+        if (res && inTimeLimit) {
           matchingProjectLinks.push(dir);
           return true;
         }

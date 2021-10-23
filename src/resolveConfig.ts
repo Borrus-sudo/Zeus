@@ -18,10 +18,9 @@ if (!fs.existsSync(dotFileLocation)) {
     encoding: "utf8",
     flag: "r",
   });
-  if (dotFileConfig.trim() === "") {
-    const defaults = JSON.stringify(options, null, 2);
-    fs.writeFileSync(dotFileLocation, defaults);
-  } else {
+  if (dotFileConfig.trim() === "")
+    fs.writeFileSync(dotFileLocation, JSON.stringify(options, null, 2));
+  else {
     if (isJsonString(dotFileConfig)) {
       const parsedConfig = JSON.parse(dotFileConfig);
       options.ignores = parsedConfig.ignores || [];
