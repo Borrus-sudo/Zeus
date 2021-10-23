@@ -82,7 +82,9 @@ const returnCallBack = (table) => {
       switch (key) {
         case "CTRL_O":
           explorer.commitAction({
-            name: selectedState.cells.toPath,
+            name: selectedState.cells.fullPath
+              ? selectedState.cells.fullPath
+              : selectedState.cells.toPath,
             verb: "open",
             isDir: selectedState.cells.isDir,
           });
@@ -90,13 +92,17 @@ const returnCallBack = (table) => {
         case "CTRL_X":
           state = `cut`;
           prevObj = {
-            name: selectedState.cells.toPath,
+            name: selectedState.cells.fullPath
+              ? selectedState.cells.fullPath
+              : selectedState.cells.toPath,
             isDir: selectedState.cells.isDir,
           };
           break;
         case "CTRL_D":
           const res = explorer.commitAction({
-            name: selectedState.cells.toPath,
+            name: selectedState.cells.fullPath
+              ? selectedState.cells.fullPath
+              : selectedState.cells.toPath,
             verb: "delete",
             isDir: selectedState.cells.isDir,
           });
@@ -108,7 +114,9 @@ const returnCallBack = (table) => {
         case "CTRL_C":
           state = `copy`;
           prevObj = {
-            name: selectedState.cells.toPath,
+            name: selectedState.cells.fullPath
+              ? selectedState.cells.fullPath
+              : selectedState.cells.toPath,
             isDir: selectedState.cells.isDir,
           };
           break;
