@@ -47,12 +47,31 @@ export function isJsonString(str) {
   return true;
 }
 
-export function getFileDefaults() {
+export function getGlobalIgnores(): string[] {
+  switch (process.platform) {
+    case "win32":
+      return ["System Volume Information"];
+    default:
+      return [".Trash"];
+  }
+}
+
+function getQueryIgnores(): string[] {
+  const queryIgnores = ["node_modules", ".git"];
+  switch (process.platform) {
+    case "win32":
+      return ["System Volume Information", ...queryIgnores];
+    default:
+      return [".Trash", ...queryIgnores];
+  }
+}
+
+export function getFileDefaults(): string {
   switch (process.platform) {
     case "win32":
       return "notepad ${PATH}";
     default:
-      "";
+      return "open ${PATH}";
   }
 }
 
@@ -81,7 +100,7 @@ export function isProject(
   ];
 }
 
-export const queryIgnores = ["$RECYCLE.BIN", "node_modules", ".git"];
+export const queryIgnores = getQueryIgnores();
 export const cache: string[] = [];
 export function existsInDepth(
   folderPath: string,

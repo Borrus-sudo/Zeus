@@ -4,12 +4,12 @@ import * as path from "path";
 import fileQuery from "./fileQuery";
 import argv from "./flagParser";
 import { configDescriptor, contentDescriptor } from "./types";
-import { formatDate, getMetaDetails, rmDir } from "./utils";
+import { formatDate, getGlobalIgnores, getMetaDetails, rmDir } from "./utils";
 import copydir = require("copy-dir");
 import prettyBytes = require("pretty-bytes");
 import clipboard = require("clipboardy");
 export default class {
-  private globalIgnores: string[] = ["System Volume Information"];
+  private globalIgnores: string[] = getGlobalIgnores();
   private ctx: string;
   private currContent: string;
   private config: configDescriptor[] = argv();
