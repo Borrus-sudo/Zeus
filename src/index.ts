@@ -14,10 +14,10 @@ const tableConfig = {
   x: 0,
   y: -1,
   width: null,
-  height: term.height,
+  height: term.height + 2,
   style: term.brightWhite.bgBlack,
   selectedStyle: term.bgBrightWhite.black,
-  scrollPadding: 3,
+  scrollPadding: 2,
   padding: 0.1,
   filterTextSize: 16,
   columns: [
