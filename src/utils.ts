@@ -1,6 +1,5 @@
 import * as fs from "fs";
 import { join } from "path";
-import { contentDescriptor } from "./types";
 import path = require("path");
 
 export function getMetaDetails(stats: fs.Stats) {
@@ -112,7 +111,7 @@ export function existsInDepth(
     ? descriptor.after < created
     : true;
   if (res && inTimeLimit) {
-    cache.push(folderPath);
+    if (!cache.includes(folderPath)) cache.push(folderPath);
     return true;
   } else {
     for (let dir of dirs) {
@@ -125,7 +124,6 @@ export function existsInDepth(
           ? descriptor.after < created
           : true;
         if (res && inTimeLimit) {
-          cache.push(dir);
           return true;
         }
       }

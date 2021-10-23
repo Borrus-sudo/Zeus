@@ -1,11 +1,6 @@
 import * as fs from "fs";
 import { configDescriptor, contentDescriptor, FlagTypes } from "./types";
-import {
-  existsInDepth,
-  isProject,
-  cache,
-  queryIgnores
-} from "./utils";
+import { cache, existsInDepth, isProject, queryIgnores } from "./utils";
 export default {
   filter(
     config: configDescriptor[],
@@ -46,7 +41,7 @@ export default {
             : true && descriptor.after
             ? descriptor.after < created
             : true;
-          if (res && inTimeLimit) {
+          if (res && inTimeLimit && !cache.includes(currFolderPath)) {
             cache.push(currFolderPath);
           } else {
             return files.filter((file) => {
