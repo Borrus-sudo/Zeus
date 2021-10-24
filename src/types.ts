@@ -14,6 +14,7 @@ export type configDescriptor = {
 };
 export interface config {
   ignores: string[];
+  queryIgnores: string[];
   openFile: string;
 }
 export enum FlagTypes {

@@ -8,6 +8,7 @@ const dotFileLocation = path.resolve(
 );
 let options: config = {
   ignores: [],
+  queryIgnores:[],
   openFile: getFileDefaults(),
 };
 if (!fs.existsSync(dotFileLocation)) {
@@ -24,6 +25,7 @@ if (!fs.existsSync(dotFileLocation)) {
     if (isJsonString(dotFileConfig)) {
       const parsedConfig = JSON.parse(dotFileConfig);
       options.ignores = parsedConfig.ignores || [];
+      options.queryIgnores = parsedConfig.queryIgnores || [];
       options.openFile = parsedConfig.openFile || getFileDefaults();
     } else {
       console.log(

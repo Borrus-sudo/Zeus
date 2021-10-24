@@ -1,9 +1,7 @@
-import { match } from "assert";
 import * as fs from "fs";
 import { join } from "path";
 import path = require("path");
-import { deflate } from "zlib";
-
+import config from "./resolveConfig";
 export function getMetaDetails(stats: fs.Stats) {
   let stat = "";
   stat += stats["mode"] & 1 ? "x" : "-";
@@ -104,7 +102,7 @@ export function isProject(
   ];
 }
 
-export const queryIgnores = getQueryIgnores();
+export const queryIgnores = [...config.queryIgnores, ...getQueryIgnores()];
 export const cache: string[] = [];
 export function existsInDepth(
   folderPath: string,
