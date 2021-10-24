@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import fileQuery from "./fileQuery";
 import argv from "./flagParser";
-import { flagDescriptor, contentDescriptor } from "./types";
+import { contentDescriptor, flagDescriptor } from "./types";
 import { formatDate, getGlobalIgnores, getMetaDetails, rmDir } from "./utils";
 import copydir = require("copy-dir");
 import prettyBytes = require("pretty-bytes");
