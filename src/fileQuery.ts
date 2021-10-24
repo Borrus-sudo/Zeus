@@ -1,8 +1,10 @@
 import * as fs from "fs";
 import * as path from "path";
+import Config from "./resolveConfig";
 import { configDescriptor, contentDescriptor, FlagTypes } from "./types";
 import { cache, existsInDepth, isProject, queryIgnores } from "./utils";
 import RegexParser = require("regex-parser");
+queryIgnores.push(...Config.queryIgnores);
 export default {
   filter(
     config: configDescriptor[],
@@ -33,7 +35,7 @@ export default {
           const askedForLabels =
             config[FlagTypes.FilterExtension].value.split(",");
           const [addFile, getProjectsLabels] = isProject(
-            askedForLabels.indexOf("git")!=-1
+            askedForLabels.indexOf("git") != -1
           );
           const pathContents = fs.readdirSync(currFolderPath);
           for (let content of pathContents) {
