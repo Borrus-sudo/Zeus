@@ -17,6 +17,8 @@ export default function (): configDescriptor[] {
       flagTypes[FlagTypes.Before] = { flag: "before", value: val };
     } else if (flag === "-A") {
       flagTypes[FlagTypes.After] = { flag: "after", value: val };
+    } else if (flag === "-R") {
+      flagTypes[FlagTypes.Regex] = { flag: "regex", value: val };
     }
   }
   return flagTypes;

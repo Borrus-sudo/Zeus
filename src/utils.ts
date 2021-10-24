@@ -1,6 +1,8 @@
+import { match } from "assert";
 import * as fs from "fs";
 import { join } from "path";
 import path = require("path");
+import { deflate } from "zlib";
 
 export function getMetaDetails(stats: fs.Stats) {
   let stat = "";
@@ -70,8 +72,10 @@ export function getFileDefaults(): string {
   switch (process.platform) {
     case "win32":
       return "notepad ${PATH}";
-    default:
+    case "darwin":
       return "open ${PATH}";
+    default:
+      return "cat ${PATH}";
   }
 }
 
@@ -105,7 +109,11 @@ export const cache: string[] = [];
 export function existsInDepth(
   folderPath: string,
   askedForLabels: string[],
-  descriptor: { before: undefined | Date; after: undefined | Date }
+  descriptor: {
+    before: undefined | Date;
+    after: undefined | Date;
+    regex: RegExp | undefined;
+  }
 ): boolean {
   const contents = fs.readdirSync(folderPath);
   const [addFile, getProjectsLabels] = isProject(
@@ -129,7 +137,10 @@ export function existsInDepth(
     : true && descriptor.after
     ? descriptor.after < created
     : true;
-  if (res && inTimeLimit) {
+  const matchesRegex = descriptor.regex
+    ? descriptor.regex.test(path.basename(folderPath))
+    : true;
+  if (res && inTimeLimit && matchesRegex) {
     if (!cache.includes(folderPath)) cache.push(folderPath);
     return true;
   } else {
@@ -142,7 +153,10 @@ export function existsInDepth(
           : true && descriptor.after
           ? descriptor.after < created
           : true;
-        if (res && inTimeLimit) {
+        const matchesRegex = descriptor.regex
+          ? descriptor.regex.test(path.basename(dir))
+          : true;
+        if (res && inTimeLimit && matchesRegex) {
           return true;
         }
       }

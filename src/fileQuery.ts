@@ -1,19 +1,27 @@
 import * as fs from "fs";
+import * as path from "path";
 import { configDescriptor, contentDescriptor, FlagTypes } from "./types";
 import { cache, existsInDepth, isProject, queryIgnores } from "./utils";
+import RegexParser = require("regex-parser");
 export default {
   filter(
     config: configDescriptor[],
     files: contentDescriptor[]
   ): contentDescriptor[] {
     if (config.length > 0) {
-      const descriptor: { before: undefined | Date; after: undefined | Date } =
-        { before: undefined, after: undefined };
+      const descriptor: {
+        before: undefined | Date;
+        after: undefined | Date;
+        regex: RegExp | undefined;
+      } = { before: undefined, after: undefined, regex: undefined };
       descriptor.before = config[FlagTypes.Before]
         ? new Date(config[FlagTypes.Before].value)
         : undefined;
       descriptor.after = config[FlagTypes.After]
         ? new Date(config[FlagTypes.After].value)
+        : undefined;
+      descriptor.regex = config[FlagTypes.Regex]
+        ? RegexParser(config[FlagTypes.Regex].value)
         : undefined;
       if (config[FlagTypes.FilterExtension]) {
         const currFolderPath = files[0].fullPath;
@@ -41,7 +49,15 @@ export default {
             : true && descriptor.after
             ? descriptor.after < created
             : true;
-          if (res && inTimeLimit && !cache.includes(currFolderPath)) {
+          const matchesRegex = descriptor.regex
+            ? descriptor.regex.test(path.basename(currFolderPath))
+            : true;
+          if (
+            res &&
+            inTimeLimit &&
+            matchesRegex &&
+            !cache.includes(currFolderPath)
+          ) {
             cache.push(currFolderPath);
           } else {
             return files.filter((file) => {
@@ -61,7 +77,7 @@ export default {
           }
         }
       } else {
-        return files.filter(
+        files = files.filter(
           (file) =>
             file.isDir ||
             (file.created &&
@@ -71,6 +87,15 @@ export default {
                 ? descriptor.after < file.created
                 : true))
         );
+        files = descriptor.regex
+          ? files.filter((elem) =>
+              elem.isDir
+                ? true
+                : descriptor.regex.test(
+                    path.basename(elem.toPath) + path.extname(elem.toPath)
+                  )
+            )
+          : files;
       }
     }
     return files;
