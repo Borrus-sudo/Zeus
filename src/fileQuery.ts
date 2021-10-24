@@ -1,31 +1,29 @@
 import * as fs from "fs";
 import * as path from "path";
-import Config from "./resolveConfig";
-import { configDescriptor, contentDescriptor, FlagTypes } from "./types";
+import { flagDescriptor, contentDescriptor, FlagTypes } from "./types";
 import { cache, existsInDepth, isProject, queryIgnores } from "./utils";
 import RegexParser = require("regex-parser");
-queryIgnores.push(...Config.queryIgnores);
 export default {
   filter(
-    config: configDescriptor[],
+    flags: flagDescriptor[],
     files: contentDescriptor[]
   ): contentDescriptor[] {
-    if (config.length > 0) {
+    if (flags.length > 0) {
       const descriptor: {
         before: undefined | Date;
         after: undefined | Date;
         regex: RegExp | undefined;
       } = { before: undefined, after: undefined, regex: undefined };
-      descriptor.before = config[FlagTypes.Before]
-        ? new Date(config[FlagTypes.Before].value)
+      descriptor.before = flags[FlagTypes.Before]
+        ? new Date(flags[FlagTypes.Before].value)
         : undefined;
-      descriptor.after = config[FlagTypes.After]
-        ? new Date(config[FlagTypes.After].value)
+      descriptor.after = flags[FlagTypes.After]
+        ? new Date(flags[FlagTypes.After].value)
         : undefined;
-      descriptor.regex = config[FlagTypes.Regex]
-        ? RegexParser(config[FlagTypes.Regex].value)
+      descriptor.regex = flags[FlagTypes.Regex]
+        ? RegexParser(flags[FlagTypes.Regex].value)
         : undefined;
-      if (config[FlagTypes.FilterExtension]) {
+      if (flags[FlagTypes.FilterExtension]) {
         const currFolderPath = files[0].fullPath;
         const isFoundProject = cache.indexOf(currFolderPath) != -1;
         const isChildOfProject = cache.some((link) =>
@@ -33,7 +31,7 @@ export default {
         );
         if (!isFoundProject && !isChildOfProject) {
           const askedForLabels =
-            config[FlagTypes.FilterExtension].value.split(",");
+            flags[FlagTypes.FilterExtension].value.split(",");
           const [addFile, getProjectsLabels] = isProject(
             askedForLabels.indexOf("git") != -1
           );

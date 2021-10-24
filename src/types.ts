@@ -8,7 +8,7 @@ export type contentDescriptor = {
   fullPath?: string;
   created?: Date;
 };
-export type configDescriptor = {
+export type flagDescriptor = {
   flag: "filterExtensions" | "after" | "before" | "gitignore" | "regex" | "ls";
   value: string;
 };

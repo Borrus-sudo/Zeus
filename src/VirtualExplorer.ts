@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import fileQuery from "./fileQuery";
 import argv from "./flagParser";
-import { configDescriptor, contentDescriptor } from "./types";
+import { flagDescriptor, contentDescriptor } from "./types";
 import { formatDate, getGlobalIgnores, getMetaDetails, rmDir } from "./utils";
 import copydir = require("copy-dir");
 import prettyBytes = require("pretty-bytes");
@@ -12,7 +12,7 @@ export default class {
   private globalIgnores: string[] = getGlobalIgnores();
   private ctx: string;
   private currContent: string;
-  private config: configDescriptor[] = argv();
+  private flagList: flagDescriptor[] = argv();
   readonly openFile: string;
   readonly openTerminal: string;
   constructor(ctx: string, currContent: string, ignore: string[], openFile) {
@@ -80,7 +80,7 @@ export default class {
             }
           }),
       ];
-      return [...fileQuery.filter(this.config, files)];
+      return [...fileQuery.filter(this.flagList, files)];
     } else return [];
   }
   commitAction(actionDescriptor): {

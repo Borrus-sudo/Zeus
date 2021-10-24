@@ -1,11 +1,28 @@
 import * as fs from "fs";
 import * as path from "path";
 import { config } from "./types";
-import { getFileDefaults, isJsonString } from "./utils";
 const dotFileLocation = path.resolve(
   process.env[process.platform === "win32" ? "USERPROFILE" : "HOME"],
   ".zeus"
 );
+function getFileDefaults(): string {
+  switch (process.platform) {
+    case "win32":
+      return "notepad ${PATH}";
+    case "darwin":
+      return "open ${PATH}";
+    default:
+      return "cat ${PATH}";
+  }
+}
+function isJsonString(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
 let options: config = {
   ignores: [],
   queryIgnores: [],

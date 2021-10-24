@@ -1,13 +1,19 @@
 import { argv } from "process";
-import { configDescriptor, FlagTypes } from "./types";
-export default function (): configDescriptor[] {
+import { flagDescriptor, FlagTypes } from "./types";
+export default function (): flagDescriptor[] {
   let arg: string[] = argv.slice(2);
-  const flagTypes: configDescriptor[] = [];
-  for (let i = 0; i < arg.length - 1; i++) {
-    const flag = arg[i],
-      val = String(arg[i + 1]);
+  const flagTypes: flagDescriptor[] = [];
+  for (let i = 0; i < arg.length; i++) {
+    const flag = arg[i];
+    let val: string;
     switch (flag) {
       case "-P":
+        val = String(arg[i + 1]);
+        if (val === "undefined") {
+          console.log(`No argument provided to the ${flag} flag`);
+          process.exit();
+        }
+        i++;
         flagTypes[FlagTypes.FilterExtension] = {
           flag: "filterExtensions",
           value: val,
@@ -17,15 +23,33 @@ export default function (): configDescriptor[] {
         flagTypes[FlagTypes.Gitignore] = { flag: "gitignore", value: "" };
         break;
       case "-B":
+        val = String(arg[i + 1]);
+        if (val === "undefined") {
+          console.log(`No argument provided to the ${flag} flag`);
+          process.exit();
+        }
+        i++;
         flagTypes[FlagTypes.Before] = { flag: "before", value: val };
         break;
       case "-A":
+        val = String(arg[i + 1]);
+        if (val === "undefined") {
+          console.log(`No argument provided to the ${flag} flag`);
+          process.exit();
+        }
+        i++;
         flagTypes[FlagTypes.After] = { flag: "after", value: val };
         break;
       case "-R":
+        val = String(arg[i + 1]);
+        if (val === "undefined") {
+          console.log(`No argument provided to the ${flag} flag`);
+          process.exit();
+        }
+        i++;
         flagTypes[FlagTypes.Regex] = { flag: "regex", value: val };
         break;
-      case "-ls":
+      case "--ls":
         flagTypes[FlagTypes.LS] = { flag: "ls", value: "" };
         break;
     }

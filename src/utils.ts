@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import { join } from "path";
+import Config from "./resolveConfig";
 import path = require("path");
 export function getMetaDetails(stats: fs.Stats) {
   let stat = "";
@@ -37,15 +38,6 @@ export function rmDir(path: string) {
   fs.rmdirSync(path);
 }
 
-export function isJsonString(str) {
-  try {
-    JSON.parse(str);
-  } catch (e) {
-    return false;
-  }
-  return true;
-}
-
 export function getGlobalIgnores(): string[] {
   switch (process.platform) {
     case "win32":
@@ -62,17 +54,6 @@ function getQueryIgnores(): string[] {
       return ["$RECYCLE.BIN", "System Volume Information", ...queryIgnores];
     default:
       return [".Trash", ...queryIgnores];
-  }
-}
-
-export function getFileDefaults(): string {
-  switch (process.platform) {
-    case "win32":
-      return "notepad ${PATH}";
-    case "darwin":
-      return "open ${PATH}";
-    default:
-      return "cat ${PATH}";
   }
 }
 
@@ -100,7 +81,7 @@ export function isProject(
     },
   ];
 }
-export const queryIgnores = [...getQueryIgnores()];
+export const queryIgnores = [...Config.queryIgnores, ...getQueryIgnores()];
 export const cache: string[] = [];
 export function existsInDepth(
   folderPath: string,
