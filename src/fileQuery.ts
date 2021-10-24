@@ -25,7 +25,7 @@ export default {
         : undefined;
       if (config[FlagTypes.FilterExtension]) {
         const currFolderPath = files[0].fullPath;
-        const isFoundProject = cache.includes(currFolderPath);
+        const isFoundProject = cache.indexOf(currFolderPath) != -1;
         const isChildOfProject = cache.some((link) =>
           currFolderPath.startsWith(link)
         );
@@ -33,7 +33,7 @@ export default {
           const askedForLabels =
             config[FlagTypes.FilterExtension].value.split(",");
           const [addFile, getProjectsLabels] = isProject(
-            askedForLabels.includes("git")
+            askedForLabels.indexOf("git")!=-1
           );
           const pathContents = fs.readdirSync(currFolderPath);
           for (let content of pathContents) {
@@ -56,7 +56,7 @@ export default {
             res &&
             inTimeLimit &&
             matchesRegex &&
-            !cache.includes(currFolderPath)
+            cache.indexOf(currFolderPath) == -1
           ) {
             cache.push(currFolderPath);
           } else {
@@ -64,7 +64,7 @@ export default {
               if (
                 file.isDir &&
                 file.name !== "../" &&
-                !queryIgnores.includes(file.name.slice(0, -1))
+                queryIgnores.indexOf(file.name.slice(0, -1)) == -1
               ) {
                 return cache.some((elem) => {
                   elem.startsWith(file.toPath);

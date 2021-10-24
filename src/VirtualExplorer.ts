@@ -46,7 +46,7 @@ export default class {
           fullPath,
         },
         ...[...fs.readdirSync(fullPath)]
-          .filter((elem) => !this.globalIgnores.includes(elem))
+          .filter((elem) => this.globalIgnores.indexOf(elem)==-1)
           .map((elem) => {
             contentPath = path.join(fullPath, elem);
             stats = fs.lstatSync(contentPath);

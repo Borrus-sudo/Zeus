@@ -90,9 +90,9 @@ export function isProject(
   }
   return [
     (content: string) => {
-      if (nodeProjects.includes(content))
+      if (nodeProjects.indexOf(content) != -1)
         nodeProjects.splice(nodeProjects.indexOf(content), 1);
-      if (rustProjects.includes(content))
+      if (rustProjects.indexOf(content) != -1)
         rustProjects.splice(rustProjects.indexOf(content), 1);
     },
     () => {
@@ -117,7 +117,7 @@ export function existsInDepth(
 ): boolean {
   const contents = fs.readdirSync(folderPath);
   const [addFile, getProjectsLabels] = isProject(
-    askedForLabels.includes("git")
+    askedForLabels.indexOf("git") != -1
   );
   const dirs = [];
   for (let content of contents) {
@@ -141,11 +141,11 @@ export function existsInDepth(
     ? descriptor.regex.test(path.basename(folderPath))
     : true;
   if (res && inTimeLimit && matchesRegex) {
-    if (!cache.includes(folderPath)) cache.push(folderPath);
+    if (cache.indexOf(folderPath) == -1) cache.push(folderPath);
     return true;
   } else {
     for (let dir of dirs) {
-      if (!queryIgnores.includes(path.basename(dir))) {
+      if (queryIgnores.indexOf(path.basename(dir)) == -1) {
         const res = existsInDepth(dir, askedForLabels, descriptor);
         const created = fs.statSync(dir).birthtime;
         const inTimeLimit = descriptor.before
