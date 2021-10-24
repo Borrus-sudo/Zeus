@@ -8,12 +8,11 @@ const dotFileLocation = path.resolve(
 );
 let options: config = {
   ignores: [],
-  queryIgnores:[],
+  queryIgnores: [],
   openFile: getFileDefaults(),
 };
 if (!fs.existsSync(dotFileLocation)) {
-  const defaults = JSON.stringify(options, null, 2);
-  fs.writeFileSync(dotFileLocation, defaults);
+  fs.writeFileSync(dotFileLocation, JSON.stringify(options, null, 2));
 } else {
   const dotFileConfig = fs.readFileSync(dotFileLocation, {
     encoding: "utf8",
