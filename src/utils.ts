@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import { join } from "path";
 import path = require("path");
-import config from "./resolveConfig";
+import Config from "./resolveConfig";
 export function getMetaDetails(stats: fs.Stats) {
   let stat = "";
   stat += stats["mode"] & 1 ? "x" : "-";
@@ -101,8 +101,7 @@ export function isProject(
     },
   ];
 }
-
-export const queryIgnores = [...config.queryIgnores, ...getQueryIgnores()];
+export const queryIgnores = [...Config.queryIgnores, ...getQueryIgnores()];
 export const cache: string[] = [];
 export function existsInDepth(
   folderPath: string,
