@@ -1,6 +1,7 @@
 import * as path from "path";
 import { terminal as term } from "terminal-kit";
 import Config from "./resolveConfig";
+import { FlagTypes } from "./types";
 import MagicExplorer from "./VirtualExplorer";
 const DataTable = require("../utils/data-table.js").DataTableFactory;
 let table;
@@ -157,5 +158,7 @@ const submitCallback = (item) => {
 // Logic body
 term.clear(true);
 table = DataTable(term, { ...tableConfig, data: explorer.getChildren() });
-table.promise.then(submitCallback);
-table._term.on("key", returnCallBack(table));
+if (!Config[FlagTypes.LS]) {
+  table.promise.then(submitCallback);
+  table._term.on("key", returnCallBack(table));
+}
