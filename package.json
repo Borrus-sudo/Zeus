@@ -16,7 +16,7 @@
         "dev": "yarn compile&&node dist/index.js"
     },
     "devDependencies": {
-        "@types/node": "^16.11.3",
+        "@types/node": "^16.11.6",
         "typescript": "^4.4.4"
     }
 }
