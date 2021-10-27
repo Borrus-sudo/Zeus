@@ -5,161 +5,176 @@ import Config from "./resolveConfig";
 import { FlagTypes } from "./types";
 import MagicExplorer from "./VirtualExplorer";
 const DataTable = require("../utils/data-table.js").DataTableFactory;
-let table;
-const explorer = new MagicExplorer(
-  path.dirname(process.cwd()),
-  path.basename(process.cwd()),
-  Config.ignores,
-  Config.openFile
-);
-const tableConfig = {
-  x: 0,
-  y: -1,
-  width: null,
-  height: term.height + 2,
-  style: term.brightWhite.bgBlack,
-  selectedStyle: term.bgBrightWhite.black,
-  scrollPadding: 2,
-  padding: 0.1,
-  filterTextSize: 16,
-  columns: [
-    {
-      get(content) {
-        return content.meta;
+(async () => {
+  let obj: any = {};
+  obj = await term.getCursorLocation();
+  let table;
+  const explorer = new MagicExplorer(
+    path.dirname(process.cwd()),
+    path.basename(process.cwd()),
+    Config.ignores,
+    Config.openFile
+  );
+  const tableConfig = {
+    x: Flags[FlagTypes.LS] ? obj.x : 0,
+    y: Flags[FlagTypes.LS] ? obj.y : -1,
+    width: null,
+    height: term.height + 2,
+    style: term.brightWhite.bgBlack,
+    selectedStyle: term.bgBrightWhite.black,
+    scrollPadding: 2,
+    padding: 0.1,
+    filterTextSize: 16,
+    columns: [
+      {
+        get(content) {
+          return content.meta;
+        },
+        width: 10,
+        style() {
+          return term.bold().blue;
+        },
       },
-      width: 10,
-      style() {
-        return term.bold().blue;
+      {
+        get(content) {
+          return content.lastModified;
+        },
+        width: 19,
+        style() {
+          return term.bold().red;
+        },
       },
-    },
-    {
-      get(content) {
-        return content.lastModified;
+      {
+        get(content) {
+          return content.size;
+        },
+        width: 9,
+        style() {
+          return term.bold().colorRgb(34, 196, 130);
+        },
       },
-      width: 19,
-      style() {
-        return term.bold().red;
+      {
+        get(content) {
+          return content.isDir ? "<DIR>" : "<FILE>";
+        },
+        width: 8,
+        style() {
+          return term.italic();
+        },
       },
-    },
-    {
-      get(content) {
-        return content.size;
+      {
+        get(content) {
+          return content.name;
+        },
+        width: 30,
+        style(item) {
+          return item.isDir ? term.bold().colorRgb(40, 182, 217) : term.bold();
+        },
       },
-      width: 9,
-      style() {
-        return term.bold().colorRgb(34, 196, 130);
-      },
-    },
-    {
-      get(content) {
-        return content.isDir ? "<DIR>" : "<FILE>";
-      },
-      width: 8,
-      style() {
-        return term.italic();
-      },
-    },
-    {
-      get(content) {
-        return content.name;
-      },
-      width: 30,
-      style(item) {
-        return item.isDir ? term.bold().colorRgb(40, 182, 217) : term.bold();
-      },
-    },
-  ],
-};
-
-//Important callbacks
-const returnCallBack = (table) => {
-  let state = "";
-  let prevObj: { name: string; isDir: Boolean } = {
-    name: "",
-    isDir: undefined,
+    ],
   };
-  return (key) => {
-    if (table._state.selected) {
-      const selectedState = table._state.selected;
-      switch (key) {
-        case "CTRL_O":
-          explorer.commitAction({
-            name: selectedState.cells.fullPath
-              ? selectedState.cells.fullPath
-              : selectedState.cells.toPath,
-            verb: "open",
-            isDir: selectedState.cells.isDir,
-          });
-          break;
-        case "CTRL_X":
-          state = `cut`;
-          prevObj = {
-            name: selectedState.cells.fullPath
-              ? selectedState.cells.fullPath
-              : selectedState.cells.toPath,
-            isDir: selectedState.cells.isDir,
-          };
-          break;
-        case "CTRL_D":
-          const res = explorer.commitAction({
-            name: selectedState.cells.fullPath
-              ? selectedState.cells.fullPath
-              : selectedState.cells.toPath,
-            verb: "delete",
-            isDir: selectedState.cells.isDir,
-          });
-          if (res.redraw) {
-            table.setData(res.contents);
-            table.promise.then(submitCallback);
-          }
-          break;
-        case "CTRL_C":
-          state = `copy`;
-          prevObj = {
-            name: selectedState.cells.fullPath
-              ? selectedState.cells.fullPath
-              : selectedState.cells.toPath,
-            isDir: selectedState.cells.isDir,
-          };
-          break;
-        case "CTRL_P":
-          const [verb, from, isDir] =
-            state === "cut"
-              ? ["cut", prevObj.name, prevObj.isDir]
-              : ["copy", prevObj.name, prevObj.isDir];
-          if (from) {
+
+  //Important callbacks
+  const returnCallBack = (table) => {
+    let state = "";
+    let prevObj: { name: string; isDir: Boolean } = {
+      name: "",
+      isDir: undefined,
+    };
+    return (key) => {
+      if (table._state.selected) {
+        const selectedState = table._state.selected;
+        switch (key) {
+          case "CTRL_O":
+            explorer.commitAction({
+              name: selectedState.cells.fullPath
+                ? selectedState.cells.fullPath
+                : selectedState.cells.toPath,
+              verb: "open",
+              isDir: selectedState.cells.isDir,
+            });
+            break;
+          case "CTRL_X":
+            state = `cut`;
+            prevObj = {
+              name: selectedState.cells.fullPath
+                ? selectedState.cells.fullPath
+                : selectedState.cells.toPath,
+              isDir: selectedState.cells.isDir,
+            };
+            break;
+          case "CTRL_D":
             const res = explorer.commitAction({
-              from,
-              to: explorer.getFullPath(),
-              verb,
-              isDir,
+              name: selectedState.cells.fullPath
+                ? selectedState.cells.fullPath
+                : selectedState.cells.toPath,
+              verb: "delete",
+              isDir: selectedState.cells.isDir,
             });
             if (res.redraw) {
               table.setData(res.contents);
               table.promise.then(submitCallback);
             }
-          }
-          break;
+            break;
+          case "CTRL_C":
+            state = `copy`;
+            prevObj = {
+              name: selectedState.cells.fullPath
+                ? selectedState.cells.fullPath
+                : selectedState.cells.toPath,
+              isDir: selectedState.cells.isDir,
+            };
+            break;
+          case "CTRL_P":
+            const [verb, from, isDir] =
+              state === "cut"
+                ? ["cut", prevObj.name, prevObj.isDir]
+                : ["copy", prevObj.name, prevObj.isDir];
+            if (from) {
+              const res = explorer.commitAction({
+                from,
+                to: explorer.getFullPath(),
+                verb,
+                isDir,
+              });
+              if (res.redraw) {
+                table.setData(res.contents);
+                table.promise.then(submitCallback);
+              }
+            }
+            break;
+        }
       }
+    };
+  };
+  const submitCallback = (item) => {
+    const res = explorer.commitAction({
+      name: item.cells.toPath,
+      verb: "submit",
+      isDir: item.cells.isDir,
+    });
+    if (res.redraw) {
+      table.setData(res.contents);
+      table.promise.then(submitCallback);
     }
   };
-};
-const submitCallback = (item) => {
-  const res = explorer.commitAction({
-    name: item.cells.toPath,
-    verb: "submit",
-    isDir: item.cells.isDir,
-  });
-  if (res.redraw) {
-    table.setData(res.contents);
-    table.promise.then(submitCallback);
-  }
-};
 
-// Logic body
-if (!Flags[FlagTypes.LS]) term.clear(true);
-table = DataTable(term, { ...tableConfig, data: explorer.getChildren() });
-if (!Flags[FlagTypes.LS]) {
-  table.promise.then(submitCallback);
-  table._term.on("key", returnCallBack(table));
-}
+  // Logic body
+  if (!Flags[FlagTypes.LS]) term.clear(true);
+  table = DataTable(
+    term,
+    {
+      ...tableConfig,
+      data: Flags[FlagTypes.LS]
+        ? explorer.getChildren().slice(1)
+        : explorer.getChildren(),
+    },
+    Boolean(FlagTypes[FlagTypes.LS])
+  );
+  if (!Flags[FlagTypes.LS]) {
+    table.promise.then(submitCallback);
+    table._term.on("key", returnCallBack(table));
+  } else {
+    process.exit();
+  }
+})();

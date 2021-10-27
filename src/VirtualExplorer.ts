@@ -12,7 +12,7 @@ export default class {
   private globalIgnores: string[] = getGlobalIgnores();
   private ctx: string;
   private currContent: string;
-  private flagList: flagDescriptor[] = argv();
+  private flagList: flagDescriptor[] = argv;
   readonly openFile: string;
   readonly openTerminal: string;
   constructor(ctx: string, currContent: string, ignore: string[], openFile) {

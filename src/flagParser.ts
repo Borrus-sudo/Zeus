@@ -1,6 +1,6 @@
 import { argv } from "process";
 import { flagDescriptor, FlagTypes } from "./types";
-export default function (): flagDescriptor[] {
+function getFlags(): flagDescriptor[] {
   let arg: string[] = argv.slice(2);
   const flagTypes: flagDescriptor[] = [];
   for (let i = 0; i < arg.length; i++) {
@@ -56,3 +56,5 @@ export default function (): flagDescriptor[] {
   }
   return flagTypes;
 }
+
+export default getFlags();
