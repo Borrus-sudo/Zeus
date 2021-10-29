@@ -82,13 +82,15 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
         const selectedState = table._state.selected;
         switch (key) {
           case "CTRL_O":
-            explorer.commitAction({
-              name: selectedState.cells.fullPath
-                ? selectedState.cells.fullPath
-                : selectedState.cells.toPath,
-              verb: "open",
-              isDir: selectedState.cells.isDir,
-            });
+            explorer
+              .commitAction({
+                name: selectedState.cells.fullPath
+                  ? selectedState.cells.fullPath
+                  : selectedState.cells.toPath,
+                verb: "open",
+                isDir: selectedState.cells.isDir,
+              })
+              .then(() => {});
             break;
           case "CTRL_X":
             state = `cut`;
@@ -100,17 +102,20 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
             };
             break;
           case "CTRL_D":
-            const res = explorer.commitAction({
-              name: selectedState.cells.fullPath
-                ? selectedState.cells.fullPath
-                : selectedState.cells.toPath,
-              verb: "delete",
-              isDir: selectedState.cells.isDir,
-            });
-            if (res.redraw) {
-              table.setData(res.contents);
-              table.promise.then(submitCallback);
-            }
+            explorer
+              .commitAction({
+                name: selectedState.cells.fullPath
+                  ? selectedState.cells.fullPath
+                  : selectedState.cells.toPath,
+                verb: "delete",
+                isDir: selectedState.cells.isDir,
+              })
+              .then((res) => {
+                if (res.redraw) {
+                  table.setData(res.contents);
+                  table.promise.then(submitCallback);
+                }
+              });
             break;
           case "CTRL_C":
             state = `copy`;
@@ -127,16 +132,19 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
                 ? ["cut", prevObj.name, prevObj.isDir]
                 : ["copy", prevObj.name, prevObj.isDir];
             if (from) {
-              const res = explorer.commitAction({
-                from,
-                to: explorer.getFullPath(),
-                verb,
-                isDir,
-              });
-              if (res.redraw) {
-                table.setData(res.contents);
-                table.promise.then(submitCallback);
-              }
+              explorer
+                .commitAction({
+                  from,
+                  to: explorer.getFullPath(),
+                  verb,
+                  isDir,
+                })
+                .then((res) => {
+                  if (res.redraw) {
+                    table.setData(res.contents);
+                    table.promise.then(submitCallback);
+                  }
+                });
             }
             break;
         }
@@ -144,22 +152,25 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
     };
   };
   const submitCallback = (item) => {
-    const res = explorer.commitAction({
-      name: item.cells.toPath,
-      verb: "submit",
-      isDir: item.cells.isDir,
-    });
-    if (res.redraw) {
-      table.setData(res.contents);
-      table.promise.then(submitCallback);
-    }
+    explorer
+      .commitAction({
+        name: item.cells.toPath,
+        verb: "submit",
+        isDir: item.cells.isDir,
+      })
+      .then((res) => {
+        if (res.redraw) {
+          table.setData(res.contents);
+          table.promise.then(submitCallback);
+        }
+      });
   };
 
   // Logic body
   term.clear(true);
   table = DataTable(term, {
     ...tableConfig,
-    data: explorer.getChildren(),
+    data: await explorer.getChildren(),
   });
   table.promise.then(submitCallback);
   table._term.on("key", returnCallBack(table));

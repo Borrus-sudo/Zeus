@@ -27,7 +27,7 @@ export default class {
   getFullPath(): string {
     return path.resolve(this.ctx, this.currContent);
   }
-  getChildren(): contentDescriptor[] {
+  async getChildren(): Promise<contentDescriptor[]> {
     let stats: fs.Stats;
     let isDir: boolean;
     const fullPath: string = this.getFullPath();
@@ -46,7 +46,7 @@ export default class {
           fullPath,
         },
         ...[...fs.readdirSync(fullPath)]
-          .filter((elem) => this.globalIgnores.indexOf(elem)==-1)
+          .filter((elem) => this.globalIgnores.indexOf(elem) == -1)
           .map((elem) => {
             contentPath = path.join(fullPath, elem);
             stats = fs.lstatSync(contentPath);
@@ -80,13 +80,14 @@ export default class {
             }
           }),
       ];
-      return [...fileQuery.filter(this.flagList, files)];
+      return await fileQuery.filter(this.flagList, files);
     } else return [];
   }
-  commitAction(actionDescriptor): {
+  async commitAction(actionDescriptor): Promise<{
     redraw: Boolean;
     contents: contentDescriptor[] | null;
-  } {
+  }> {
+    let contents: contentDescriptor[] = [];
     switch (actionDescriptor.verb) {
       case "submit":
         if (actionDescriptor.isDir) {
@@ -96,7 +97,8 @@ export default class {
         } else {
           exec(this.openFile.replace("${PATH}", actionDescriptor.name));
         }
-        return { redraw: true, contents: this.getChildren() };
+        contents = await this.getChildren();
+        return { redraw: true, contents };
       case "open":
         if (actionDescriptor.isDir) {
           switch (process.platform) {
@@ -118,9 +120,10 @@ export default class {
         } else {
           fs.unlinkSync(actionDescriptor.name);
         }
+        contents = await this.getChildren();
         return {
           redraw: true,
-          contents: this.getChildren(),
+          contents,
         };
       default:
         if (actionDescriptor.isDir) {
@@ -159,7 +162,8 @@ export default class {
             fs.unlinkSync(from);
           }
         }
-        return { redraw: true, contents: this.getChildren() };
+        contents = await this.getChildren();
+        return { redraw: true, contents };
     }
     return { redraw: false, contents: null };
   }

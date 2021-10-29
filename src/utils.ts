@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import { promises as fsP } from "fs";
 import { join } from "path";
 import Config from "./resolveConfig";
 import path = require("path");
@@ -81,9 +82,15 @@ export function isProject(
     },
   ];
 }
+
+export async function asyncFilter(arr: any[], predicate) {
+  const results = await Promise.all(arr.map(predicate));
+  return arr.filter((_v, index) => results[index]);
+}
+
 export const queryIgnores = [...Config.queryIgnores, ...getQueryIgnores()];
 export const cache: string[] = [];
-export function existsInDepth(
+export async function existsInDepth(
   folderPath: string,
   askedForLabels: string[],
   descriptor: {
@@ -91,16 +98,19 @@ export function existsInDepth(
     after: undefined | Date;
     regex: RegExp | undefined;
   }
-): boolean {
-  const contents = fs.readdirSync(folderPath);
+): Promise<boolean> {
+  const contents = await fsP.readdir(folderPath, { withFileTypes: true });
   const [addFile, getProjectsLabels] = isProject(
     askedForLabels.indexOf("git") != -1
   );
   const dirs = [];
   for (let content of contents) {
-    const contentPath = path.join(folderPath, content);
-    addFile(content);
-    if (fs.statSync(contentPath).isDirectory()) {
+    const contentPath = path.join(folderPath, content.name);
+    addFile(content.name);
+    if (
+      content.isDirectory() &&
+      !queryIgnores.includes(path.basename(contentPath))
+    ) {
       dirs.push(contentPath);
     }
   }
@@ -108,7 +118,8 @@ export function existsInDepth(
   const res = askedForLabels.some(
     (item: string) => gotLabels.indexOf(item) !== -1
   );
-  const created = fs.statSync(folderPath).birthtime;
+  const stat = await fsP.stat(folderPath);
+  const created = stat.birthtime;
   const inTimeLimit = descriptor.before
     ? descriptor.before > created
     : true && descriptor.after
@@ -121,22 +132,24 @@ export function existsInDepth(
     if (cache.indexOf(folderPath) == -1) cache.push(folderPath);
     return true;
   } else {
-    for (let dir of dirs) {
-      if (queryIgnores.indexOf(path.basename(dir)) == -1) {
-        const res = existsInDepth(dir, askedForLabels, descriptor);
-        const created = fs.statSync(dir).birthtime;
-        const inTimeLimit = descriptor.before
-          ? descriptor.before > created
-          : true && descriptor.after
-          ? descriptor.after < created
-          : true;
-        const matchesRegex = descriptor.regex
-          ? descriptor.regex.test(path.basename(dir))
-          : true;
-        if (res && inTimeLimit && matchesRegex) {
-          return true;
-        }
+    const responses = await Promise.all(
+      dirs.map((dir) => existsInDepth(dir, askedForLabels, descriptor))
+    );
+    let flagCounter = 0;
+    for (let res of responses) {
+      const created = (await fsP.stat(dirs[flagCounter])).birthtime;
+      const inTimeLimit = descriptor.before
+        ? descriptor.before > created
+        : true && descriptor.after
+        ? descriptor.after < created
+        : true;
+      const matchesRegex = descriptor.regex
+        ? descriptor.regex.test(path.basename(dirs[flagCounter]))
+        : true;
+      if (res && inTimeLimit && matchesRegex) {
+        return true;
       }
+      flagCounter++;
     }
     return false;
   }

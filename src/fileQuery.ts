@@ -1,13 +1,19 @@
 import * as fs from "fs";
 import * as path from "path";
 import { contentDescriptor, flagDescriptor, FlagTypes } from "./types";
-import { cache, existsInDepth, isProject, queryIgnores } from "./utils";
+import {
+  cache,
+  existsInDepth,
+  isProject,
+  queryIgnores,
+  asyncFilter,
+} from "./utils";
 import RegexParser = require("regex-parser");
 export default {
-  filter(
+  async filter(
     flags: flagDescriptor[],
     files: contentDescriptor[]
-  ): contentDescriptor[] {
+  ): Promise<contentDescriptor[]> {
     if (flags.length > 0) {
       const descriptor: {
         before: undefined | Date;
@@ -60,17 +66,27 @@ export default {
           ) {
             cache.push(currFolderPath);
           } else {
-            return files.filter((file) => {
+            return await asyncFilter(files, async (file) => {
               if (
                 file.isDir &&
                 file.name !== "../" &&
                 queryIgnores.indexOf(file.name.slice(0, -1)) == -1
               ) {
-                return cache.some((elem) => {
-                  elem.startsWith(file.toPath);
-                })
-                  ? true
-                  : existsInDepth(file.toPath, askedForLabels, descriptor);
+                if (
+                  cache.some((elem) => {
+                    elem.startsWith(file.toPath);
+                  })
+                )
+                  return true;
+                else {
+                  let val;
+                  val = await existsInDepth(
+                    file.toPath,
+                    askedForLabels,
+                    descriptor
+                  );
+                  return val;
+                }
               }
               return file.name === "../";
             });
@@ -98,6 +114,6 @@ export default {
           : files;
       }
     }
-    return files;
+    return Promise.resolve(files);
   },
 };
