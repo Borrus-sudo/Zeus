@@ -149,7 +149,7 @@ class TableState extends events.EventEmitter {
     }
 }
 class DataTable extends events.EventEmitter {
-    constructor(terminal, options, isLS) {
+    constructor(terminal, options) {
         super();
         this.options = options;
         this.grabbing = false;
@@ -161,7 +161,6 @@ class DataTable extends events.EventEmitter {
             onKeyPress: this.onKeyPress.bind(this),
             redraw: this.redraw.bind(this),
         };
-        this.isLS = isLS;
         this._state.on("change", this._events.redraw.bind(this));
         this._term.on("key", this._events.onKeyPress.bind(this));
         if (!this.grabbing) {
@@ -301,12 +300,7 @@ class DataTable extends events.EventEmitter {
                 String().padEnd(this._state.displayArea.width, " ")
             );
         }
-        if (this.isLS) {
-            this._term.moveTo(
-                this._config.x,
-                this._config.y + this._state.items.length + 4
-            );
-        } else this._term.moveTo(this._state.displayArea.x, cursorPos++);
+        this._term.moveTo(this._state.displayArea.x, cursorPos++);
     }
     pause() {
         this._state.paused = true;
@@ -335,7 +329,7 @@ class DataTable extends events.EventEmitter {
     }
 }
 
-function DataTableFactory(terminal, options, isLS) {
-    return new DataTable(terminal, options, isLS);
+function DataTableFactory(terminal, options) {
+    return new DataTable(terminal, options);
 }
 exports.DataTableFactory = DataTableFactory;

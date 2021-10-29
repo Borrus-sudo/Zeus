@@ -6,8 +6,6 @@ import { FlagTypes } from "./types";
 import MagicExplorer from "./VirtualExplorer";
 const DataTable = require("../utils/data-table.js").DataTableFactory;
 (async () => {
-  let obj: any = {};
-  obj = await term.getCursorLocation();
   let table;
   const explorer = new MagicExplorer(
     path.dirname(process.cwd()),
@@ -16,8 +14,8 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
     Config.openFile
   );
   const tableConfig = {
-    x: Flags[FlagTypes.LS] ? obj.x : 0,
-    y: Flags[FlagTypes.LS] ? obj.y : -1,
+    x: 0,
+    y: -1,
     width: null,
     height: term.height + 2,
     style: term.brightWhite.bgBlack,
@@ -160,21 +158,13 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
   };
 
   // Logic body
-  if (!Flags[FlagTypes.LS]) term.clear(true);
-  table = DataTable(
-    term,
-    {
-      ...tableConfig,
-      data: Flags[FlagTypes.LS]
-        ? explorer.getChildren().slice(1)
-        : explorer.getChildren(),
-    },
-    Boolean(FlagTypes[FlagTypes.LS])
-  );
-  if (!Flags[FlagTypes.LS]) {
-    table.promise.then(submitCallback);
-    table._term.on("key", returnCallBack(table));
-  } else {
-    process.exit();
-  }
+  term.clear(true);
+  table = DataTable(term, {
+    ...tableConfig,
+    data: Flags[FlagTypes.LS]
+      ? explorer.getChildren().slice(1)
+      : explorer.getChildren(),
+  });
+  table.promise.then(submitCallback);
+  table._term.on("key", returnCallBack(table));
 })();

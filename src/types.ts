@@ -9,7 +9,7 @@ export type contentDescriptor = {
   created?: Date;
 };
 export type flagDescriptor = {
-  flag: "filterExtensions" | "after" | "before" | "gitignore" | "regex" | "ls";
+  flag: "filterExtensions" | "after" | "before" | "gitignore" | "regex";
   value: string;
 };
 export interface config {

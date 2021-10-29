@@ -49,9 +49,6 @@ function getFlags(): flagDescriptor[] {
         i++;
         flagTypes[FlagTypes.Regex] = { flag: "regex", value: val };
         break;
-      case "-ls":
-        flagTypes[FlagTypes.LS] = { flag: "ls", value: "" };
-        break;
     }
   }
   return flagTypes;
