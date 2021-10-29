@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import { flagDescriptor, contentDescriptor, FlagTypes } from "./types";
+import { contentDescriptor, flagDescriptor, FlagTypes } from "./types";
 import { cache, existsInDepth, isProject, queryIgnores } from "./utils";
 import RegexParser = require("regex-parser");
 export default {

@@ -1,8 +1,6 @@
 import * as path from "path";
 import { terminal as term } from "terminal-kit";
-import Flags from "./flagParser";
 import Config from "./resolveConfig";
-import { FlagTypes } from "./types";
 import MagicExplorer from "./VirtualExplorer";
 const DataTable = require("../utils/data-table.js").DataTableFactory;
 (async () => {
