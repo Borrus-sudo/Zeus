@@ -23,5 +23,4 @@ export enum FlagTypes {
   Before = 2,
   After = 3,
   Regex = 4,
-  LS = 5,
 }

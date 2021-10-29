@@ -161,9 +161,7 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
   term.clear(true);
   table = DataTable(term, {
     ...tableConfig,
-    data: Flags[FlagTypes.LS]
-      ? explorer.getChildren().slice(1)
-      : explorer.getChildren(),
+    data: explorer.getChildren(),
   });
   table.promise.then(submitCallback);
   table._term.on("key", returnCallBack(table));
