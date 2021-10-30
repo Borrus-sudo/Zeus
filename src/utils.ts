@@ -89,7 +89,7 @@ export function appendGlyph(fileName: string): string {
   let glyph = "";
   switch (ext) {
     case "js":
-      glyph = Icons.utf16(Icons.names.DEV_JAVASCRIPT);
+      glyph = Icons.utf16(Icons.names.MDI_LANGUAGE_JAVASCRIPT);
       break;
     case "rs":
       glyph = Icons.utf16(Icons.names.DEV_RUST);
@@ -97,8 +97,26 @@ export function appendGlyph(fileName: string): string {
     case "json":
       glyph = Icons.utf16(Icons.names.MDI_JSON);
       break;
+    case "ts":
+      glyph = Icons.utf16(Icons.names.MDI_LANGUAGE_TYPESCRIPT);
+      break;
+    case "java":
+      glyph = Icons.utf16(Icons.names.DEV_JAVA);
+      break;
+    case "cpp":
+      glyph = Icons.utf16(Icons.names.CUSTOM_CPP);
+      break;
+    case "css":
+      glyph = Icons.utf16(Icons.names.DEV_CSS3);
+      break;
+    case "html":
+      glyph = Icons.utf16(Icons.names.DEV_HTML5);
+      break;
+    case "go":
+      glyph = Icons.utf16(Icons.names.DEV_GO);
+      break;
     case "toml":
-      // glyph = Icons.utf16(Icons.names.DEV_);
+      // glyph = Icons.utf16(Icons.names.MDI_LANGUAGE_);
       break;
     default:
       break;

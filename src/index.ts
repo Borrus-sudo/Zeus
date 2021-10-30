@@ -58,9 +58,9 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
           return content.isDir ? "<DIR>" : "<FILE>";
         },
         width: 8,
-        style() {
-          return term.italic();
-        },
+      //   style() {
+      //     return term.italic();
+      //   },
       },
       {
         get(content) {
