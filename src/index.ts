@@ -50,7 +50,7 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
         },
         width: 9,
         style() {
-          return term.bold().colorRgb(34, 196, 130);
+          return term.bold().green;
         },
       },
       {
@@ -58,9 +58,9 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
           return content.isDir ? "<DIR>" : "<FILE>";
         },
         width: 8,
-      //   style() {
-      //     return term.italic();
-      //   },
+        style() {
+          return term.yellow;
+        }
       },
       {
         get(content) {
