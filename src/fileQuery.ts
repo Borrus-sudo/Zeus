@@ -58,38 +58,40 @@ export default {
           const matchesRegex = descriptor.regex
             ? descriptor.regex.test(path.basename(currFolderPath))
             : true;
-          if (
-            res &&
-            inTimeLimit &&
-            matchesRegex &&
-            cache.indexOf(currFolderPath) == -1
-          ) {
-            cache.push(currFolderPath);
+          if (res && inTimeLimit && matchesRegex) {
+            if (cache.indexOf(currFolderPath) == -1) cache.push(currFolderPath);
           } else {
-            return await asyncFilter(files, async (file) => {
-              if (
-                file.isDir &&
-                file.name !== "../" &&
-                queryIgnores.indexOf(file.name.slice(0, -1)) == -1
+            let goneForCheckingIndices: number[] = [];
+            const definiteFolders = [];
+            const checkForFolders = files.filter((content, index) => {
+              if (content.name === "../") {
+                definiteFolders.push(content);
+              } else if (
+                content.isDir &&
+                queryIgnores.indexOf(content.name.slice(0, -1)) == -1
               ) {
-                if (
-                  cache.some((elem) => {
-                    elem.startsWith(file.toPath);
-                  })
-                )
-                  return true;
+                if (cache.some((elem) => elem.startsWith(content.toPath)))
+                  definiteFolders.push(content);
                 else {
-                  let val;
-                  val = await existsInDepth(
-                    file.toPath,
-                    askedForLabels,
-                    descriptor
-                  );
-                  return val;
+                  goneForCheckingIndices.push(index);
+                  return true;
                 }
               }
-              return file.name === "../";
+              return false;
             });
+            const res = [...definiteFolders];
+            (
+              await Promise.all(
+                checkForFolders.map((folder) =>
+                  existsInDepth(folder.toPath, askedForLabels, descriptor)
+                )
+              )
+            ).forEach((elem, index) => {
+              if (elem) {
+                res.push(files[goneForCheckingIndices[index]]);
+              }
+            });
+            return res;
           }
         }
       } else {

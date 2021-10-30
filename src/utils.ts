@@ -135,22 +135,6 @@ export async function existsInDepth(
     const responses = await Promise.all(
       dirs.map((dir) => existsInDepth(dir, askedForLabels, descriptor))
     );
-    let flagCounter = 0;
-    for (let res of responses) {
-      const created = (await fsP.stat(dirs[flagCounter])).birthtime;
-      const inTimeLimit = descriptor.before
-        ? descriptor.before > created
-        : true && descriptor.after
-        ? descriptor.after < created
-        : true;
-      const matchesRegex = descriptor.regex
-        ? descriptor.regex.test(path.basename(dirs[flagCounter]))
-        : true;
-      if (res && inTimeLimit && matchesRegex) {
-        return true;
-      }
-      flagCounter++;
-    }
-    return false;
+    return responses.some((elem) => elem === true);
   }
 }
