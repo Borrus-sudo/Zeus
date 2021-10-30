@@ -1,13 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { contentDescriptor, flagDescriptor, FlagTypes } from "./types";
-import {
-  cache,
-  existsInDepth,
-  isProject,
-  queryIgnores,
-  asyncFilter,
-} from "./utils";
+import { cache, existsInDepth, isProject, queryIgnores } from "./utils";
 import RegexParser = require("regex-parser");
 export default {
   async filter(

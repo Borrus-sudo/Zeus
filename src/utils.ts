@@ -83,11 +83,6 @@ export function isProject(
   ];
 }
 
-export async function asyncFilter(arr: any[], predicate) {
-  const results = await Promise.all(arr.map(predicate));
-  return arr.filter((_v, index) => results[index]);
-}
-
 export const queryIgnores = [...Config.queryIgnores, ...getQueryIgnores()];
 export const cache: string[] = [];
 export async function existsInDepth(
