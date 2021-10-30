@@ -169,6 +169,11 @@ nextgen-events@^1.5.2:
   resolved "https://registry.yarnpkg.com/nextgen-events/-/nextgen-events-1.5.2.tgz#72b2b6cbe6912d9be2165188d0169027e65d8ebe"
   integrity sha512-0ZEIRQywH5Oxt2IYYufRltQg/KjXhKM7f7MHve+ZIRaKnIR1PPYEXAl2WBmej5Sf0Qh2GgE/21sMRZVuOyxLzw==
 
+nf-icons@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/nf-icons/-/nf-icons-0.1.0.tgz#1d1f87eef6c471ee557f344fc299218926c064a7"
+  integrity sha512-yVpZlYXEsLouCGGucfd7x4Dt1Di5nV4Fjs3TtsaT0o280Y/pjHGvVB+4Z9ldKEJGsJKqXK7B6DfmmJPDM1e33g==
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"

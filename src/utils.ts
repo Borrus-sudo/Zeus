@@ -3,6 +3,7 @@ import { promises as fsP } from "fs";
 import { join } from "path";
 import Config from "./resolveConfig";
 import path = require("path");
+import Icons = require("nf-icons");
 export function getMetaDetails(stats: fs.Stats) {
   let stat = "";
   stat += stats["mode"] & 1 ? "x" : "-";
@@ -81,6 +82,28 @@ export function isProject(
       return isTheFollowingProjects;
     },
   ];
+}
+
+export function appendGlyph(fileName: string): string {
+  const ext = path.extname(fileName).slice(1);
+  let glyph = "";
+  switch (ext) {
+    case "js":
+      glyph = Icons.utf16(Icons.names.DEV_JAVASCRIPT);
+      break;
+    case "rs":
+      glyph = Icons.utf16(Icons.names.DEV_RUST);
+      break;
+    case "json":
+      glyph = Icons.utf16(Icons.names.MDI_JSON);
+      break;
+    case "toml":
+      // glyph = Icons.utf16(Icons.names.DEV_);
+      break;
+    default:
+      break;
+  }
+  return glyph + " " + fileName;
 }
 
 export const queryIgnores = [...Config.queryIgnores, ...getQueryIgnores()];

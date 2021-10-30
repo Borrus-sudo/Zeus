@@ -9,7 +9,13 @@ export type contentDescriptor = {
   created?: Date;
 };
 export type flagDescriptor = {
-  flag: "filterExtensions" | "after" | "before" | "gitignore" | "regex";
+  flag:
+    | "filterExtensions"
+    | "after"
+    | "before"
+    | "gitignore"
+    | "regex"
+    | "icons";
   value: string;
 };
 export interface config {
@@ -23,4 +29,5 @@ export enum FlagTypes {
   Before = 2,
   After = 3,
   Regex = 4,
+  Icons = 5,
 }

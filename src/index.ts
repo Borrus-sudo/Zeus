@@ -1,7 +1,11 @@
 import * as path from "path";
 import { terminal as term } from "terminal-kit";
+import FlagList from "./flagParser";
 import Config from "./resolveConfig";
+import { FlagTypes } from "./types";
+import { appendGlyph } from "./utils";
 import MagicExplorer from "./VirtualExplorer";
+import Icons = require("nf-icons");
 const DataTable = require("../utils/data-table.js").DataTableFactory;
 (async () => {
   let table;
@@ -60,7 +64,11 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
       },
       {
         get(content) {
-          return content.name;
+          if (FlagList[FlagTypes.Icons])
+            return content.isDir
+              ? `${Icons.utf16(Icons.names.MDI_FOLDER)} ${content.name}`
+              : appendGlyph(content.name);
+          else return content.name;
         },
         width: 30,
         style(item) {
