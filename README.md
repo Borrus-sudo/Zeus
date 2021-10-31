@@ -12,9 +12,10 @@
 - ⚙  Powerful config system which allows you to customize stuff(like opening files in apps)
 - 💪 Supports FCD as well!
 - 🔎 An inbuilt find command which allows searching through files by using the Glob pattern 
-- 🧐 Powerful query system which allows you to see what you want 
+- 🧐 Powerful query system which allows you to see what you want
+- 🎩 Git aware, .gitignore files will be respected! 
 - ✨ Inbuilt support for deleting, copying, pasting files! 
--  📄 Provides extra information about files and folders! 
+- 📄 Provides extra information about files and folders! 
 ## First look
 ![image](https://user-images.githubusercontent.com/58482194/139567326-6e24585b-39cd-4cbc-a828-4f6621bdb6ed.png)
 Stay tuned for the demo!
