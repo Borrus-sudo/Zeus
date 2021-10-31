@@ -1,7 +1,7 @@
 <p align="center">
   <img width="100px" src="https://api.iconify.design/noto-v1:telescope.svg" align="center" alt="Hero Graph Image" />
   <h1 align="center">Zeus </h1>
-  <p align="center">A tool for demi-gods that aims to bring the file explorer and traversal   to the terminal
+  <p align="center"> A modern cross platform `ls` with powerful searching and querying capabilities to scale your productivity to the moon 🚀
   </p>
 </p>
 
@@ -16,7 +16,7 @@
 - [x] Allow deleting stuff
 
 ## First look
-![image](https://user-images.githubusercontent.com/58482194/137362974-3f04e14a-0cf3-4163-b9d6-eb82feda01b9.png)
+![image](https://user-images.githubusercontent.com/58482194/139567326-6e24585b-39cd-4cbc-a828-4f6621bdb6ed.png)
 Stay tuned for the demo!
 
 ## Support me
