@@ -9,9 +9,9 @@
 - 💻 A fast cross-platform `ls`
 - 🎨 Supports Beautiful Icons via NerdFont
 - 📁 Traverse a deeply nested folder structure easily!
-- ⚙  Powerful config system to allow you to customize stuff(like opening files in apps)
+- ⚙  Powerful config system which allows you to customize stuff(like opening files in apps)
 - 💪 Supports FCD as well!
-- 🔎 An inbuilt find command which allows searching through by using the Glob pattern 
+- 🔎 An inbuilt find command which allows searching through files by using the Glob pattern 
 - 🧐 Powerful query system which allows you to see what you want 
 - ✨ Inbuilt support for deleting, copying, pasting files! 
 -  📄 Provides extra information about files and folders! 
