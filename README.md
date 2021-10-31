@@ -6,18 +6,20 @@
 </p>
 
 ## Features
-
-- [x] Traverse to a folder path in the command line
-- [x] Get a graph like view of the entire folder structure
-- [x] Support moving and copying files from the command line
-- [x] Support opening files as well
-- [x] Allow filtering files following a specific pattern in the folder structure
-- [x] Allow copying and moving folders
-- [x] Allow deleting stuff
-
+- 💻 A fast cross-platform `ls`
+- 🎨 Supports Beautiful Icons via NerdFont
+- 📁 Traverse a deeply nested folder structure easily!
+- ⚙  Powerful config system to allow you to customize stuff(like opening files in apps)
+- 💪 Supports FCD as well!
+- 🔎 An inbuilt find command which allows searching through by using the Glob pattern 
+- 🧐 Powerful query system which allows you to see what you want 
+- ✨ Inbuilt support for deleting, copying, pasting files! 
+-  📄 Provides extra information about files and folders! 
 ## First look
 ![image](https://user-images.githubusercontent.com/58482194/139567326-6e24585b-39cd-4cbc-a828-4f6621bdb6ed.png)
 Stay tuned for the demo!
+
+## Warning ⚠ WIP
 
 ## Support me
 I am a high schooler doing OSS. Star ⭐ the repo to encourage me to do more OSS stuff!
