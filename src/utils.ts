@@ -123,7 +123,7 @@ export function appendGlyph(fileName: string): string {
   }
   return glyph + " " + fileName;
 }
-
+export const gitIgnoreMap: { path: string; config: Object }[] = [];
 export const queryIgnores = [...Config.queryIgnores, ...getQueryIgnores()];
 export const cache: string[] = [];
 export async function existsInDepth(

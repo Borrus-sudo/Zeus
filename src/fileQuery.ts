@@ -1,8 +1,15 @@
 import * as fs from "fs";
 import * as path from "path";
 import { contentDescriptor, flagDescriptor, FlagTypes } from "./types";
-import { cache, existsInDepth, isProject, queryIgnores } from "./utils";
+import {
+  cache,
+  existsInDepth,
+  isProject,
+  queryIgnores,
+  gitIgnoreMap,
+} from "./utils";
 import RegexParser = require("regex-parser");
+import dotgit = require("dotgitignore");
 export default {
   async filter(
     flags: flagDescriptor[],
@@ -23,8 +30,41 @@ export default {
       descriptor.regex = flags[FlagTypes.Regex]
         ? RegexParser(flags[FlagTypes.Regex].value)
         : undefined;
+      const currFolderPath = files[0].fullPath;
+      if (flags[FlagTypes.Gitignore]) {
+        // take the files and filter stuff out!
+        const dotGitIgnorePath = path.join(currFolderPath, ".gitignore");
+        if (fs.existsSync(dotGitIgnorePath)) {
+          const localInstance = dotgit(dotGitIgnorePath);
+          const dotGitIgnore = { path: currFolderPath, config: localInstance };
+          const inheritingIgnores: { path: string; config: Object }[] = [];
+          gitIgnoreMap.forEach((gitIgnore) => {
+            if (currFolderPath.startsWith(gitIgnore.path)) {
+              inheritingIgnores.push(gitIgnore);
+            }
+          });
+          // Filter out stuff right here
+          files = files.filter((file) => {
+            let filter = false;
+            if (file.name !== "../")
+              loop: for (let ignore of [...inheritingIgnores, dotGitIgnore]) {
+                const perspectivePath = (
+                  file.toPath.split(ignore.path)[1] || ""
+                ).slice(1);
+                if (ignore.config.ignore(perspectivePath)) {
+                  filter = true;
+                  break loop;
+                }
+              }
+            return !filter;
+          });
+          if (gitIgnoreMap.every((map) => map.path !== currFolderPath)) {
+            console.log("Pushed");
+            gitIgnoreMap.push(dotGitIgnore);
+          }
+        }
+      }
       if (flags[FlagTypes.FilterExtension]) {
-        const currFolderPath = files[0].fullPath;
         const isFoundProject = cache.indexOf(currFolderPath) != -1;
         const isChildOfProject = cache.some((link) =>
           currFolderPath.startsWith(link)

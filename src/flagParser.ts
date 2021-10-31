@@ -49,6 +49,15 @@ function getFlags(): flagDescriptor[] {
         i++;
         flagTypes[FlagTypes.Regex] = { flag: "regex", value: val };
         break;
+      case "-fd":
+        val = String(arg[i + 1]);
+        if (val === "undefined") {
+          console.log(`No argument provided to the ${flag} flag`);
+          process.exit();
+        }
+        i++;
+        flagTypes[FlagTypes.Find] = { flag: "find", value: val };
+        break;
       case "--icons":
         flagTypes[FlagTypes.Icons] = { flag: "icons", value: val };
         break;
