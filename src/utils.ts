@@ -89,39 +89,78 @@ export function appendGlyph(fileName: string): string {
   let glyph = "";
   switch (ext) {
     case "js":
-      glyph = Icons.utf16(Icons.names.MDI_LANGUAGE_JAVASCRIPT);
+      glyph = Icons.names.MDI_LANGUAGE_JAVASCRIPT;
       break;
     case "rs":
-      glyph = Icons.utf16(Icons.names.DEV_RUST);
+      glyph = Icons.names.DEV_RUST;
       break;
     case "json":
-      glyph = Icons.utf16(Icons.names.MDI_JSON);
+      glyph = Icons.names.MDI_JSON;
       break;
     case "ts":
-      glyph = Icons.utf16(Icons.names.MDI_LANGUAGE_TYPESCRIPT);
+      glyph = Icons.names.MDI_LANGUAGE_TYPESCRIPT;
       break;
     case "java":
-      glyph = Icons.utf16(Icons.names.DEV_JAVA);
+      glyph = Icons.names.DEV_JAVA;
       break;
     case "cpp":
-      glyph = Icons.utf16(Icons.names.CUSTOM_CPP);
+      glyph = Icons.names.CUSTOM_CPP;
       break;
     case "css":
-      glyph = Icons.utf16(Icons.names.DEV_CSS3);
+      glyph = Icons.names.DEV_CSS3;
       break;
+    case "htm":
     case "html":
-      glyph = Icons.utf16(Icons.names.DEV_HTML5);
+      glyph = Icons.names.DEV_HTML5;
       break;
     case "go":
-      glyph = Icons.utf16(Icons.names.DEV_GO);
+      glyph = Icons.names.DEV_GO;
       break;
-    case "toml":
-      // glyph = Icons.utf16(Icons.names.MDI_LANGUAGE_);
+    case "py":
+      glyph = Icons.names.DEV_PYTHON;
+      break;
+    case "rb":
+      glyph = Icons.names.DEV_RUBY;
+      break;
+    case "pl":
+      glyph = Icons.names.DEV_PERL;
+      break;
+    case "c":
+      glyph = Icons.names.CUSTOM_C;
+      break;
+    case "ex":
+    case "exs":
+      glyph = Icons.names.CUSTOM_ELIXIR;
+      break;
+    case "erl":
+      glyph = Icons.names.DEV_ERLANG;
+      break;
+    case "php":
+      glyph = Icons.names.DEV_PHP;
+      break;
+    case "hs":
+    case "hls":
+      glyph = Icons.names.DEV_HASKELL;
+      break;
+    case "clj":
+    case "cljs":
+    case "cljc":
+    case "edn":
+      glyph = Icons.names.DEV_CLOJURE;
+      break;
+    case "swift":
+      glyph = Icons.names.DEV_SWIFT;
+      break;
+    case "txt":
+      glyph = Icons.names.FA_FILE_TEXT;
+      break;
+    case "md":
+      glyph = Icons.names.MDI_MARKDOWN;
       break;
     default:
       break;
   }
-  return glyph + " " + fileName;
+  return (glyph ? Icons.utf16(glyph) : "") + " " + fileName;
 }
 export const gitIgnoreMap: { path: string; config: Object }[] = [];
 export const queryIgnores = [...Config.queryIgnores, ...getQueryIgnores()];
