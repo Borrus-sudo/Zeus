@@ -87,7 +87,7 @@ export function isProject(
 export function appendGlyph(fileName: string): string {
   const ext = path.extname(fileName).slice(1);
   let glyph = "";
-  switch (ext) {
+  switch (ext.toLowerCase()) {
     case "js":
       glyph = Icons.names.MDI_LANGUAGE_JAVASCRIPT;
       break;
@@ -156,6 +156,26 @@ export function appendGlyph(fileName: string): string {
       break;
     case "md":
       glyph = Icons.names.MDI_MARKDOWN;
+      break;
+    case "png":
+    case "jpg":
+    case "jpeg":
+      glyph = Icons.names.FA_PHOTO;
+      break;
+    case "pdf":
+      glyph = Icons.names.MDI_FILE_PDF;
+      break;
+    case "mp4":
+    case "avi":
+    case "mkv":
+    case "mov":
+    case "wmv":
+    case "flv":
+      glyph = Icons.names.MDI_VIDEO;
+      break;
+    case "wav":
+    case "mp3":
+      glyph = Icons.names.MDI_SOUNDCLOUD;
       break;
     default:
       break;
