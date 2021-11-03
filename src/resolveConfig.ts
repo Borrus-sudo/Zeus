@@ -3,7 +3,7 @@ import * as path from "path";
 import { config } from "./types";
 const dotFileLocation = path.resolve(
   process.env[process.platform === "win32" ? "USERPROFILE" : "HOME"],
-  ".zeus"
+  ".zeus.json"
 );
 function getFileDefaults(): string {
   switch (process.platform) {
@@ -23,7 +23,7 @@ function isJsonString(str) {
   }
   return true;
 }
-let options: config = {
+let options: Omit<config, "getFileCommand"> = {
   ignores: [],
   queryIgnores: [],
   openFile: getFileDefaults(),
@@ -50,4 +50,22 @@ if (!fs.existsSync(dotFileLocation)) {
     }
   }
 }
-export default options;
+
+export default {
+  ...options,
+  getFileCommand(dir) {
+    if (typeof options.openFile === "string") {
+      return options.openFile.replace("${PATH}", dir);
+    } else if (typeof options.openFile === "object") {
+      for (let key of Object.keys(options.openFile)) {
+        if (typeof options.openFile[key] === "string" && dir.endsWith(key)) {
+          return options.openFile[key].replace("${PATH}", dir);
+        }
+      }
+      const defaults = options.openFile["defaults"];
+      return defaults && typeof defaults === "string"
+        ? defaults.replace("${PATH}", dir)
+        : getFileDefaults().replace("${PATH}", dir);
+    }
+  },
+} as config;

@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import fileQuery from "./fileQuery";
 import argv from "./flagParser";
-import { contentDescriptor, flagDescriptor } from "./types";
+import { contentDescriptor, flagDescriptor, config } from "./types";
 import { formatDate, getGlobalIgnores, getMetaDetails, rmDir } from "./utils";
 import copydir = require("copy-dir");
 import prettyBytes = require("pretty-bytes");
@@ -13,13 +13,13 @@ export default class {
   private ctx: string;
   private currContent: string;
   private flagList: flagDescriptor[] = argv;
-  readonly openFile: string;
+  readonly Config: config;
   readonly openTerminal: string;
-  constructor(ctx: string, currContent: string, ignore: string[], openFile) {
-    this.globalIgnores.push(...ignore);
+  constructor(ctx: string, currContent: string, Config: config) {
+    this.globalIgnores.push(...Config.ignores);
     this.ctx = ctx;
     this.currContent = currContent;
-    this.openFile = openFile;
+    this.Config = Config;
     if (!fs.existsSync(this.getFullPath())) {
       throw new Error(`Error: The path ${this.getFullPath()} does not exist.`);
     }
@@ -95,7 +95,7 @@ export default class {
           this.ctx = path.join(folderName, "../");
           this.currContent = path.basename(folderName);
         } else {
-          exec(this.openFile.replace("${PATH}", actionDescriptor.name));
+          exec(this.Config.getFileCommand(actionDescriptor.name));
         }
         contents = await this.getChildren();
         return { redraw: true, contents };
@@ -111,7 +111,7 @@ export default class {
           }
           process.exit();
         } else {
-          exec(this.openFile.replace("${PATH}", actionDescriptor.name));
+          exec(this.Config.getFileCommand(actionDescriptor.name));
         }
         break;
       case "delete":

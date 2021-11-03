@@ -12,8 +12,7 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
   const explorer = new MagicExplorer(
     path.dirname(process.cwd()),
     path.basename(process.cwd()),
-    Config.ignores,
-    Config.openFile
+    Config
   );
   const tableConfig = {
     x: 0,
@@ -60,7 +59,7 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
         width: 8,
         style() {
           return term.yellow;
-        }
+        },
       },
       {
         get(content) {

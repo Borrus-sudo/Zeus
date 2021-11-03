@@ -22,7 +22,8 @@ export type flagDescriptor = {
 export interface config {
   ignores: string[];
   queryIgnores: string[];
-  openFile: string;
+  openFile: string | Object;
+  getFileCommand: (str: string) => string;
 }
 export enum FlagTypes {
   FilterExtension = 0,
