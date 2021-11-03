@@ -40,8 +40,10 @@ if (!fs.existsSync(dotFileLocation)) {
   else {
     if (isJsonString(dotFileConfig)) {
       const parsedConfig = JSON.parse(dotFileConfig);
-      options.ignores = parsedConfig.ignores || [];
-      options.queryIgnores = parsedConfig.queryIgnores || [];
+      options.ignores =
+        parsedConfig.ignores.map((_) => path.normalize(_)) || [];
+      options.queryIgnores =
+        parsedConfig.queryIgnores.map((_) => path.normalize(_)) || [];
       options.openFile = parsedConfig.openFile || getFileDefaults();
     } else {
       console.log(

@@ -204,7 +204,8 @@ export async function existsInDepth(
     addFile(content.name);
     if (
       content.isDirectory() &&
-      !queryIgnores.includes(path.basename(contentPath))
+      !queryIgnores.includes(path.basename(contentPath)) &&
+      !queryIgnores.includes(contentPath)
     ) {
       dirs.push(contentPath);
     }
