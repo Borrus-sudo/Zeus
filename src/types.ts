@@ -16,7 +16,8 @@ export type flagDescriptor = {
     | "gitignore"
     | "regex"
     | "icons"
-    | "find";
+    | "find"
+    | "ls";
   value: string;
 };
 export interface config {
@@ -33,4 +34,5 @@ export enum FlagTypes {
   Regex = 4,
   Icons = 5,
   Find = 6,
+  LS = 7,
 }

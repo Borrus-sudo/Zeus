@@ -61,6 +61,8 @@ function getFlags(): flagDescriptor[] {
       case "--icons":
         flagTypes[FlagTypes.Icons] = { flag: "icons", value: val };
         break;
+      case "--ls":
+        flagTypes[FlagTypes.LS] = { flag: "ls", value: val };
     }
   }
   return flagTypes;
