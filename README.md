@@ -13,7 +13,6 @@
 - 💪 Supports FCD as well!
 - 🔎 An inbuilt find command which allows searching through files by using the Glob pattern 
 - 🧐 Powerful query system which allows you to see what you want
-- 🎩 Git aware, .gitignore files will be respected! 
 - ✨ Inbuilt support for deleting, copying, pasting files! 
 - 📄 Provides extra information about files and folders! 
 ## First look
