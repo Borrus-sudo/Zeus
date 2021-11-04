@@ -84,9 +84,16 @@ export function isProject(
   ];
 }
 
-export function appendGlyph(fileName: string): string {
+export function appendGlyph(fileName: string, isDir: boolean): string {
   const ext = path.extname(fileName).slice(1);
-  let glyph = "";
+  let glyph = Config.getIcons(fileName);
+  if (glyph) {
+    return glyph;
+  }
+  if (isDir) {
+    return Icons.utf16(Icons.names.MDI_FOLDER) + " " + fileName;
+  }
+  glyph = "";
   switch (ext.toLowerCase()) {
     case "js":
       glyph = Icons.names.MDI_LANGUAGE_JAVASCRIPT;

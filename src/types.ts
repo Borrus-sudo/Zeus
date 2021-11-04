@@ -1,6 +1,6 @@
 export type contentDescriptor = {
   name: string;
-  isDir: Boolean;
+  isDir: boolean;
   size: string;
   lastModified: string;
   meta: string;
@@ -23,7 +23,9 @@ export interface config {
   ignores: string[];
   queryIgnores: string[];
   openFile: string | Object;
+  icons: Object;
   getFileCommand: (str: string) => string;
+  getIcons: (str: string) => string;
 }
 export enum FlagTypes {
   FilterExtension = 0,

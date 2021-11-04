@@ -17,9 +17,7 @@ export default function (data: contentDescriptor[], term) {
     const size = `${green}${content.size.slice(0, 9).padEnd(9, " ")}`;
     const indicator = `${yellow}${content.isDir ? "<DIR>" : "<FILE>"}`;
     const dirent = `${(FlagList[FlagTypes.Icons]
-      ? content.isDir
-        ? `${Icons.utf16(Icons.names.MDI_FOLDER)} ${content.name}`
-        : appendGlyph(content.name)
+      ? appendGlyph(content.name, content.isDir)
       : content.name
     )
       .slice(0, 30)

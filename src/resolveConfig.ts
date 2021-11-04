@@ -23,10 +23,11 @@ function isJsonString(str) {
   }
   return true;
 }
-let options: Omit<config, "getFileCommand"> = {
+let options: Omit<config, "getFileCommand" | "getIcons"> = {
   ignores: [],
   queryIgnores: [],
   openFile: getFileDefaults(),
+  icons: {},
 };
 if (!fs.existsSync(dotFileLocation)) {
   fs.writeFileSync(dotFileLocation, JSON.stringify(options, null, 2));
@@ -45,6 +46,7 @@ if (!fs.existsSync(dotFileLocation)) {
       options.queryIgnores =
         parsedConfig.queryIgnores.map((_) => path.normalize(_)) || [];
       options.openFile = parsedConfig.openFile || getFileDefaults();
+      options.icons = parsedConfig.icons || {};
     } else {
       console.log(
         ".zeus file is corrupted. Please resolve the issue for Zeus to pick the config from it"
@@ -69,5 +71,17 @@ export default {
         ? defaults.replace("${PATH}", dir)
         : getFileDefaults().replace("${PATH}", dir);
     }
+  },
+  getIcons(name: string): string {
+    if (typeof options.icons === "object") {
+      for (let key of Object.keys(options.icons)) {
+        if (typeof options.icons[key] === "string") {
+          if (name.endsWith(key + "/")) {
+            return options.icons[key] + " " + name;
+          }
+        }
+      }
+    }
+    return "";
   },
 } as config;
