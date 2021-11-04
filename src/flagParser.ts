@@ -1,4 +1,5 @@
 import { argv } from "process";
+import { resolve } from "path";
 import { flagDescriptor, FlagTypes } from "./types";
 function getFlags(): flagDescriptor[] {
   let arg: string[] = argv.slice(2);
@@ -54,6 +55,36 @@ function getFlags(): flagDescriptor[] {
         }
         i++;
         flagTypes[FlagTypes.Find] = { flag: "find", value: val };
+        break;
+      case "-gi":
+        val = String(arg[i + 1]);
+        if (val === "undefined") {
+          console.log(`No argument provided to the ${flag} flag`);
+          process.exit();
+        }
+        i++;
+        flagTypes[FlagTypes.GIgnore] = {
+          flag: "globalIgnore",
+          value: val
+            .split(",")
+            .map((_) => (_.startsWith("./") ? resolve(process.cwd(), _) : _))
+            .join(","),
+        };
+        break;
+      case "-qi":
+        val = String(arg[i + 1]);
+        if (val === "undefined") {
+          console.log(`No argument provided to the ${flag} flag`);
+          process.exit();
+        }
+        i++;
+        flagTypes[FlagTypes.QIgnore] = {
+          flag: "queryIgnore",
+          value: val
+            .split(",")
+            .map((_) => (_.startsWith("./") ? resolve(process.cwd(), _) : _))
+            .join(","),
+        };
         break;
       case "--icons":
         flagTypes[FlagTypes.Icons] = { flag: "icons", value: val };

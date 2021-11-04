@@ -2,6 +2,8 @@ import * as fs from "fs";
 import { promises as fsP } from "fs";
 import { join } from "path";
 import Config from "./resolveConfig";
+import FlagList from "./flagParser";
+import { FlagTypes } from "./types";
 import path = require("path");
 import Icons = require("nf-icons");
 export function getMetaDetails(stats: fs.Stats) {
@@ -189,7 +191,13 @@ export function appendGlyph(fileName: string, isDir: boolean): string {
   }
   return (glyph ? Icons.utf16(glyph) : "") + " " + fileName;
 }
-export const queryIgnores = [...Config.queryIgnores, ...getQueryIgnores()];
+export const queryIgnores = [
+  ...Config.queryIgnores,
+  ...getQueryIgnores(),
+  ...(FlagList[FlagTypes.QIgnore]
+    ? FlagList[FlagTypes.QIgnore].value.split(",")
+    : []),
+];
 export const cache: string[] = [];
 export async function existsInDepth(
   folderPath: string,

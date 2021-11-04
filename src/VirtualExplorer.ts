@@ -3,16 +3,21 @@ import * as fs from "fs";
 import * as path from "path";
 import fileQuery from "./fileQuery";
 import argv from "./flagParser";
-import { config, contentDescriptor, flagDescriptor } from "./types";
+import { config, contentDescriptor, flagDescriptor, FlagTypes } from "./types";
 import { formatDate, getGlobalIgnores, getMetaDetails, rmDir } from "./utils";
 import copydir = require("copy-dir");
 import prettyBytes = require("pretty-bytes");
 import clipboard = require("clipboardy");
 export default class {
-  private globalIgnores: string[] = getGlobalIgnores();
+  private flagList: flagDescriptor[] = argv;
+  private globalIgnores: string[] = [
+    ...(this.flagList[FlagTypes.GIgnore]
+      ? this.flagList[FlagTypes.GIgnore].value.split(",")
+      : []),
+    ...getGlobalIgnores(),
+  ];
   private ctx: string;
   private currContent: string;
-  private flagList: flagDescriptor[] = argv;
   readonly Config: config;
   readonly openTerminal: string;
   constructor(ctx: string, currContent: string, Config: config) {

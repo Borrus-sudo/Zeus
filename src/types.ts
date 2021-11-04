@@ -16,7 +16,9 @@ export type flagDescriptor = {
     | "regex"
     | "icons"
     | "find"
-    | "ls";
+    | "ls"
+    | "queryIgnore"
+    | "globalIgnore";
   value: string;
 };
 export interface config {
@@ -35,4 +37,6 @@ export enum FlagTypes {
   Icons = 4,
   Find = 5,
   LS = 6,
+  QIgnore = 7,
+  GIgnore = 8,
 }
