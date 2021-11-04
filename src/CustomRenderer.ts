@@ -1,7 +1,6 @@
 import FlagList from "./flagParser";
 import { contentDescriptor, FlagTypes } from "./types";
 import { appendGlyph } from "./utils";
-import Icons = require("nf-icons");
 export default function (data: contentDescriptor[], term) {
   const bold = "^+";
   const blue = "^b";

@@ -189,7 +189,7 @@ export function appendGlyph(fileName: string, isDir: boolean): string {
     default:
       break;
   }
-  return (glyph ? Icons.utf16(glyph) : "") + " " + fileName;
+  return (glyph ? Icons.utf16(glyph) + " " : "") + fileName;
 }
 export const queryIgnores = [
   ...Config.queryIgnores,
