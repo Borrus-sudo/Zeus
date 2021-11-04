@@ -1,12 +1,11 @@
 import * as path from "path";
 import { terminal as term } from "terminal-kit";
+import CustomRenderer from "./CustomRenderer";
 import FlagList from "./flagParser";
 import Config from "./resolveConfig";
 import { FlagTypes } from "./types";
 import { appendGlyph } from "./utils";
 import MagicExplorer from "./VirtualExplorer";
-import Icons = require("nf-icons");
-import CustomRenderer from "./CustomRenderer";
 const DataTable = require("../utils/data-table.js").DataTableFactory;
 (async () => {
   let table;
