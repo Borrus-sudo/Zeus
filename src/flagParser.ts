@@ -19,9 +19,6 @@ function getFlags(): flagDescriptor[] {
           value: val,
         };
         break;
-      case "-G":
-        flagTypes[FlagTypes.Gitignore] = { flag: "gitignore", value: "" };
-        break;
       case "-B":
         val = String(arg[i + 1]);
         if (val === "undefined") {

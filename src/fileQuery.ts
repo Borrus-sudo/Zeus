@@ -1,16 +1,10 @@
 import * as fs from "fs";
 import * as path from "path";
 import { contentDescriptor, flagDescriptor, FlagTypes } from "./types";
-import {
-  cache,
-  existsInDepth,
-  isProject,
-  queryIgnores,
-  gitIgnoreMap,
-} from "./utils";
+import { cache, existsInDepth, isProject, queryIgnores } from "./utils";
 import RegexParser = require("regex-parser");
-import dotgit = require("dotgitignore");
-export default {
+import micromatch = require("micromatch");
+const fileQuery = {
   async filter(
     flags: flagDescriptor[],
     files: contentDescriptor[]
@@ -31,39 +25,6 @@ export default {
         ? RegexParser(flags[FlagTypes.Regex].value)
         : undefined;
       const currFolderPath = files[0].fullPath;
-      if (flags[FlagTypes.Gitignore]) {
-        // take the files and filter stuff out!
-        const dotGitIgnorePath = path.join(currFolderPath, ".gitignore");
-        if (fs.existsSync(dotGitIgnorePath)) {
-          const localInstance = dotgit(dotGitIgnorePath);
-          const dotGitIgnore = { path: currFolderPath, config: localInstance };
-          const inheritingIgnores: { path: string; config: Object }[] = [];
-          gitIgnoreMap.forEach((gitIgnore) => {
-            if (currFolderPath.startsWith(gitIgnore.path)) {
-              inheritingIgnores.push(gitIgnore);
-            }
-          });
-          // Filter out stuff right here
-          files = files.filter((file) => {
-            let filter = false;
-            if (file.name !== "../")
-              loop: for (let ignore of [...inheritingIgnores, dotGitIgnore]) {
-                const perspectivePath = (
-                  file.toPath.split(ignore.path)[1] || ""
-                ).slice(1);
-                if (ignore.config.ignore(perspectivePath)) {
-                  filter = true;
-                  break loop;
-                }
-              }
-            return !filter;
-          });
-          if (gitIgnoreMap.every((map) => map.path !== currFolderPath)) {
-            console.log("Pushed");
-            gitIgnoreMap.push(dotGitIgnore);
-          }
-        }
-      }
       if (flags[FlagTypes.FilterExtension]) {
         const isFoundProject = cache.indexOf(currFolderPath) != -1;
         const isChildOfProject = cache.some((link) =>
@@ -102,7 +63,8 @@ export default {
                 definiteFolders.push(content);
               } else if (
                 content.isDir &&
-                queryIgnores.indexOf(content.name.slice(0, -1)) == -1
+                queryIgnores.indexOf(content.name.slice(0, -1)) == -1 &&
+                queryIgnores.indexOf(content.toPath) == -1
               ) {
                 if (cache.some((elem) => elem.startsWith(content.toPath)))
                   definiteFolders.push(content);
@@ -152,4 +114,41 @@ export default {
     }
     return Promise.resolve(files);
   },
+  async find(files: contentDescriptor[] | contentDescriptor, matcher: string) {
+    if (Array.isArray(files)) {
+      const dirs = files.filter((file) => file.isDir && file.name !== "../");
+      const res = await Promise.all(
+        dirs.map((_) => fileQuery.find(_, matcher))
+      );
+      return [
+        ...files.filter(
+          (_) =>
+            !_.isDir &&
+            micromatch.isMatch(
+              path.basename(_.toPath) + path.extname(_.toPath),
+              matcher
+            )
+        ),
+        ...res,
+      ];
+    } else {
+      const contents = [];
+      const dirs = [];
+      const matchedFiles = [];
+      for (let content of contents) {
+        if (content.isDirectory() && micromatch.isMatch(content, matcher)) {
+          // construct the dir maybe
+          dirs.push(content);
+        } else if (micromatch.isMatch(content, matcher)) {
+          // construct the meta data stuff!!!!!!!!!
+          matchedFiles.push(content);
+        }
+      }
+      return [
+        ...matchedFiles,
+        ...(await Promise.all(dirs.map((_) => fileQuery.find(_, matcher)))),
+      ];
+    }
+  },
 };
+export default fileQuery;

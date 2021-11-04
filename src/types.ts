@@ -13,7 +13,6 @@ export type flagDescriptor = {
     | "filterExtensions"
     | "after"
     | "before"
-    | "gitignore"
     | "regex"
     | "icons"
     | "find"
@@ -28,11 +27,10 @@ export interface config {
 }
 export enum FlagTypes {
   FilterExtension = 0,
-  Gitignore = 1,
-  Before = 2,
-  After = 3,
-  Regex = 4,
-  Icons = 5,
-  Find = 6,
-  LS = 7,
+  Before = 1,
+  After = 2,
+  Regex = 3,
+  Icons = 4,
+  Find = 5,
+  LS = 6,
 }
