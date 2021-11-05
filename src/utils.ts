@@ -88,7 +88,7 @@ export function isProject(
 
 export function appendGlyph(fileName: string, isDir: boolean): string {
   const ext = path.extname(fileName).slice(1);
-  let glyph = Config.getIcons(fileName);
+  let glyph = Config.getIcons(fileName, isDir);
   if (glyph) {
     return glyph;
   }

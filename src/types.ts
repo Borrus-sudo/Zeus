@@ -27,7 +27,7 @@ export interface config {
   openFile: string | Object;
   icons: Object;
   getFileCommand: (str: string) => string;
-  getIcons: (str: string) => string;
+  getIcons: (str: string, isDir: boolean) => string;
 }
 export enum FlagTypes {
   FilterExtension = 0,
