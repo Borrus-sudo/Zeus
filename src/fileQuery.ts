@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import { promises as fsP } from "fs";
 import * as path from "path";
 import { contentDescriptor, flagDescriptor, FlagTypes } from "./types";
 import { cache, existsInDepth, isProject, queryIgnores } from "./utils";
@@ -6,33 +7,33 @@ import RegexParser = require("regex-parser");
 import micromatch = require("micromatch");
 const fileQuery = {
   async filter(
-    flags: flagDescriptor[],
+    FlagList: flagDescriptor[],
     files: contentDescriptor[]
   ): Promise<contentDescriptor[]> {
-    if (flags.length > 0) {
+    if (FlagList.length > 0) {
       const descriptor: {
         before: undefined | Date;
         after: undefined | Date;
         regex: RegExp | undefined;
       } = { before: undefined, after: undefined, regex: undefined };
-      descriptor.before = flags[FlagTypes.Before]
-        ? new Date(flags[FlagTypes.Before].value)
+      descriptor.before = FlagList[FlagTypes.Before]
+        ? new Date(FlagList[FlagTypes.Before].value)
         : undefined;
-      descriptor.after = flags[FlagTypes.After]
-        ? new Date(flags[FlagTypes.After].value)
+      descriptor.after = FlagList[FlagTypes.After]
+        ? new Date(FlagList[FlagTypes.After].value)
         : undefined;
-      descriptor.regex = flags[FlagTypes.Regex]
-        ? RegexParser(flags[FlagTypes.Regex].value)
+      descriptor.regex = FlagList[FlagTypes.Regex]
+        ? RegexParser(FlagList[FlagTypes.Regex].value)
         : undefined;
       const currFolderPath = files[0].fullPath;
-      if (flags[FlagTypes.FilterExtension]) {
+      if (FlagList[FlagTypes.FilterExtension]) {
         const isFoundProject = cache.indexOf(currFolderPath) != -1;
         const isChildOfProject = cache.some((link) =>
           currFolderPath.startsWith(link)
         );
         if (!isFoundProject && !isChildOfProject) {
           const askedForLabels =
-            flags[FlagTypes.FilterExtension].value.split(",");
+            FlagList[FlagTypes.FilterExtension].value.split(",");
           const [addFile, getProjectsLabels] = isProject(
             askedForLabels.indexOf("git") != -1
           );
@@ -110,44 +111,46 @@ const fileQuery = {
                   )
             )
           : files;
+        if (FlagList[FlagTypes.Find]) {
+          const matcher = FlagList[FlagTypes.Find].value;
+          fs.writeFileSync(
+            "debugs.txt",
+            (await fileQuery.find(currFolderPath, matcher)).join("\n")
+          );
+        }
       }
     }
     return Promise.resolve(files);
   },
-  async find(files: contentDescriptor[] | contentDescriptor, matcher: string) {
-    if (Array.isArray(files)) {
-      const dirs = files.filter((file) => file.isDir && file.name !== "../");
-      const res = await Promise.all(
-        dirs.map((_) => fileQuery.find(_, matcher))
-      );
+  async find(dirs: string[] | string, matcher: string): Promise<string[]> {
+    if (Array.isArray(dirs)) {
       return [
-        ...files.filter(
-          (_) =>
-            !_.isDir &&
-            micromatch.isMatch(
-              path.basename(_.toPath) + path.extname(_.toPath),
-              matcher
-            )
-        ),
-        ...res,
+        ...(
+          await Promise.all(dirs.map((dir) => fileQuery.find(dir, matcher)))
+        ).flat(),
       ];
     } else {
-      const contents = [];
-      const dirs = [];
-      const matchedFiles = [];
-      for (let content of contents) {
-        if (content.isDirectory() && micromatch.isMatch(content, matcher)) {
-          // construct the dir maybe
-          dirs.push(content);
-        } else if (micromatch.isMatch(content, matcher)) {
-          // construct the meta data stuff!!!!!!!!!
-          matchedFiles.push(content);
+      // search within the received directory
+      if (
+        !queryIgnores.includes(dirs) &&
+        !queryIgnores.includes(path.basename(dirs))
+      ) {
+        const dirents = await fsP.readdir(dirs, { withFileTypes: true });
+        const findThrough = [];
+        const matchFiles = [];
+        for (let dirent of dirents) {
+          if (dirent.isDirectory()) findThrough.push(dirent.name);
+          else matchFiles.push(dirent.name);
         }
-      }
-      return [
-        ...matchedFiles,
-        ...(await Promise.all(dirs.map((_) => fileQuery.find(_, matcher)))),
-      ];
+        return [
+          ...micromatch(matchFiles, matcher).map((_) => path.resolve(dirs, _)),
+          ...(
+            await Promise.all(
+              findThrough.map((_) => fileQuery.find(_, matcher))
+            )
+          ).flat(),
+        ];
+      } else [];
     }
   },
 };

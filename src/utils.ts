@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import { promises as fsP } from "fs";
 import { join } from "path";
-import Config from "./resolveConfig";
 import FlagList from "./flagParser";
+import Config from "./resolveConfig";
 import { FlagTypes } from "./types";
 import path = require("path");
 import Icons = require("nf-icons");
