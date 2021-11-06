@@ -113,10 +113,9 @@ const fileQuery = {
           : files;
         if (FlagList[FlagTypes.Find]) {
           const matcher = FlagList[FlagTypes.Find].value;
-          fs.writeFileSync(
-            "debugs.txt",
-            (await fileQuery.find(currFolderPath, matcher)).join("\n")
-          );
+          const content = await fileQuery.find(currFolderPath, matcher);
+          // construct the content and transform it!!!
+          fs.writeFileSync("debug.txt", content.join("\n"));
         }
       }
     }
@@ -137,19 +136,28 @@ const fileQuery = {
       ) {
         const dirents = await fsP.readdir(dirs, { withFileTypes: true });
         const findThrough = [];
-        const matchFiles = [];
+        const matched = [];
         for (let dirent of dirents) {
-          if (dirent.isDirectory()) findThrough.push(dirent.name);
-          else matchFiles.push(dirent.name);
+          if (dirent.isDirectory()) {
+            if (micromatch.isMatch(dirent.name, matcher)) {
+              matched.push(path.join(dirs, dirent.name));
+            }
+            findThrough.push(dirent.name);
+          } else
+            micromatch.isMatch(dirent.name, matcher)
+              ? matched.push(path.join(dirs, dirent.name))
+              : 0;
         }
         return [
-          ...micromatch(matchFiles, matcher).map((_) => path.resolve(dirs, _)),
+          ...matched,
           ...(
             await Promise.all(
-              findThrough.map((_) => fileQuery.find(_, matcher))
+              findThrough.map((_) =>
+                fileQuery.find(path.join(dirs, _), matcher)
+              )
             )
           ).flat(),
-        ];
+        ].filter(Boolean);
       } else [];
     }
   },
