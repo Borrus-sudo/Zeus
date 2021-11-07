@@ -3,9 +3,10 @@ import { promises as fsP } from "fs";
 import { join } from "path";
 import FlagList from "./flagParser";
 import Config from "./resolveConfig";
-import { FlagTypes } from "./types";
+import { contentDescriptor, FlagTypes } from "./types";
 import path = require("path");
 import Icons = require("nf-icons");
+import prettyBytes = require("pretty-bytes");
 export function getMetaDetails(stats: fs.Stats) {
   let stat = "";
   stat += stats["mode"] & 1 ? "x" : "-";
@@ -259,5 +260,38 @@ export async function existsInDepth(
       dirs.map((dir) => existsInDepth(dir, askedForLabels, descriptor))
     );
     return responses.some((elem) => elem === true);
+  }
+}
+
+export async function constructDescriptor(
+  dirent: string
+): Promise<contentDescriptor> {
+  const stats = await fsP.lstat(dirent);
+  const elem = path.basename(dirent);
+  if (!stats.isSymbolicLink()) {
+    let isDir = stats.isDirectory();
+    return {
+      name: isDir ? elem + "/" : elem,
+      isDir,
+      size: isDir ? "" : prettyBytes(stats.size),
+      lastModified: formatDate(stats.mtime),
+      meta: getMetaDetails(stats),
+      toPath: dirent,
+      created: stats.birthtime,
+    };
+  } else {
+    const target = path.resolve(
+      path.dirname(dirent),
+      path.normalize(await fsP.readlink(dirent))
+    );
+    return {
+      name: `${path.basename(dirent)} -> ${path.basename(target)}`,
+      isDir: stats.isDirectory(),
+      size: prettyBytes(stats.size),
+      lastModified: formatDate(stats.mtime),
+      meta: getMetaDetails(stats),
+      toPath: target,
+      created: stats.birthtime,
+    };
   }
 }

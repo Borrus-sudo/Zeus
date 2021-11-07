@@ -2,7 +2,13 @@ import * as fs from "fs";
 import { promises as fsP } from "fs";
 import * as path from "path";
 import { contentDescriptor, flagDescriptor, FlagTypes } from "./types";
-import { cache, existsInDepth, isProject, queryIgnores } from "./utils";
+import {
+  cache,
+  existsInDepth,
+  isProject,
+  queryIgnores,
+  constructDescriptor,
+} from "./utils";
 import RegexParser = require("regex-parser");
 import micromatch = require("micromatch");
 const fileQuery = {
@@ -92,6 +98,15 @@ const fileQuery = {
           }
         }
       } else {
+        if (FlagList[FlagTypes.Find]) {
+          const matcher = FlagList[FlagTypes.Find].value;
+          const content = await fileQuery.find(currFolderPath, matcher);
+          if (content.length > 0) {
+            files = await Promise.all(
+              content.map((elem) => constructDescriptor(elem))
+            );
+          }
+        }
         files = files.filter(
           (file) =>
             file.isDir ||
@@ -111,12 +126,6 @@ const fileQuery = {
                   )
             )
           : files;
-        if (FlagList[FlagTypes.Find]) {
-          const matcher = FlagList[FlagTypes.Find].value;
-          const content = await fileQuery.find(currFolderPath, matcher);
-          // construct the content and transform it!!!
-          fs.writeFileSync("debug.txt", content.join("\n"));
-        }
       }
     }
     return Promise.resolve(files);
