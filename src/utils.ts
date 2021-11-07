@@ -160,6 +160,19 @@ export function appendGlyph(fileName: string, isDir: boolean): string {
     case "swift":
       glyph = Icons.names.DEV_SWIFT;
       break;
+    case "dart":
+      glyph = Icons.names.DEV_DART;
+      break;
+    case "vue":
+      glyph = Icons.names.MDI_VUEJS;
+      break;
+    case "svg":
+      glyph = Icons.names.MDI_SVG;
+      break;
+    case "jsx":
+    case "tsx":
+      glyph = Icons.names.DEV_REACT;
+      break;
     case "txt":
       glyph = Icons.names.FA_FILE_TEXT;
       break;
