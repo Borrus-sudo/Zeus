@@ -204,6 +204,8 @@ export function appendGlyph(
     case "mp3":
       glyph = Icons.names.MDI_SOUNDCLOUD;
       break;
+    case "exe":
+      glyph = Icons.names.DEV_CODE;
     default:
       break;
   }
