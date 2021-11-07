@@ -72,12 +72,12 @@ export default {
         : getFileDefaults().replace("${PATH}", dir);
     }
   },
-  getIcons(name: string): string {
+  getIcons(name: string, suffix: string): string {
     if (typeof options.icons === "object") {
       for (let key of Object.keys(options.icons)) {
         if (typeof options.icons[key] === "string") {
           if (name.endsWith(key)) {
-            return options.icons[key] + " " + name;
+            return options.icons[key] + " " + suffix;
           }
         }
       }

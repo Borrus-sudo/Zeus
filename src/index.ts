@@ -66,8 +66,8 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
         },
         {
           get(content) {
-            if (FlagList[FlagTypes.Icons])
-              return appendGlyph(content.name, content.isDir);
+            if (FlagList[FlagTypes.Icons] && content.name !== "../")
+              return appendGlyph(content.toPath, content.name, content.isDir);
             else return content.name;
           },
           width: 30,

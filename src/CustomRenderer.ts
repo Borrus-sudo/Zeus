@@ -21,8 +21,8 @@ export default function (data: contentDescriptor[], term) {
       8,
       " "
     )}`;
-    const dirent = `${(FlagList[FlagTypes.Icons]
-      ? appendGlyph(content.name, content.isDir)
+    const dirent = `${(FlagList[FlagTypes.Icons] && content.name !== "../"
+      ? appendGlyph(content.toPath, content.name,content.isDir)
       : content.name
     )
       .slice(0, 30)

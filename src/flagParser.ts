@@ -1,5 +1,5 @@
+import { normalize, resolve } from "path";
 import { argv } from "process";
-import { resolve } from "path";
 import { flagDescriptor, FlagTypes } from "./types";
 function getFlags(): flagDescriptor[] {
   let arg: string[] = argv.slice(2);
@@ -67,7 +67,9 @@ function getFlags(): flagDescriptor[] {
           flag: "globalIgnore",
           value: val
             .split(",")
-            .map((_) => (_.startsWith("./") ? resolve(process.cwd(), _) : _))
+            .map((_) =>
+              _.startsWith("./") ? resolve(process.cwd(), _) : normalize(_)
+            )
             .join(","),
         };
         break;
@@ -82,7 +84,9 @@ function getFlags(): flagDescriptor[] {
           flag: "queryIgnore",
           value: val
             .split(",")
-            .map((_) => (_.startsWith("./") ? resolve(process.cwd(), _) : _))
+            .map((_) =>
+              _.startsWith("./") ? resolve(process.cwd(), _) : normalize(_)
+            )
             .join(","),
         };
         break;

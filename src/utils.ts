@@ -87,14 +87,18 @@ export function isProject(
   ];
 }
 
-export function appendGlyph(fileName: string, isDir: boolean): string {
+export function appendGlyph(
+  fileName: string,
+  suffix: string,
+  isDir: boolean
+): string {
   const ext = path.extname(fileName).slice(1);
-  let glyph = Config.getIcons(fileName);
+  let glyph = Config.getIcons(isDir ? fileName + "/" : fileName, suffix);
   if (glyph) {
     return glyph;
   }
   if (isDir) {
-    return Icons.utf16(Icons.names.MDI_FOLDER) + " " + fileName;
+    return Icons.utf16(Icons.names.MDI_FOLDER) + " " + suffix;
   }
   glyph = "";
   switch (ext.toLowerCase()) {
@@ -203,7 +207,7 @@ export function appendGlyph(fileName: string, isDir: boolean): string {
     default:
       break;
   }
-  return (glyph ? Icons.utf16(glyph) + " " : "") + fileName;
+  return (glyph ? Icons.utf16(glyph) + " " : "") + suffix;
 }
 export const queryIgnores = [
   ...Config.queryIgnores,
