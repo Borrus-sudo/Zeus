@@ -8,7 +8,10 @@ export default function (data: contentDescriptor[], term) {
   const green = "^g";
   const yellow = "^y";
   const padding = " ".repeat(1);
-  for (let content of data.slice(1)) {
+  if (data[0].name === "../") {
+    data.splice(0, 1);
+  }
+  for (let content of data) {
     const metaContent = `${blue}${content.meta.slice(0, 10).padEnd(10, " ")}`;
     const lastModified = `${red}${content.lastModified
       .slice(0, 19)

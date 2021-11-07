@@ -62,40 +62,99 @@ const fileQuery = {
             : true;
           if (res && inTimeLimit && matchesRegex) {
             if (cache.indexOf(currFolderPath) == -1) cache.push(currFolderPath);
-          } else {
-            let goneForCheckingIndices: number[] = [];
-            const definiteFolders = [];
-            const checkForFolders = files.filter((content, index) => {
-              if (content.name === "../") {
-                definiteFolders.push(content);
-              } else if (
-                content.isDir &&
-                queryIgnores.indexOf(content.name.slice(0, -1)) == -1 &&
-                queryIgnores.indexOf(content.toPath) == -1
-              ) {
-                if (cache.some((elem) => elem.startsWith(content.toPath)))
-                  definiteFolders.push(content);
-                else {
-                  goneForCheckingIndices.push(index);
-                  return true;
-                }
+            if (FlagList[FlagTypes.Find]) {
+              const matcher = FlagList[FlagTypes.Find].value;
+              const content = await fileQuery.find(currFolderPath, matcher);
+              if (content.length > 0) {
+                return await Promise.all(
+                  content.map((elem) => constructDescriptor(elem))
+                );
+              } else {
+                console.log("No results found");
+                process.exit();
               }
-              return false;
-            });
-            const res = [...definiteFolders];
-            (
+            }
+          } else {
+            let res = [];
+            if (FlagList[FlagTypes.Find]) {
+              const checkForFolders = files.filter((content, index) => {
+                if (content.name === "../") {
+                } else if (
+                  content.isDir &&
+                  queryIgnores.indexOf(content.name.slice(0, -1)) == -1 &&
+                  queryIgnores.indexOf(content.toPath) == -1
+                ) {
+                  if (cache.some((elem) => elem.startsWith(content.toPath))) {
+                  } else {
+                    return true;
+                  }
+                }
+                return false;
+              });
               await Promise.all(
                 checkForFolders.map((folder) =>
                   existsInDepth(folder.toPath, askedForLabels, descriptor)
                 )
-              )
-            ).forEach((elem, index) => {
-              if (elem) {
-                res.push(files[goneForCheckingIndices[index]]);
+              );
+              const content = await fileQuery.find(
+                cache,
+                FlagList[FlagTypes.Find].value
+              );
+              if (content.length < 1) {
+                console.log("No results found");
+                process.exit();
               }
-            });
+              res = await Promise.all(
+                content.map((elem) => constructDescriptor(elem))
+              );
+            } else {
+              let goneForCheckingIndices: number[] = [];
+              const definiteFolders = [];
+              const checkForFolders = files.filter((content, index) => {
+                if (content.name === "../") {
+                  definiteFolders.push(content);
+                } else if (
+                  content.isDir &&
+                  queryIgnores.indexOf(content.name.slice(0, -1)) == -1 &&
+                  queryIgnores.indexOf(content.toPath) == -1
+                ) {
+                  if (cache.some((elem) => elem.startsWith(content.toPath)))
+                    definiteFolders.push(content);
+                  else {
+                    goneForCheckingIndices.push(index);
+                    return true;
+                  }
+                }
+                return false;
+              });
+              res.push(...definiteFolders);
+              (
+                await Promise.all(
+                  checkForFolders.map((folder) =>
+                    existsInDepth(folder.toPath, askedForLabels, descriptor)
+                  )
+                )
+              ).forEach((elem, index) => {
+                if (elem) {
+                  res.push(files[goneForCheckingIndices[index]]);
+                }
+              });
+            }
             return res;
           }
+        } else {
+          if (FlagList[FlagTypes.Find]) {
+            const matcher = FlagList[FlagTypes.Find].value;
+            const content = await fileQuery.find(currFolderPath, matcher);
+            if (content.length > 0) {
+              return await Promise.all(
+                content.map((elem) => constructDescriptor(elem))
+              );
+            } else {
+              console.log("No results found");
+              process.exit();
+            }
+          } else return files;
         }
       } else {
         if (FlagList[FlagTypes.Find]) {
@@ -105,6 +164,9 @@ const fileQuery = {
             files = await Promise.all(
               content.map((elem) => constructDescriptor(elem))
             );
+          } else {
+            console.log("No results found");
+            process.exit();
           }
         }
         files = files.filter(
@@ -126,9 +188,11 @@ const fileQuery = {
                   )
             )
           : files;
+        return files;
       }
+    } else {
+      return files;
     }
-    return Promise.resolve(files);
   },
   async find(dirs: string[] | string, matcher: string): Promise<string[]> {
     if (Array.isArray(dirs)) {
