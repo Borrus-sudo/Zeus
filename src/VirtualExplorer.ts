@@ -4,9 +4,14 @@ import * as path from "path";
 import fileQuery from "./fileQuery";
 import argv from "./flagParser";
 import { config, contentDescriptor, flagDescriptor, FlagTypes } from "./types";
-import { formatDate, getGlobalIgnores, getMetaDetails, rmDir } from "./utils";
+import {
+  constructDescriptor,
+  formatDate,
+  getGlobalIgnores,
+  getMetaDetails,
+  rmDir
+} from "./utils";
 import copydir = require("copy-dir");
-import prettyBytes = require("pretty-bytes");
 import clipboard = require("clipboardy");
 export default class {
   private flagList: flagDescriptor[] = argv;
@@ -33,13 +38,19 @@ export default class {
     return path.resolve(this.ctx, this.currContent);
   }
   async getChildren(): Promise<contentDescriptor[]> {
-    let stats: fs.Stats;
-    let isDir: boolean;
     const fullPath: string = this.getFullPath();
     const exists = fs.existsSync(fullPath);
     const fullPathStats: fs.Stats = exists ? fs.statSync(fullPath) : null;
     if (exists) {
-      let contentPath = "";
+      const filteredFiles = await Promise.all(
+        [...fs.readdirSync(fullPath)]
+          .filter(
+            (elem) =>
+              this.globalIgnores.indexOf(elem) == -1 &&
+              this.globalIgnores.indexOf(path.join(fullPath, elem)) == -1
+          )
+          .map((elem) => constructDescriptor(path.join(fullPath, elem)))
+      );
       const files = [
         {
           name: "../",
@@ -50,44 +61,7 @@ export default class {
           toPath: path.join(fullPath, "../"),
           fullPath,
         },
-        ...[...fs.readdirSync(fullPath)]
-          .filter(
-            (elem) =>
-              this.globalIgnores.indexOf(elem) == -1 &&
-              this.globalIgnores.indexOf(path.join(fullPath, elem)) == -1
-          )
-          .map((elem) => {
-            contentPath = path.join(fullPath, elem);
-            stats = fs.lstatSync(contentPath);
-            if (!stats.isSymbolicLink()) {
-              isDir = stats.isDirectory();
-              return {
-                name: isDir ? elem + "/" : elem,
-                isDir,
-                size: isDir ? "" : prettyBytes(stats.size),
-                lastModified: formatDate(stats.mtime),
-                meta: getMetaDetails(stats),
-                toPath: path.join(fullPath, elem),
-                created: stats.birthtime,
-              };
-            } else {
-              const target = path.resolve(
-                path.dirname(contentPath),
-                path.normalize(fs.readlinkSync(contentPath))
-              );
-              return {
-                name: `${path.basename(contentPath)} -> ${path.basename(
-                  target
-                )}`,
-                isDir: stats.isDirectory(),
-                size: prettyBytes(stats.size),
-                lastModified: formatDate(stats.mtime),
-                meta: getMetaDetails(stats),
-                toPath: target,
-                created: stats.birthtime,
-              };
-            }
-          }),
+        ...filteredFiles,
       ];
       return await fileQuery.filter(this.flagList, files);
     } else return [];
