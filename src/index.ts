@@ -17,6 +17,7 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
   );
   if (FlagList[FlagTypes.LS]) {
     CustomRenderer(await explorer.getChildren(), term);
+    process.exit();
   } else {
     const tableConfig = {
       x: 0,
