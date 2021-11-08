@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import * as path from "path";
 import { terminal as term } from "terminal-kit";
 import CustomRenderer from "./CustomRenderer";

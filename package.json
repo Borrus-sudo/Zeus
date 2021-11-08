@@ -12,6 +12,9 @@
         "regex-parser": "^2.2.11",
         "terminal-kit": "^2.1.8"
     },
+    "bin": {
+        "zeus": "./dist/index.js"
+    },
     "scripts": {
         "compile": "tsc",
         "compile:watch": "tsc -w",
