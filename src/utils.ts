@@ -205,7 +205,14 @@ export function appendGlyph(
       glyph = Icons.names.MDI_SOUNDCLOUD;
       break;
     case "exe":
-      glyph = Icons.names.DEV_CODE;
+      glyph = Icons.names.OCT_FILE_BINARY;
+      break;
+    case "zip":
+      glyph = Icons.names.MDI_ZIP_BOX;
+      break;
+    case "ttf":
+      glyph = Icons.names.FA_FONT;
+      break;
     default:
       break;
   }
