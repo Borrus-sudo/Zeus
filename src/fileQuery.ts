@@ -4,10 +4,10 @@ import * as path from "path";
 import { contentDescriptor, flagDescriptor, FlagTypes } from "./types";
 import {
   cache,
+  constructDescriptor,
   existsInDepth,
   isProject,
-  queryIgnores,
-  constructDescriptor,
+  queryIgnores
 } from "./utils";
 import RegexParser = require("regex-parser");
 import micromatch = require("micromatch");

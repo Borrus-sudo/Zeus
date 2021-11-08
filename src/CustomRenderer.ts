@@ -22,7 +22,7 @@ export default function (data: contentDescriptor[], term) {
       " "
     )}`;
     const dirent = `${(FlagList[FlagTypes.Icons] && content.name !== "../"
-      ? appendGlyph(content.toPath, content.name,content.isDir)
+      ? appendGlyph(content.toPath, content.name, content.isDir)
       : content.name
     )
       .slice(0, 30)
