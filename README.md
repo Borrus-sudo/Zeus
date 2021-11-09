@@ -5,7 +5,7 @@
   </p>
 </p>
 
-## Features
+# Features
 - 💻 A fast cross-platform `ls`
 - 🎨 Supports Beautiful Icons via NerdFont
 - 📁 Traverse a deeply nested folder structure easily!
@@ -15,9 +15,6 @@
 - 🧐 Powerful query system which allows you to see what you want
 - ✨ Inbuilt support for deleting, copying, pasting files! 
 - 📄 Provides extra information about files and folders! 
-## First look
-![image](https://user-images.githubusercontent.com/58482194/139567326-6e24585b-39cd-4cbc-a828-4f6621bdb6ed.png)
-Stay tuned for the demo!
 
 # Docs
 
@@ -58,6 +55,10 @@ In zeus interactive mode (i.e. when the --ls flag is not passed) you can press `
     }
 }
  ```
+
+# First look
+![image](https://user-images.githubusercontent.com/58482194/139567326-6e24585b-39cd-4cbc-a828-4f6621bdb6ed.png)
+Stay tuned for the demo!
 
 ## Support me
 I am a high schooler doing OSS. Star ⭐ the repo to encourage me to do more OSS stuff!
