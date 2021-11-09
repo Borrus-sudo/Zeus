@@ -19,13 +19,13 @@
 # Docs
 
 ## Flags
-- -fd flag, pass a glob pattern to this flag and it shall return all the files matching the pattern from your cwd
-- --ls flag, pass this to start zeus in a non-interactie mode
-- --icons flag, pass this to get icons based on your file extensions, the icons are customizable via the config file `.zeus.json` in your home directory
-- -B flag, pass a date with this flag to display all files created before the passed date
-- -A flag, pass a date with this flag to display all files created after the passed date
-- -P flag, pass a label with this flag to display all the folders classifying as the label or folders containing these such folders. 
-In zeus interactive mode (i.e. when the --ls flag is not passed) you can press `ctrl_o` on a file to open it your preferred app (configurable via `.zeus.json` file). Pressing `ctrl_c` on a folder will copy it and on pressing `ctrl_p` it shall be pasted in your current working directory. `ctrl_o` when pressed on a folder will paste the cd command to that folder in the clipboard which can then be pasted to fcd into it.
+- **-fd** flag, pass a glob pattern to this flag and it shall return all the files matching the pattern from your cwd
+- **-B** flag, pass a date with this flag to display all files created before the passed date
+- **-A** flag, pass a date with this flag to display all files created after the passed date
+- **-P** flag, pass a label with this flag to display all the folders classifying as the label or folders containing these such folders. 
+- **--ls** flag, pass this to start zeus in a non-interactie mode
+- **--icons** flag, pass this to get icons based on your file extensions, the icons are customizable via the config file `.zeus.json` in your home directory
+In zeus interactive mode (i.e. when the --ls flag is not passed) you can press `ctrl_o` on a file to open it your preferred app (configurable via `.zeus.json` file). Pressing `ctrl_c` on a folder/file will copy it and on pressing `ctrl_p` it shall be pasted in your current working directory. When `ctrl_o` pressed on a folder will paste the cd command to that folder in the clipboard which can then be pasted to fcd into it.
  
 ## Config file
  ```json
@@ -35,10 +35,10 @@ In zeus interactive mode (i.e. when the --ls flag is not passed) you can press `
     "icons": {}
  ```
  This is the default config file. 
- - The ignores property will take the name of dirent(like .git,node_modules) or a specific directory and zeus shall not display it. 
- - The queryIgnores shall take the name of dirent(like .git,node_modules) or a specific directory and zeus shall not search within the matching folders or display matching     files. Ignoring something does not make it queryIgnore and vice-versa. 
- - The openFile can take a string in which ${PATH} shall be replaced by the opening file path. For e.g. "notepad ${PATH}" or "code ${PATH}". It can also be an object where a command shall be used based on the file extension. E.g. {".js":"code ${PATH}","default":"notepad ${PATH}"}. The default property is a fallback if none of the extension match. 
- - The icons object shall allow users to prepend a glyph/emoji before specific files,file extensions or folders when --icons is passed. for e.g. {".js":"🎄","src/":"🎉"} It is important for folders to have a "/" in the ending. 
+ - The **ignores** property will take the name of dirent(like .git,node_modules) or a specific directory and zeus shall not display it. 
+ - The **queryIgnores** property shall take the name of dirent(like .git,node_modules) or a specific directory and zeus shall not search within the matching folders or display matching     files. Ignoring something does not make it queryIgnore and vice-versa. 
+ - The **openFile** property can take a string in which ${PATH} shall be replaced by the opening file path. For e.g. "notepad ${PATH}" or "code ${PATH}". It can also be an object where a command shall be used based on the file extension. E.g. {".js":"code ${PATH}","default":"notepad ${PATH}"}. The default property is a fallback if none of the extension match. 
+ - The **icons** object shall allow users to prepend a glyph/emoji before specific files,file extensions or folders when --icons is passed. for e.g. {".js":"🎄","src/":"🎉"} It is important for folders to have a "/" in the ending. 
  ### Config file example
  ```json 
  {
