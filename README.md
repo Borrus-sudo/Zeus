@@ -58,7 +58,6 @@ In zeus interactive mode (i.e. when the --ls flag is not passed) you can press `
 
 # First look
 ![image](https://user-images.githubusercontent.com/58482194/139567326-6e24585b-39cd-4cbc-a828-4f6621bdb6ed.png)
-Stay tuned for the demo!
 
 ## Support me
 I am a high schooler doing OSS. Star ⭐ the repo to encourage me to do more OSS stuff!
