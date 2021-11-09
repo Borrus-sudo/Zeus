@@ -55,6 +55,8 @@ In zeus interactive mode (i.e. when the --ls flag is not passed) you can press `
     }
 }
  ```
+### Tip 💡
+If zeus runs into an error like ![image](https://user-images.githubusercontent.com/58482194/140915256-eebd0428-194f-4caf-b2ea-e543e401fbe7.png) then add the path, in this case "D:\Config.Msi" in queryIgnores and ignores in the config file
 
 # First look
 ![image](https://user-images.githubusercontent.com/58482194/139567326-6e24585b-39cd-4cbc-a828-4f6621bdb6ed.png)
