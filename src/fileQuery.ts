@@ -183,7 +183,7 @@ const fileQuery = {
         if (FlagList[FlagTypes.Find]) {
           const matcher = FlagList[FlagTypes.Find].value;
           const content = await fileQuery.find(currFolderPath, matcher);
-          
+
           if (content.length > 0) {
             files = await Promise.all(
               content.map((elem) => constructDescriptor(elem))
@@ -224,11 +224,13 @@ const fileQuery = {
 
   async find(dirs: string[] | string, matcher: string): Promise<string[]> {
     if (Array.isArray(dirs)) {
+      
       return [
         ...(
           await Promise.all(dirs.map((dir) => fileQuery.find(dir, matcher)))
         ).flat(),
       ];
+
     } else {
       // search within the received directory
       if (
