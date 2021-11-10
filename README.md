@@ -21,6 +21,7 @@
 
 ## Flags
 
+- **--help** flag to get help
 - **-fd** flag, pass a glob pattern to this flag to display all the files matching the glob pattern
 - **-B** flag, pass a date with this flag to display all files created before the given date
 - **-A** flag, pass a date with this flag to display all files created after the given date
@@ -63,7 +64,7 @@ The above JSON file is the default schema of the config file.
 }
 ```
 
-### Tip 💡
+### Tips 💡
 
 - If Zeus runs into an error like ![image](https://user-images.githubusercontent.com/58482194/140915256-eebd0428-194f-4caf-b2ea-e543e401fbe7.png) then add the path, in this case, "D:\Config.Msi", in queryIgnores and ignores in the config file
 - Zeus interactive mode has a type-to-search feature inbuilt!
