@@ -15,6 +15,7 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
     path.basename(process.cwd()),
     Config
   );
+
   if (FlagList[FlagTypes.LS]) {
     CustomRenderer(await explorer.getChildren(), term);
     process.exit();
@@ -83,12 +84,14 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
     };
 
     //Important callbacks
+
     const returnCallBack = (table) => {
       let state = "";
       let prevObj: { name: string; isDir: Boolean } = {
         name: "",
         isDir: undefined,
       };
+
       return (key) => {
         if (table._state.selected) {
           const selectedState = table._state.selected;
@@ -104,6 +107,7 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
                 })
                 .then(() => {});
               break;
+
             case "CTRL_X":
               state = `cut`;
               prevObj = {
@@ -113,6 +117,7 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
                 isDir: selectedState.cells.isDir,
               };
               break;
+  
             case "CTRL_D":
               explorer
                 .commitAction({
@@ -129,6 +134,7 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
                   }
                 });
               break;
+  
             case "CTRL_C":
               state = `copy`;
               prevObj = {
@@ -138,11 +144,13 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
                 isDir: selectedState.cells.isDir,
               };
               break;
+  
             case "CTRL_P":
               const [verb, from, isDir] =
                 state === "cut"
                   ? ["cut", prevObj.name, prevObj.isDir]
                   : ["copy", prevObj.name, prevObj.isDir];
+  
               if (from) {
                 explorer
                   .commitAction({
@@ -163,6 +171,7 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
         }
       };
     };
+    
     const submitCallback = (item) => {
       explorer
         .commitAction({

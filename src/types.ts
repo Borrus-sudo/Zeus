@@ -8,6 +8,7 @@ export type contentDescriptor = {
   fullPath?: string;
   created?: Date;
 };
+
 export type flagDescriptor = {
   flag:
     | "filterExtensions"
@@ -21,6 +22,7 @@ export type flagDescriptor = {
     | "globalIgnore";
   value: string;
 };
+
 export interface config {
   ignores: string[];
   queryIgnores: string[];
@@ -29,6 +31,7 @@ export interface config {
   getFileCommand: (str: string) => string;
   getIcons: (str: string, suffix: string) => string;
 }
+
 export enum FlagTypes {
   FilterExtension = 0,
   Before = 1,

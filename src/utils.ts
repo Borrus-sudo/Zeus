@@ -7,6 +7,7 @@ import { contentDescriptor, FlagTypes } from "./types";
 import path = require("path");
 import Icons = require("nf-icons");
 import prettyBytes = require("pretty-bytes");
+
 export function getMetaDetails(stats: fs.Stats) {
   let stat = "";
   stat += stats["mode"] & 1 ? "x" : "-";
@@ -20,6 +21,7 @@ export function getMetaDetails(stats: fs.Stats) {
   stat += stats["mode"] & 400 ? "r" : "-";
   return stat;
 }
+
 export function formatDate(date: Date) {
   const options = {
     weekday: "short",
@@ -29,6 +31,7 @@ export function formatDate(date: Date) {
   } as const;
   return date.toLocaleDateString("en-US", options);
 }
+
 export function rmDir(path: string) {
   if (fs.existsSync(path)) {
     const files = fs.readdirSync(path) || [];
@@ -94,6 +97,7 @@ export function appendGlyph(
 ): string {
   const ext = path.extname(fileName).slice(1);
   let glyph = Config.getIcons(isDir ? fileName + "/" : fileName, suffix);
+  
   if (glyph) {
     return glyph;
   }
@@ -218,6 +222,7 @@ export function appendGlyph(
   }
   return (glyph ? Icons.utf16(glyph) + " " : "") + suffix;
 }
+
 export const queryIgnores = [
   ...Config.queryIgnores,
   ...getQueryIgnores(),
@@ -226,6 +231,7 @@ export const queryIgnores = [
     : []),
 ];
 export const cache: string[] = [];
+
 export async function existsInDepth(
   folderPath: string,
   askedForLabels: string[],
@@ -239,6 +245,7 @@ export async function existsInDepth(
   const [addFile, getProjectsLabels] = isProject(
     askedForLabels.indexOf("git") != -1
   );
+
   const dirs = [];
   for (let content of contents) {
     const contentPath = path.join(folderPath, content.name);
@@ -251,6 +258,7 @@ export async function existsInDepth(
       dirs.push(contentPath);
     }
   }
+
   const gotLabels = getProjectsLabels();
   const res = askedForLabels.some(
     (item: string) => gotLabels.indexOf(item) !== -1
@@ -265,6 +273,7 @@ export async function existsInDepth(
   const matchesRegex = descriptor.regex
     ? descriptor.regex.test(path.basename(folderPath))
     : true;
+  
   if (res && inTimeLimit && matchesRegex) {
     if (cache.indexOf(folderPath) == -1) cache.push(folderPath);
     return true;
@@ -281,6 +290,7 @@ export async function constructDescriptor(
 ): Promise<contentDescriptor> {
   const stats = await fsP.lstat(dirent);
   const elem = path.basename(dirent);
+  
   if (!stats.isSymbolicLink()) {
     let isDir = stats.isDirectory();
     return {

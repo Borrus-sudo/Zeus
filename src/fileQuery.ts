@@ -11,11 +11,13 @@ import {
 } from "./utils";
 import RegexParser = require("regex-parser");
 import micromatch = require("micromatch");
+
 const fileQuery = {
   async filter(
     FlagList: flagDescriptor[],
     files: contentDescriptor[]
   ): Promise<contentDescriptor[]> {
+
     if (FlagList.length > 0) {
       const descriptor: {
         before: undefined | Date;
@@ -32,11 +34,13 @@ const fileQuery = {
         ? RegexParser(FlagList[FlagTypes.Regex].value)
         : undefined;
       const currFolderPath = files[0].fullPath;
+
       if (FlagList[FlagTypes.FilterExtension]) {
         const isFoundProject = cache.indexOf(currFolderPath) != -1;
         const isChildOfProject = cache.some((link) =>
           currFolderPath.startsWith(link)
         );
+
         if (!isFoundProject && !isChildOfProject) {
           const askedForLabels =
             FlagList[FlagTypes.FilterExtension].value.split(",");
@@ -44,9 +48,11 @@ const fileQuery = {
             askedForLabels.indexOf("git") != -1
           );
           const pathContents = fs.readdirSync(currFolderPath);
+
           for (let content of pathContents) {
             addFile(content);
           }
+
           const gotLabels = getProjectsLabels();
           const res = askedForLabels.some(
             (item: string) => gotLabels.indexOf(item) !== -1
@@ -60,6 +66,7 @@ const fileQuery = {
           const matchesRegex = descriptor.regex
             ? descriptor.regex.test(path.basename(currFolderPath))
             : true;
+          
           if (res && inTimeLimit && matchesRegex) {
             if (cache.indexOf(currFolderPath) == -1) cache.push(currFolderPath);
             if (FlagList[FlagTypes.Find]) {
@@ -76,6 +83,7 @@ const fileQuery = {
             }
           } else {
             let res = [];
+
             if (FlagList[FlagTypes.Find]) {
               const checkForFolders = files.filter((content, index) => {
                 if (content.name === "../") {
@@ -91,6 +99,7 @@ const fileQuery = {
                 }
                 return false;
               });
+
               await Promise.all(
                 checkForFolders.map((folder) =>
                   existsInDepth(folder.toPath, askedForLabels, descriptor)
@@ -100,6 +109,7 @@ const fileQuery = {
                 cache,
                 FlagList[FlagTypes.Find].value
               );
+
               if (content.length < 1) {
                 console.log("No results found");
                 process.exit();
@@ -110,6 +120,7 @@ const fileQuery = {
             } else {
               let goneForCheckingIndices: number[] = [];
               const definiteFolders = [];
+
               const checkForFolders = files.filter((content, index) => {
                 if (content.name === "../") {
                   definiteFolders.push(content);
@@ -127,6 +138,7 @@ const fileQuery = {
                 }
                 return false;
               });
+              
               res.push(...definiteFolders);
               (
                 await Promise.all(
@@ -169,6 +181,7 @@ const fileQuery = {
             process.exit();
           }
         }
+
         files = files.filter(
           (file) =>
             file.isDir ||
@@ -179,6 +192,7 @@ const fileQuery = {
                 ? descriptor.after < file.created
                 : true))
         );
+
         files = descriptor.regex
           ? files.filter((elem) =>
               elem.isDir
@@ -188,12 +202,14 @@ const fileQuery = {
                   )
             )
           : files;
+        
         return files;
       }
     } else {
       return files;
     }
   },
+
   async find(dirs: string[] | string, matcher: string): Promise<string[]> {
     if (Array.isArray(dirs)) {
       return [
@@ -210,6 +226,7 @@ const fileQuery = {
         const dirents = await fsP.readdir(dirs, { withFileTypes: true });
         const findThrough = [];
         const matched = [];
+
         for (let dirent of dirents) {
           if (dirent.isDirectory()) {
             if (micromatch.isMatch(dirent.name, matcher)) {
@@ -221,6 +238,7 @@ const fileQuery = {
               ? matched.push(path.join(dirs, dirent.name))
               : 0;
         }
+
         return [
           ...matched,
           ...(
@@ -235,4 +253,5 @@ const fileQuery = {
     }
   },
 };
+
 export default fileQuery;

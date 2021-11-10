@@ -5,6 +5,7 @@ const dotFileLocation = path.resolve(
   process.env[process.platform === "win32" ? "USERPROFILE" : "HOME"],
   ".zeus.json"
 );
+
 function getFileDefaults(): string {
   switch (process.platform) {
     case "win32":
@@ -15,6 +16,7 @@ function getFileDefaults(): string {
       return "cat ${PATH}";
   }
 }
+
 function isJsonString(str) {
   try {
     JSON.parse(str);
@@ -23,12 +25,14 @@ function isJsonString(str) {
   }
   return true;
 }
+
 let options: Omit<config, "getFileCommand" | "getIcons"> = {
   ignores: [],
   queryIgnores: [],
   openFile: getFileDefaults(),
   icons: {},
 };
+
 if (!fs.existsSync(dotFileLocation)) {
   fs.writeFileSync(dotFileLocation, JSON.stringify(options, null, 2));
 } else {
@@ -36,6 +40,7 @@ if (!fs.existsSync(dotFileLocation)) {
     encoding: "utf8",
     flag: "r",
   });
+
   if (dotFileConfig.trim() === "")
     fs.writeFileSync(dotFileLocation, JSON.stringify(options, null, 2));
   else {
@@ -43,8 +48,10 @@ if (!fs.existsSync(dotFileLocation)) {
       const parsedConfig = JSON.parse(dotFileConfig);
       options.ignores =
         parsedConfig.ignores.map((_) => path.normalize(_)) || [];
+
       options.queryIgnores =
         parsedConfig.queryIgnores.map((_) => path.normalize(_)) || [];
+
       options.openFile = parsedConfig.openFile || getFileDefaults();
       options.icons = parsedConfig.icons || {};
     } else {
@@ -66,12 +73,14 @@ export default {
           return options.openFile[key].replace("${PATH}", dir);
         }
       }
+
       const defaults = options.openFile["defaults"];
       return defaults && typeof defaults === "string"
         ? defaults.replace("${PATH}", dir)
         : getFileDefaults().replace("${PATH}", dir);
     }
   },
+
   getIcons(name: string, suffix: string): string {
     if (typeof options.icons === "object") {
       for (let key of Object.keys(options.icons)) {
