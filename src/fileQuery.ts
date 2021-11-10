@@ -19,20 +19,25 @@ const fileQuery = {
   ): Promise<contentDescriptor[]> {
 
     if (FlagList.length > 0) {
+      
       const descriptor: {
         before: undefined | Date;
         after: undefined | Date;
         regex: RegExp | undefined;
       } = { before: undefined, after: undefined, regex: undefined };
+
       descriptor.before = FlagList[FlagTypes.Before]
         ? new Date(FlagList[FlagTypes.Before].value)
         : undefined;
+      
       descriptor.after = FlagList[FlagTypes.After]
         ? new Date(FlagList[FlagTypes.After].value)
         : undefined;
+      
       descriptor.regex = FlagList[FlagTypes.Regex]
         ? RegexParser(FlagList[FlagTypes.Regex].value)
         : undefined;
+      
       const currFolderPath = files[0].fullPath;
 
       if (FlagList[FlagTypes.FilterExtension]) {
@@ -44,6 +49,7 @@ const fileQuery = {
         if (!isFoundProject && !isChildOfProject) {
           const askedForLabels =
             FlagList[FlagTypes.FilterExtension].value.split(",");
+          
           const [addFile, getProjectsLabels] = isProject(
             askedForLabels.indexOf("git") != -1
           );
@@ -54,15 +60,18 @@ const fileQuery = {
           }
 
           const gotLabels = getProjectsLabels();
+
           const res = askedForLabels.some(
             (item: string) => gotLabels.indexOf(item) !== -1
           );
           const created = fs.statSync(currFolderPath).birthtime;
+
           const inTimeLimit = descriptor.before
             ? descriptor.before > created
             : true && descriptor.after
             ? descriptor.after < created
-            : true;
+              : true;
+          
           const matchesRegex = descriptor.regex
             ? descriptor.regex.test(path.basename(currFolderPath))
             : true;
@@ -155,6 +164,7 @@ const fileQuery = {
             return res;
           }
         } else {
+          
           if (FlagList[FlagTypes.Find]) {
             const matcher = FlagList[FlagTypes.Find].value;
             const content = await fileQuery.find(currFolderPath, matcher);
@@ -169,9 +179,11 @@ const fileQuery = {
           } else return files;
         }
       } else {
+        
         if (FlagList[FlagTypes.Find]) {
           const matcher = FlagList[FlagTypes.Find].value;
           const content = await fileQuery.find(currFolderPath, matcher);
+          
           if (content.length > 0) {
             files = await Promise.all(
               content.map((elem) => constructDescriptor(elem))
