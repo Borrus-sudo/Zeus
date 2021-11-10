@@ -8,6 +8,7 @@ import { FlagTypes } from "./types";
 import { appendGlyph } from "./utils";
 import MagicExplorer from "./VirtualExplorer";
 const DataTable = require("../utils/data-table.js").DataTableFactory;
+
 (async () => {
   let table;
   const explorer = new MagicExplorer(
