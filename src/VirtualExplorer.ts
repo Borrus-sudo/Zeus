@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import * as fs from "fs";
+import { existsSync, promises as fs, Stats } from "fs";
 import * as path from "path";
 import fileQuery from "./fileQuery";
 import argv from "./flagParser";
@@ -32,7 +32,7 @@ export default class {
     this.ctx = ctx;
     this.currContent = currContent;
     this.Config = Config;
-    if (!fs.existsSync(this.getFullPath())) {
+    if (!existsSync(this.getFullPath())) {
       throw new Error(`Error: The path ${this.getFullPath()} does not exist.`);
     }
   }
@@ -43,12 +43,12 @@ export default class {
 
   async getChildren(): Promise<contentDescriptor[]> {
     const fullPath: string = this.getFullPath();
-    const exists = fs.existsSync(fullPath);
-    const fullPathStats: fs.Stats = exists ? fs.statSync(fullPath) : null;
+    const exists = existsSync(fullPath);
+    const fullPathStats: Stats = exists ? await fs.stat(fullPath) : null;
 
     if (exists) {
       const filteredFiles = await Promise.all(
-        [...fs.readdirSync(fullPath)]
+        [...(await fs.readdir(fullPath))]
           .filter(
             (elem) =>
               this.globalIgnores.indexOf(elem) == -1 &&
@@ -106,19 +106,19 @@ export default class {
           exec(this.Config.getFileCommand(actionDescriptor.name));
         }
         break;
-      
+
       case "delete":
         if (actionDescriptor.isDir) {
-          rmDir(actionDescriptor.name);
+          await rmDir(actionDescriptor.name);
         } else {
-          fs.unlinkSync(actionDescriptor.name);
+          await fs.unlink(actionDescriptor.name);
         }
         contents = await this.getChildren();
         return {
           redraw: true,
           contents,
         };
-      
+
       default:
         if (actionDescriptor.isDir) {
           const toLocation = actionDescriptor.to;
@@ -126,7 +126,7 @@ export default class {
           let destinationName = folderName;
           let counter = 1;
 
-          while (fs.existsSync(path.join(toLocation, destinationName))) {
+          while (existsSync(path.join(toLocation, destinationName))) {
             destinationName =
               (counter > 1 ? destinationName.replace(/\d+$/, "") : folderName) +
               counter;
@@ -143,7 +143,6 @@ export default class {
           if (actionDescriptor.verb === "cut") {
             rmDir(actionDescriptor.from);
           }
-
         } else {
           const from = actionDescriptor.from; // full filePath to copy
           const toFolderLocation = actionDescriptor.to;
@@ -151,18 +150,18 @@ export default class {
           let { name, ext } = path.parse(from);
 
           // Choose the file name such that it does not exist
-          while (fs.existsSync(path.join(toFolderLocation, name + ext))) {
+          while (existsSync(path.join(toFolderLocation, name + ext))) {
             name = (counter > 1 ? name.replace(/\d+$/, "") : name) + counter;
             counter++;
           }
 
           const to = path.join(toFolderLocation, name + ext);
-          fs.copyFileSync(from, to);
+          await fs.copyFile(from, to);
           if (actionDescriptor.verb === "cut") {
-            fs.unlinkSync(from);
+            await fs.unlink(from);
           }
         }
-        
+
         contents = await this.getChildren();
         return { redraw: true, contents };
     }

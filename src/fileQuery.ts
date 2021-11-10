@@ -1,5 +1,4 @@
-import * as fs from "fs";
-import { promises as fsP } from "fs";
+import { promises as fs } from "fs";
 import * as path from "path";
 import { contentDescriptor, flagDescriptor, FlagTypes } from "./types";
 import {
@@ -7,7 +6,7 @@ import {
   constructDescriptor,
   existsInDepth,
   isProject,
-  queryIgnores
+  queryIgnores,
 } from "./utils";
 import RegexParser = require("regex-parser");
 import micromatch = require("micromatch");
@@ -17,9 +16,7 @@ const fileQuery = {
     FlagList: flagDescriptor[],
     files: contentDescriptor[]
   ): Promise<contentDescriptor[]> {
-
     if (FlagList.length > 0) {
-      
       const descriptor: {
         before: undefined | Date;
         after: undefined | Date;
@@ -29,15 +26,15 @@ const fileQuery = {
       descriptor.before = FlagList[FlagTypes.Before]
         ? new Date(FlagList[FlagTypes.Before].value)
         : undefined;
-      
+
       descriptor.after = FlagList[FlagTypes.After]
         ? new Date(FlagList[FlagTypes.After].value)
         : undefined;
-      
+
       descriptor.regex = FlagList[FlagTypes.Regex]
         ? RegexParser(FlagList[FlagTypes.Regex].value)
         : undefined;
-      
+
       const currFolderPath = files[0].fullPath;
 
       if (FlagList[FlagTypes.FilterExtension]) {
@@ -49,11 +46,11 @@ const fileQuery = {
         if (!isFoundProject && !isChildOfProject) {
           const askedForLabels =
             FlagList[FlagTypes.FilterExtension].value.split(",");
-          
+
           const [addFile, getProjectsLabels] = isProject(
             askedForLabels.indexOf("git") != -1
           );
-          const pathContents = fs.readdirSync(currFolderPath);
+          const pathContents = await fs.readdir(currFolderPath);
 
           for (let content of pathContents) {
             addFile(content);
@@ -64,18 +61,18 @@ const fileQuery = {
           const res = askedForLabels.some(
             (item: string) => gotLabels.indexOf(item) !== -1
           );
-          const created = fs.statSync(currFolderPath).birthtime;
+          const created = (await fs.stat(currFolderPath)).birthtime;
 
           const inTimeLimit = descriptor.before
             ? descriptor.before > created
             : true && descriptor.after
             ? descriptor.after < created
-              : true;
-          
+            : true;
+
           const matchesRegex = descriptor.regex
             ? descriptor.regex.test(path.basename(currFolderPath))
             : true;
-          
+
           if (res && inTimeLimit && matchesRegex) {
             if (cache.indexOf(currFolderPath) == -1) cache.push(currFolderPath);
             if (FlagList[FlagTypes.Find]) {
@@ -147,7 +144,7 @@ const fileQuery = {
                 }
                 return false;
               });
-              
+
               res.push(...definiteFolders);
               (
                 await Promise.all(
@@ -164,7 +161,6 @@ const fileQuery = {
             return res;
           }
         } else {
-          
           if (FlagList[FlagTypes.Find]) {
             const matcher = FlagList[FlagTypes.Find].value;
             const content = await fileQuery.find(currFolderPath, matcher);
@@ -179,7 +175,6 @@ const fileQuery = {
           } else return files;
         }
       } else {
-        
         if (FlagList[FlagTypes.Find]) {
           const matcher = FlagList[FlagTypes.Find].value;
           const content = await fileQuery.find(currFolderPath, matcher);
@@ -214,7 +209,7 @@ const fileQuery = {
                   )
             )
           : files;
-        
+
         return files;
       }
     } else {
@@ -224,20 +219,18 @@ const fileQuery = {
 
   async find(dirs: string[] | string, matcher: string): Promise<string[]> {
     if (Array.isArray(dirs)) {
-      
       return [
         ...(
           await Promise.all(dirs.map((dir) => fileQuery.find(dir, matcher)))
         ).flat(),
       ];
-
     } else {
       // search within the received directory
       if (
         !queryIgnores.includes(dirs) &&
         !queryIgnores.includes(path.basename(dirs))
       ) {
-        const dirents = await fsP.readdir(dirs, { withFileTypes: true });
+        const dirents = await fs.readdir(dirs, { withFileTypes: true });
         const findThrough = [];
         const matched = [];
 

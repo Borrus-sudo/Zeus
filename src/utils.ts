@@ -1,5 +1,4 @@
-import * as fs from "fs";
-import { promises as fsP } from "fs";
+import { existsSync, promises as fs, Stats } from "fs";
 import { join } from "path";
 import FlagList from "./flagParser";
 import Config from "./resolveConfig";
@@ -8,7 +7,7 @@ import path = require("path");
 import Icons = require("nf-icons");
 import prettyBytes = require("pretty-bytes");
 
-export function getMetaDetails(stats: fs.Stats) {
+export function getMetaDetails(stats: Stats) {
   let stat = "";
   stat += stats["mode"] & 1 ? "x" : "-";
   stat += stats["mode"] & 2 ? "w" : "-";
@@ -32,18 +31,18 @@ export function formatDate(date: Date) {
   return date.toLocaleDateString("en-US", options);
 }
 
-export function rmDir(path: string) {
-  if (fs.existsSync(path)) {
-    const files = fs.readdirSync(path) || [];
-    files.forEach(function (fileName) {
-      if (fs.statSync(join(path, fileName)).isDirectory()) {
+export async function rmDir(path: string) {
+  if (existsSync(path)) {
+    const files = (await fs.readdir(path)) || [];
+    for (let fileName of files) {
+      if ((await fs.stat(join(path, fileName))).isDirectory()) {
         rmDir(join(path, fileName));
       } else {
-        fs.unlinkSync(join(path, fileName));
+        await fs.unlink(join(path, fileName));
       }
-    });
+    }
   }
-  fs.rmdirSync(path);
+  await fs.rmdir(path);
 }
 
 export function getGlobalIgnores(): string[] {
@@ -97,7 +96,7 @@ export function appendGlyph(
 ): string {
   const ext = path.extname(fileName).slice(1);
   let glyph = Config.getIcons(isDir ? fileName + "/" : fileName, suffix);
-  
+
   if (glyph) {
     return glyph;
   }
@@ -241,7 +240,7 @@ export async function existsInDepth(
     regex: RegExp | undefined;
   }
 ): Promise<boolean> {
-  const contents = await fsP.readdir(folderPath, { withFileTypes: true });
+  const contents = await fs.readdir(folderPath, { withFileTypes: true });
   const [addFile, getProjectsLabels] = isProject(
     askedForLabels.indexOf("git") != -1
   );
@@ -263,7 +262,7 @@ export async function existsInDepth(
   const res = askedForLabels.some(
     (item: string) => gotLabels.indexOf(item) !== -1
   );
-  const stat = await fsP.stat(folderPath);
+  const stat = await fs.stat(folderPath);
   const created = stat.birthtime;
   const inTimeLimit = descriptor.before
     ? descriptor.before > created
@@ -273,7 +272,7 @@ export async function existsInDepth(
   const matchesRegex = descriptor.regex
     ? descriptor.regex.test(path.basename(folderPath))
     : true;
-  
+
   if (res && inTimeLimit && matchesRegex) {
     if (cache.indexOf(folderPath) == -1) cache.push(folderPath);
     return true;
@@ -288,9 +287,9 @@ export async function existsInDepth(
 export async function constructDescriptor(
   dirent: string
 ): Promise<contentDescriptor> {
-  const stats = await fsP.lstat(dirent);
+  const stats = await fs.lstat(dirent);
   const elem = path.basename(dirent);
-  
+
   if (!stats.isSymbolicLink()) {
     let isDir = stats.isDirectory();
     return {
@@ -305,7 +304,7 @@ export async function constructDescriptor(
   } else {
     const target = path.resolve(
       path.dirname(dirent),
-      path.normalize(await fsP.readlink(dirent))
+      path.normalize(await fs.readlink(dirent))
     );
     return {
       name: `${path.basename(dirent)} -> ${path.basename(target)}`,
