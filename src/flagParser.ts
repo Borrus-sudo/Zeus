@@ -109,17 +109,32 @@ function getFlags(): flagDescriptor[] {
         break;
 
       case "--help":
-        const heading = String.raw`
+        const content = String.raw`
  ________   _______  __    __       _______.
 |       /  |   ____||  |  |  |     /       |
  ---/  /   |  |__   |  |  |  |    |    (----
    /  /    |   __|  |  |  |  |     \   \    
   /  /----.|  |____ |  ---   | .----)   |   
- /________||_______| \______/  |_______/    
+ /________||_______| \______/  |_______/            
+	Usage:
+	  $ zeus <input>
+
+	Options:
+	  -R flag, pass a regex with this flag to display all dirents matching that regex (MM/DD/YYYY format)
+    -B flag, pass a date with this flag to display all dirents created before the given date (MM/DD/YYYY format)
+    -A flag, pass a date with this flag to display all dirents created after the given date
+    -P flag, pass a label with this flag to display all the folders classifying as the label or folders containing these such folders.
+    -fd flag, pass a glob pattern to this flag to display all the files matching the glob pattern
+    --ls flag, pass this to start Zeus in a non-interactive mode
+    --icons flag, pass this to get icons based on your file extensions, the icons are customizable via the config file '.zeus.json' in your home directory.
+    --help flag to get help
+
+	Examples:
+	  $ zeus -fd index.{.js,.ts} --ls --icons
+	  $ zeus -P node -fd index.{.js,.ts} --ls --icons
+    $ zeus --ls --icons -R /package.json/ -B 11/11/2021
 `;
-        console.log(heading + "\n");
-        const flagInfo = `-fd flag, pass a glob pattern to this flag to display all the files matching the glob pattern \n-B flag, pass a date with this flag to display all files created before the given date\n-A flag, pass a date with this flag to display all files created after the given date\n-P flag, pass a label with this flag to display all the folders classifying as the label or folders containing these such folders.\n--ls flag, pass this to start Zeus in a non-interactive mode\n--icons flag, pass this to get icons based on your file extensions, the icons are customizable via the config file`;
-        console.log(flagInfo);
+        console.log(content.trim());
         process.exit();
     }
   }
