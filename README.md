@@ -94,11 +94,9 @@ The above JSON file is the default schema of the config file.
 - Zeus interactive mode has a type-to-search feature inbuilt!
 
 # 🧬 Examples
-- ![image](https://user-images.githubusercontent.com/58482194/141297150-953e97b5-b127-40d7-a8f1-988faf689203.png)
-- ![image](https://user-images.githubusercontent.com/58482194/141297291-742562d9-1ac1-4d67-b281-42bbe1cb2184.png)
-- ![image](https://user-images.githubusercontent.com/58482194/141297423-62b80b82-32ea-4182-b5d4-5498ef7ebb01.png)
-...
-
+![image](https://user-images.githubusercontent.com/58482194/141297150-953e97b5-b127-40d7-a8f1-988faf689203.png)
+![image](https://user-images.githubusercontent.com/58482194/141297291-742562d9-1ac1-4d67-b281-42bbe1cb2184.png)
+![image](https://user-images.githubusercontent.com/58482194/141297423-62b80b82-32ea-4182-b5d4-5498ef7ebb01.png)
 
 # Support me
 I am a high schooler doing OSS. Star ⭐ the repo to encourage me to do more OSS stuff!
