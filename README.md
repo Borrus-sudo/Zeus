@@ -28,22 +28,22 @@
    /  /    |   __|  |  |  |  |     \   \    
   /  /----.|  |____ |  ---   | .----)   |   
  /________||_______| \______/  |_______/            
-	Usage:
-	  $ zeus <input>
+Usage:
+   $ zeus <input>
 
-	Options:
-	  -R flag, pass a regex with this flag to display all dirents matching that regex 
-    -B flag, pass a date with this flag to display all dirents created before the given date (MM/DD/YYYY format)
-    -A flag, pass a date with this flag to display all dirents created after the given date (MM/DD/YYYY format)
-    -P flag, pass a label with this flag to display all the folders classifying as the label or folders containing these such folders.
-    -fd flag, pass a glob pattern to this flag to display all the files matching the glob pattern
-    --ls flag, pass this to start Zeus in a non-interactive mode
-    --icons flag, pass this to get icons based on your file extensions, the icons are customizable via the config file '.zeus.json' in your home directory.
-    --help flag to get help
+Options:
+   -R flag, pass a regex with this flag to display all dirents matching that regex 
+   -B flag, pass a date with this flag to display all dirents created before the given date (MM/DD/YYYY format)
+   -A flag, pass a date with this flag to display all dirents created after the given date (MM/DD/YYYY format)
+   -P flag, pass a label with this flag to display all the folders classifying as the label or folders containing these such folders.
+   -fd flag, pass a glob pattern to this flag to display all the files matching the glob pattern
+   --ls flag, pass this to start Zeus in a non-interactive mode
+   --icons flag, pass this to get icons based on your file extensions, the icons are customizable via the config file '.zeus.json' in your home directory.
+   --help flag to get help
 
-	Examples:
-	  $ zeus -fd index.{.js,.ts} --ls --icons
-	  $ zeus -P node -fd index.{.js,.ts} --ls --icons
+Examples:
+    $ zeus -fd index.{.js,.ts} --ls --icons
+    $ zeus -P node -fd index.{.js,.ts} --ls --icons
     $ zeus --ls --icons -R /package.json/ -B 11/11/2021
 ```
 - **-R** flag, pass a regex with this flag to display all dirents matching that regex
