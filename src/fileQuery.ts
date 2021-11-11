@@ -47,9 +47,7 @@ const fileQuery = {
           const askedForLabels =
             FlagList[FlagTypes.FilterExtension].value.split(",");
 
-          const [addFile, getProjectsLabels] = isProject(
-            askedForLabels.indexOf("git") != -1
-          );
+          const [addFile, getProjectsLabels] = isProject();
           const pathContents = await fs.readdir(currFolderPath);
 
           for (let content of pathContents) {
@@ -86,6 +84,8 @@ const fileQuery = {
                 console.log("No results found");
                 process.exit();
               }
+            } else {
+              return files;
             }
           } else {
             let res = [];

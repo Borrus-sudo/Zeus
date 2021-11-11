@@ -28,6 +28,7 @@ export interface config {
   queryIgnores: string[];
   openFile: string | Object;
   icons: Object;
+  labels: { name: string; matchers: string[] }[];
   getFileCommand: (str: string) => string;
   getIcons: (str: string, suffix: string) => string;
 }

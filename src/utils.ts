@@ -6,6 +6,7 @@ import { contentDescriptor, FlagTypes } from "./types";
 import path = require("path");
 import Icons = require("nf-icons");
 import prettyBytes = require("pretty-bytes");
+import micromatch = require("micromatch");
 
 export function getMetaDetails(stats: Stats) {
   let stat = "";
@@ -64,26 +65,26 @@ function getQueryIgnores(): string[] {
   }
 }
 
-export function isProject(
-  isGit: boolean
-): [(content: string) => void, () => string[]] {
-  let nodeProjects = ["package.json"];
-  let rustProjects = ["Cargo.toml"];
-  if (isGit) {
-    nodeProjects.push(".git");
-    rustProjects.push(".git");
-  }
+export function isProject(): [(content: string) => void, () => string[]] {
+  const configLabels = JSON.parse(JSON.stringify(Config.labels));
   return [
     (content: string) => {
-      if (nodeProjects.indexOf(content) != -1)
-        nodeProjects.splice(nodeProjects.indexOf(content), 1);
-      if (rustProjects.indexOf(content) != -1)
-        rustProjects.splice(rustProjects.indexOf(content), 1);
+      for (let label of configLabels) {
+        label.matchers = label.matchers.filter((match) => {
+          if (micromatch.isMatch(content, match)) {
+            return false;
+          }
+          return true;
+        });
+      }
     },
     () => {
       const isTheFollowingProjects = [];
-      if (nodeProjects.length === 0) isTheFollowingProjects.push("node");
-      if (rustProjects.length === 0) isTheFollowingProjects.push("rust");
+      for (let label of configLabels) {
+        if (label.matchers.length === 0) {
+          isTheFollowingProjects.push(label.name);
+        }
+      }
       return isTheFollowingProjects;
     },
   ];
@@ -241,9 +242,7 @@ export async function existsInDepth(
   }
 ): Promise<boolean> {
   const contents = await fs.readdir(folderPath, { withFileTypes: true });
-  const [addFile, getProjectsLabels] = isProject(
-    askedForLabels.indexOf("git") != -1
-  );
+  const [addFile, getProjectsLabels] = isProject();
 
   const dirs = [];
   for (let content of contents) {

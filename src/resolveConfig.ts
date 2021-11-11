@@ -26,11 +26,32 @@ function isJsonString(str) {
   return true;
 }
 
+function validateLabels(labels): { name: string; matchers: string[] }[] {
+  if (Array.isArray(labels)) {
+    const validateLabels = [];
+    for (let label of labels) {
+      if (typeof label === "object") {
+        const condition1 =
+          label.hasOwnProperty("name") && typeof label.name === "string";
+        const condition2 =
+          label.hasOwnProperty("matchers") && Array.isArray(label.matchers);
+        if (condition1 && condition2) {
+          label.matchers = label.matchers.map(String);
+          validateLabels.push(label);
+        }
+      }
+    }
+    return validateLabels;
+  }
+  return [];
+}
+
 let options: Omit<config, "getFileCommand" | "getIcons"> = {
   ignores: [],
   queryIgnores: [],
   openFile: getFileDefaults(),
   icons: {},
+  labels: [],
 };
 
 if (!fs.existsSync(dotFileLocation)) {
@@ -48,12 +69,13 @@ if (!fs.existsSync(dotFileLocation)) {
       const parsedConfig = JSON.parse(dotFileConfig);
       options.ignores =
         parsedConfig.ignores.map((_) => path.normalize(_)) || [];
-
       options.queryIgnores =
         parsedConfig.queryIgnores.map((_) => path.normalize(_)) || [];
-
       options.openFile = parsedConfig.openFile || getFileDefaults();
       options.icons = parsedConfig.icons || {};
+      options.labels = parsedConfig.labels
+        ? validateLabels(parsedConfig.labels)
+        : [];
     } else {
       console.log(
         ".zeus file is corrupted. Please resolve the issue for Zeus to pick the config from it"
