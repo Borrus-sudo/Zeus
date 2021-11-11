@@ -63,9 +63,9 @@ const fileQuery = {
 
           const inTimeLimit = descriptor.before
             ? descriptor.before > created
-            : true && descriptor.after
-            ? descriptor.after < created
-            : true;
+            : descriptor.after
+              ? descriptor.after < created
+              : true;
 
           const matchesRegex = descriptor.regex
             ? descriptor.regex.test(path.basename(currFolderPath))
@@ -76,17 +76,16 @@ const fileQuery = {
             if (FlagList[FlagTypes.Find]) {
               const matcher = FlagList[FlagTypes.Find].value;
               const content = await fileQuery.find(currFolderPath, matcher);
-              if (content.length > 0) {
+              if (content.length > 0)
                 return await Promise.all(
                   content.map((elem) => constructDescriptor(elem))
                 );
-              } else {
-                console.log("No results found");
-                process.exit();
-              }
-            } else {
-              return files;
+
+              console.log("No results found");
+              return process.exit();
             }
+
+            return files;
           } else {
             let res = [];
 
@@ -259,7 +258,7 @@ const fileQuery = {
             )
           ).flat(),
         ].filter(Boolean);
-      } else [];
+      } else[];
     }
   },
 };

@@ -118,7 +118,7 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
                 isDir: selectedState.cells.isDir,
               };
               break;
-  
+
             case "CTRL_D":
               explorer
                 .commitAction({
@@ -135,7 +135,7 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
                   }
                 });
               break;
-  
+
             case "CTRL_C":
               state = `copy`;
               prevObj = {
@@ -145,13 +145,13 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
                 isDir: selectedState.cells.isDir,
               };
               break;
-  
+
             case "CTRL_P":
               const [verb, from, isDir] =
                 state === "cut"
                   ? ["cut", prevObj.name, prevObj.isDir]
                   : ["copy", prevObj.name, prevObj.isDir];
-  
+
               if (from) {
                 explorer
                   .commitAction({
@@ -172,7 +172,7 @@ const DataTable = require("../utils/data-table.js").DataTableFactory;
         }
       };
     };
-    
+
     const submitCallback = (item) => {
       explorer
         .commitAction({

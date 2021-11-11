@@ -37,7 +37,7 @@ export async function rmDir(path: string) {
     const files = (await fs.readdir(path)) || [];
     for (let fileName of files) {
       if ((await fs.stat(join(path, fileName))).isDirectory()) {
-        rmDir(join(path, fileName));
+        await rmDir(join(path, fileName));
       } else {
         await fs.unlink(join(path, fileName));
       }
@@ -71,10 +71,8 @@ export function isProject(): [(content: string) => void, () => string[]] {
     (content: string) => {
       for (let label of configLabels) {
         label.matchers = label.matchers.filter((match) => {
-          if (micromatch.isMatch(content, match)) {
-            return false;
-          }
-          return true;
+          return !micromatch.isMatch(content, match);
+
         });
       }
     },
@@ -265,7 +263,7 @@ export async function existsInDepth(
   const created = stat.birthtime;
   const inTimeLimit = descriptor.before
     ? descriptor.before > created
-    : true && descriptor.after
+    : descriptor.after
     ? descriptor.after < created
     : true;
   const matchesRegex = descriptor.regex
