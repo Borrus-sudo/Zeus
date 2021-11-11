@@ -203,11 +203,14 @@ const fileQuery = {
             return true;
           }
         });
-        
+
         if (descriptor.regex) {
-          files = files.filter((elem) =>
-            descriptor.regex.test(path.basename(elem.toPath))
-          );
+          files = files.filter((elem) => {
+            if (elem.name === "../") {
+              return true;
+            }
+            return descriptor.regex.test(path.basename(elem.toPath));
+          });
         }
 
         return files;
