@@ -21,13 +21,14 @@
 
 ## Flags
 
-- **--help** flag to get help
-- **-fd** flag, pass a glob pattern to this flag to display all the files matching the glob pattern
-- **-B** flag, pass a date with this flag to display all files created before the given date
-- **-A** flag, pass a date with this flag to display all files created after the given date
+- **-R** flag, pass a regex with this flag to display all dirents matching that regex
+- **-B** flag, pass a date with this flag to display all dirents created before the given date
+- **-A** flag, pass a date with this flag to display all dirents created after the given date
 - **-P** flag, pass a label with this flag to display all the folders classifying as the label or folders containing these such folders.
+- **-fd** flag, pass a glob pattern to this flag to display all the files matching the glob pattern
 - **--ls** flag, pass this to start Zeus in a non-interactive mode
 - **--icons** flag, pass this to get icons based on your file extensions, the icons are customizable via the config file `.zeus.json` in your home directory.
+- **--help** flag to get help
   In Zeus interactive mode (i.e. when the --ls flag is not passed) you can press `ctrl_o` on a file to open it in your preferred app (configurable via `.zeus.json` file). Pressing `ctrl_c` on a folder/file will copy its file path which will be pasted on pressing `ctrl_p` in your current working directory. When `ctrl_o` is pressed on a folder, Zeus will paste the cd command to that folder in the clipboard which can then be pasted in the terminal to FCD into it.
 
 ## Config file
@@ -36,7 +37,8 @@
    "ignores": [],
    "queryIgnores": [],
    "openFile": "",
-   "icons": {}
+   "icons": {},
+   "labels":[]
 ```
 
 The above JSON file is the default schema of the config file.
@@ -45,7 +47,7 @@ The above JSON file is the default schema of the config file.
 - The **queryIgnores** property will take the name of dirent (like .git,node_modules) or a specific directory, and Zeus shall not search within the matching folders or display matching files. Ignoring something does not make it queryIgnore and vice-versa.
 - The **openFile** property takes a string in which ${PATH} will be replaced by the file path of the pressed dirent. For e.g. "notepad ${PATH}" or "code ${PATH}". It can also be an object where the value of the matching property based on the file extension will be taken. E.g. {".js":"code ${PATH}","default":"notepad ${PATH}"}. The default property is a fallback if none of the extensions match.
 - The **icons** object allows users to prepend a glyph/emoji before specific files,file extensions or folders when --icons flag is passed. for e.g. {".js":"🎄","src/":"🎉"} It is important for folders to have a "/" in the ending.
-
+- The **labels** property is an array of objects of the schema ```json {label: string, matchers: string[]} ```. The label is the name property is passed to the **-P** flag to display all the folders or folders containing such folders that will match all the glob patterns in the `matchers` property.
 ### Config file example
 
 ```json
