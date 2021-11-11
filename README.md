@@ -5,7 +5,7 @@
   </p>
 </p>
 
-# Features
+# 🎩 Features
 
 - 💻 A fast cross-platform `ls`
 - 🎨 Supports Beautiful Icons via NerdFont
@@ -17,10 +17,9 @@
 - ✨ Inbuilt support for deleting, copying, pasting files!
 - 📄 Provides extra information about files and folders!
 
-# Docs
+# 📃 Docs
 
-## Flags
-
+## 🏳 Flags
 ```
  ________   _______  __    __       _______.
 |       /  |   ____||  |  |  |     /       |
@@ -54,10 +53,9 @@ Examples:
 - **--ls** flag, pass this to start Zeus in a non-interactive mode
 - **--icons** flag, pass this to get icons based on your file extensions, the icons are customizable via the config file `.zeus.json` in your home directory.
 - **--help** flag to get help
-  In Zeus interactive mode (i.e. when the --ls flag is not passed) you can press `ctrl_o` on a file to open it in your preferred app (configurable via `.zeus.json` file). Pressing `ctrl_c` on a folder/file will copy its file path which will be pasted on pressing `ctrl_p` in your current working directory. When `ctrl_o` is pressed on a folder, Zeus will paste the cd command to that folder in the clipboard which can then be pasted in the terminal to FCD into it.
+In Zeus interactive mode (i.e. when the --ls flag is not passed) you can press `ctrl_o` on a file to open it in your preferred app (configurable via `.zeus.json` file). Pressing `ctrl_c` on a folder/file will copy its file path which will be pasted on pressing `ctrl_p` in your current working directory. When `ctrl_o` is pressed on a folder, Zeus will paste the cd command to that folder in the clipboard which can then be pasted in the terminal to FCD into it.
 
-## Config file
-
+## 📁 Config file
 ```json
    "ignores": [],
    "queryIgnores": [],
@@ -73,8 +71,8 @@ The above JSON file is the default schema of the config file.
 - The **openFile** property takes a string in which ${PATH} will be replaced by the file path of the pressed dirent. For e.g. "notepad ${PATH}" or "code ${PATH}". It can also be an object where the value of the matching property based on the file extension will be taken. E.g. {".js":"code ${PATH}","default":"notepad ${PATH}"}. The default property is a fallback if none of the extensions match.
 - The **icons** object allows users to prepend a glyph/emoji before specific files,file extensions or folders when --icons flag is passed. for e.g. {".js":"🎄","src/":"🎉"} It is important for folders to have a "/" in the ending.
 - The **labels** property is an array of objects of the schema ```json {label: string, matchers: string[]} ```. The label is the name property is passed to the **-P** flag to display all the folders or folders containing such folders that will match all the glob patterns in the `matchers` property.
-### Config file example
 
+### Config file example
 ```json
 {
   "ignores": [".git", "node_modules", "D:/Config.Msi"],
@@ -91,15 +89,9 @@ The above JSON file is the default schema of the config file.
 }
 ```
 
-### Tips 💡
-
+### 💡 Tips 
 - If Zeus runs into an error like ![image](https://user-images.githubusercontent.com/58482194/140915256-eebd0428-194f-4caf-b2ea-e543e401fbe7.png) then add the path, in this case, "D:\Config.Msi", in queryIgnores and ignores in the config file
 - Zeus interactive mode has a type-to-search feature inbuilt!
 
-# First look
-
-![image](https://user-images.githubusercontent.com/58482194/139567326-6e24585b-39cd-4cbc-a828-4f6621bdb6ed.png)
-
 ## Support me
-
 I am a high schooler doing OSS. Star ⭐ the repo to encourage me to do more OSS stuff!
