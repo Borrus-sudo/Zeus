@@ -53,6 +53,7 @@ Examples:
 - **--ls** flag, pass this to start Zeus in a non-interactive mode
 - **--icons** flag, pass this to get icons based on your file extensions, the icons are customizable via the config file `.zeus.json` in your home directory.
 - **--help** flag to get help
+
 In Zeus interactive mode (i.e. when the --ls flag is not passed) you can press `ctrl_o` on a file to open it in your preferred app (configurable via `.zeus.json` file). Pressing `ctrl_c` on a folder/file will copy its file path which will be pasted on pressing `ctrl_p` in your current working directory. When `ctrl_o` is pressed on a folder, Zeus will paste the cd command to that folder in the clipboard which can then be pasted in the terminal to FCD into it.
 
 ## 📁 Config file
