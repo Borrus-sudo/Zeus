@@ -189,26 +189,26 @@ const fileQuery = {
           }
         }
 
-        files = files.filter(
-          (file) =>
-            file.isDir ||
-            (file.created &&
-              (descriptor.before
-                ? descriptor.before > file.created
-                : true && descriptor.after
-                ? descriptor.after < file.created
-                : true))
-        );
-
-        files = descriptor.regex
-          ? files.filter((elem) =>
-              elem.isDir
-                ? true
-                : descriptor.regex.test(
-                    path.basename(elem.toPath) + path.extname(elem.toPath)
-                  )
-            )
-          : files;
+        files = files.filter((file) => {
+          if (file.name === "../") {
+            return true;
+          }
+          const isBefore = descriptor.before
+            ? descriptor.before > file.created
+            : true;
+          const isAfter = descriptor.after
+            ? descriptor.after < file.created
+            : true;
+          if (file.created && isBefore && isAfter) {
+            return true;
+          }
+        });
+        
+        if (descriptor.regex) {
+          files = files.filter((elem) =>
+            descriptor.regex.test(path.basename(elem.toPath))
+          );
+        }
 
         return files;
       }
