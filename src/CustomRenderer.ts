@@ -7,7 +7,6 @@ export default function (data: contentDescriptor[], term) {
   if (data[0].name === "../") {
     data.splice(0, 1);
   }
-
   for (const content of data) {
     const metaContent = `${formatting.blue}${content.meta
       .slice(0, 10)

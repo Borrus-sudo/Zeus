@@ -18,9 +18,9 @@ const fileQuery = {
   ): Promise<contentDescriptor[]> {
     if (FlagList.length > 0) {
       const descriptor: {
-        before: undefined | Date;
-        after: undefined | Date;
-        regex: RegExp | undefined;
+        before: Date;
+        after: Date;
+        regex: RegExp;
       } = { before: undefined, after: undefined, regex: undefined };
 
       descriptor.before = FlagList[FlagTypes.Before]
