@@ -1,3 +1,4 @@
+<!-- DO NOT REMOVE - contributor_list:data:start:["Borrus-sudo", "dependabot[bot]", "rithulkamesh"]:end -->
 <p align="center">
   <img width="100px" src="https://api.iconify.design/noto-v1:telescope.svg" align="center" alt="Hero Graph Image" />
   <h1 align="center">Zeus </h1>
@@ -45,3 +46,17 @@ Contributions are welcome! Whether it is a small documentation change or a break
 
 _Please note: All contributions are taken under the MIT license_
 </div>
+
+<!-- prettier-ignore-start -->
+<!-- DO NOT REMOVE - contributor_list:start -->
+## 👥 Contributors
+
+
+- **[@Borrus-sudo](https://github.com/Borrus-sudo)**
+
+- **[@dependabot[bot]](https://github.com/apps/dependabot)**
+
+- **[@rithulkamesh](https://github.com/rithulkamesh)**
+
+<!-- DO NOT REMOVE - contributor_list:end -->
+<!-- prettier-ignore-end -->
