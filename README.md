@@ -26,9 +26,9 @@
 - ✨ Inbuilt support for deleting, copying, pasting files!
 - 📄 Provides extra information about files and folders!
 
-# Docs
+# 📝 Docs
 
-- [📜 Config](./docs/config.md)
+- [⚙️ Config](./docs/config.md)
 - [🔮 FAQ](./docs/faq.md)
 - [🏳 Flags](./docs/flags.md)
 - [📨 Installing](./docs/installing.md)
@@ -45,8 +45,3 @@ Contributions are welcome! Whether it is a small documentation change or a break
 
 _Please note: All contributions are taken under the MIT license_
 </div>
-
-## Contributors ✨
-
-I'm grateful to our contributors, this project wouldn't be possible without you. ♥
-

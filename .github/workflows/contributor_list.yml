@@ -1,0 +1,12 @@
+name: Contributor List
+on:
+  push:
+    branches:
+      - main
+jobs:
+  contributor_list:
+    name: Contributor List
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: docker://cjdenio/contributor_list:latest
