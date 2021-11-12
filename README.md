@@ -5,6 +5,11 @@
   </p>
 </p>
 
+![License](https://img.shields.io/github/license/Borrus-sudo/Zeus?label=License)
+![Last Commit](https://img.shields.io/github/last-commit/Borrus-sudo/Zeus?label=Last%20Commit)
+![Stars](https://img.shields.io/github/stars/Borrus-sudo/Zeus)
+![Forks](https://img.shields.io/github/forks/Borrus-sudo/Zeus)
+
 # 🎩 Features
 
 - 💻 A fast cross-platform `ls`
