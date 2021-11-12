@@ -1,7 +1,7 @@
 import FlagList from "./flagParser";
 import { contentDescriptor, FlagTypes } from "./types";
 import { appendGlyph } from "./utils";
-import formatting from './util/formatting';
+import formatting from './formatting';
 
 export default function (data: contentDescriptor[], term) {
   if (data[0].name === "../") {

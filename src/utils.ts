@@ -72,7 +72,6 @@ export function isProject(): [(content: string) => void, () => string[]] {
       for (let label of configLabels) {
         label.matchers = label.matchers.filter((match) => {
           return !micromatch.isMatch(content, match);
-
         });
       }
     },
@@ -263,7 +262,7 @@ export async function existsInDepth(
   const created = stat.birthtime;
   const inTimeLimit = descriptor.before
     ? descriptor.before > created
-    : descriptor.after
+    : true && descriptor.after
     ? descriptor.after < created
     : true;
   const matchesRegex = descriptor.regex

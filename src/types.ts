@@ -11,15 +11,15 @@ type contentDescriptor = {
 
 type flagDescriptor = {
   flag:
-  | "filterExtensions"
-  | "after"
-  | "before"
-  | "regex"
-  | "icons"
-  | "find"
-  | "ls"
-  | "queryIgnore"
-  | "globalIgnore";
+    | "filterExtensions"
+    | "after"
+    | "before"
+    | "regex"
+    | "icons"
+    | "find"
+    | "ls"
+    | "queryIgnore"
+    | "globalIgnore";
   value: string;
 };
 

@@ -132,7 +132,7 @@ export default class {
           }
 
           const toPath = path.join(toLocation, destinationName);
-          await copydir.sync(actionDescriptor.from, toPath, {
+          await copydir(actionDescriptor.from, toPath, {
             utimes: true,
             mode: true,
             cover: true,

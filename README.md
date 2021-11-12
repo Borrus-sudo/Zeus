@@ -26,6 +26,13 @@
 - ✨ Inbuilt support for deleting, copying, pasting files!
 - 📄 Provides extra information about files and folders!
 
+# Docs
+
+![./docs/config.md](📜 Config)
+![./docs/faq.md](🔮 FAQ)
+![./docs/flags.md](🏳 Flags)
+![./docs/installing.md](📨 Installing)
+
 # Support me
 
 I am a high schooler doing Open source software. Star ⭐ the repo to encourage me to do more Open source stuff! 
@@ -34,20 +41,12 @@ I am a high schooler doing Open source software. Star ⭐ the repo to encourage 
 </div>
 <div align='left'>
 
-Contributions are welcome! Whether it is a small documentation change, or a breaking feature, we welcome it!
+Contributions are welcome! Whether it is a small documentation change or a breaking feature, we welcome it!
 
 _Please note: All contributions are taken under the MIT license_
 </div>
 
 ## Contributors ✨
 
-I'm really grateful to of our contributors, this project wouldn't be possible without you. ♥
+I'm grateful to our contributors, this project wouldn't be possible without you. ♥
 
-<div align="center">
-<table>
-  <tr>
-    <td align="center"><a href="https://github.com/Borrus-sudo/"><img src="https://avatars.githubusercontent.com/u/58482194?v=4" width="100px;" alt=""/><br /><sub><b>Borrus-Sudo</b></sub></a><br /></td>
-    <td align="center"><a href="https://rithulk.me"><img src="https://polywork-production.imgix.net/bdw6h3awciwfje5y2939rzvjc3c4?ixlib=rails-4.2.0&w=128&h=128&fit=crop&auto=format" width="100px;" alt=""/><br /><sub><b>Rithul Kamesh</b></sub></a><br /></td>
-  </tr>
-</table>
-</div>

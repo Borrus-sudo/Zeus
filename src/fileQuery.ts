@@ -63,9 +63,9 @@ const fileQuery = {
 
           const inTimeLimit = descriptor.before
             ? descriptor.before > created
-            : descriptor.after
-              ? descriptor.after < created
-              : true;
+            : true && descriptor.after
+            ? descriptor.after < created
+            : true;
 
           const matchesRegex = descriptor.regex
             ? descriptor.regex.test(path.basename(currFolderPath))
@@ -258,7 +258,7 @@ const fileQuery = {
             )
           ).flat(),
         ].filter(Boolean);
-      } else[];
+      } else [];
     }
   },
 };
