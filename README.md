@@ -28,13 +28,10 @@
 
 # Docs
 
-[📜 Config](./docs/config.md)
-
-[🔮 FAQ](./docs/faq.md)
-
-[🏳 Flags](./docs/flags.md)
-
-[📨 Installing](./docs/installing.md)
+- [📜 Config](./docs/config.md)
+- [🔮 FAQ](./docs/faq.md)
+- [🏳 Flags](./docs/flags.md)
+- [📨 Installing](./docs/installing.md)
 
 # Support me
 
