@@ -33,11 +33,11 @@
 - [🏳 Flags](./docs/flags.md)
 - [📨 Installing](./docs/installing.md)
 
-# Support me
+# 🕺 Support me
 
 I am a high schooler doing Open source software. Star ⭐ the repo to encourage me to do more Open source stuff! 
 
-## Contributing
+## 🎉 Contributing
 </div>
 <div align='left'>
 
