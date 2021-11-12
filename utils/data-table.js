@@ -1,3 +1,6 @@
+/**
+ * @david-newson this file is taken from his repo https://github.com/dave-newson/terminal-kit-plugins
+ */
 const events = require("events");
 
 const defaultKeyBindings = {
@@ -174,9 +177,6 @@ class DataTable extends events.EventEmitter {
             }
             this.emit("ready");
         });
-        if (this.isLS) {
-            this._state.selected = undefined;
-        }
     }
     setSelected(item) {
         this._state.selected = item;
