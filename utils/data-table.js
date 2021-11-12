@@ -1,5 +1,5 @@
 /**
- * @david-newson this file is taken from his repo https://github.com/dave-newson/terminal-kit-plugins
+ * This file is taken from @dave-newson repo https://github.com/dave-newson/terminal-kit-plugins
  */
 const events = require("events");
 
