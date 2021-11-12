@@ -1,4 +1,4 @@
-export type contentDescriptor = {
+type contentDescriptor = {
   name: string;
   isDir: boolean;
   size: string;
@@ -9,21 +9,21 @@ export type contentDescriptor = {
   created?: Date;
 };
 
-export type flagDescriptor = {
+type flagDescriptor = {
   flag:
-    | "filterExtensions"
-    | "after"
-    | "before"
-    | "regex"
-    | "icons"
-    | "find"
-    | "ls"
-    | "queryIgnore"
-    | "globalIgnore";
+  | "filterExtensions"
+  | "after"
+  | "before"
+  | "regex"
+  | "icons"
+  | "find"
+  | "ls"
+  | "queryIgnore"
+  | "globalIgnore";
   value: string;
 };
 
-export interface config {
+interface config {
   ignores: string[];
   queryIgnores: string[];
   openFile: string | Object;
@@ -33,7 +33,7 @@ export interface config {
   getIcons: (str: string, suffix: string) => string;
 }
 
-export enum FlagTypes {
+enum FlagTypes {
   FilterExtension = 0,
   Before = 1,
   After = 2,
@@ -44,3 +44,5 @@ export enum FlagTypes {
   QIgnore = 7,
   GIgnore = 8,
 }
+
+export { contentDescriptor, flagDescriptor, config, FlagTypes };

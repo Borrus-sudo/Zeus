@@ -9,7 +9,7 @@ import {
   formatDate,
   getGlobalIgnores,
   getMetaDetails,
-  rmDir
+  rmDir,
 } from "./utils";
 import copydir = require("copy-dir");
 import clipboard = require("clipboardy");
@@ -25,8 +25,6 @@ export default class {
   private ctx: string;
   private currContent: string;
   readonly Config: config;
-  readonly openTerminal: string;
-
   constructor(ctx: string, currContent: string, Config: config) {
     this.globalIgnores.push(...Config.ignores);
     this.ctx = ctx;
@@ -134,14 +132,14 @@ export default class {
           }
 
           const toPath = path.join(toLocation, destinationName);
-          copydir.sync(actionDescriptor.from, toPath, {
+          await copydir.sync(actionDescriptor.from, toPath, {
             utimes: true,
             mode: true,
             cover: true,
           });
 
           if (actionDescriptor.verb === "cut") {
-            rmDir(actionDescriptor.from);
+            await rmDir(actionDescriptor.from);
           }
         } else {
           const from = actionDescriptor.from; // full filePath to copy
