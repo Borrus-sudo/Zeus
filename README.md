@@ -24,7 +24,7 @@
 - 💪 Supports FCD as well!
 - 🔎 An inbuilt find command which allows searching files by using the Glob pattern
 - 🧐 Powerful query system which allows you to see what you want
-- ✨ Inbuilt support for deleting, copying, pasting files!
+- ✨ Inbuilt support for deleting, copying, pasting files and type-to-search functionality as well!
 - 📄 Provides extra information about files and folders!
 
 # 📝 Docs
