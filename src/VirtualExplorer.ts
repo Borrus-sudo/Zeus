@@ -1,11 +1,12 @@
 import { exec } from "child_process";
-import { existsSync, promises as fs, Stats } from "fs";
+import { promises as fs, Stats } from "fs";
 import * as path from "path";
 import fileQuery from "./fileQuery";
 import argv from "./flagParser";
 import { config, contentDescriptor, flagDescriptor, FlagTypes } from "./types";
 import {
   constructDescriptor,
+  existsAsync,
   formatDate,
   getGlobalIgnores,
   getMetaDetails,
@@ -30,9 +31,6 @@ export default class {
     this.ctx = ctx;
     this.currContent = currContent;
     this.Config = Config;
-    if (!existsSync(this.getFullPath())) {
-      throw new Error(`Error: The path ${this.getFullPath()} does not exist.`);
-    }
   }
 
   getFullPath(): string {
@@ -41,7 +39,7 @@ export default class {
 
   async getChildren(): Promise<contentDescriptor[]> {
     const fullPath: string = this.getFullPath();
-    const exists = existsSync(fullPath);
+    const exists = await existsAsync(fullPath);
     const fullPathStats: Stats = exists ? await fs.stat(fullPath) : null;
 
     if (exists) {
@@ -124,7 +122,7 @@ export default class {
           let destinationName = folderName;
           let counter = 1;
 
-          while (existsSync(path.join(toLocation, destinationName))) {
+          while (await existsAsync(path.join(toLocation, destinationName))) {
             destinationName =
               (counter > 1 ? destinationName.replace(/\d+$/, "") : folderName) +
               counter;
@@ -148,7 +146,7 @@ export default class {
           let { name, ext } = path.parse(from);
 
           // Choose the file name such that it does not exist
-          while (existsSync(path.join(toFolderLocation, name + ext))) {
+          while (await existsAsync(path.join(toFolderLocation, name + ext))) {
             name = (counter > 1 ? name.replace(/\d+$/, "") : name) + counter;
             counter++;
           }

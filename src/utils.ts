@@ -1,4 +1,4 @@
-import { existsSync, promises as fs, Stats } from "fs";
+import { access, constants, promises as fs, Stats } from "fs";
 import { join } from "path";
 import FlagList from "./flagParser";
 import Config from "./resolveConfig";
@@ -33,7 +33,7 @@ export function formatDate(date: Date) {
 }
 
 export async function rmDir(path: string) {
-  if (existsSync(path)) {
+  if (await existsAsync(path)) {
     const files = (await fs.readdir(path)) || [];
     for (let fileName of files) {
       if ((await fs.stat(join(path, fileName))).isDirectory()) {
@@ -312,4 +312,16 @@ export async function constructDescriptor(
       created: stats.birthtime,
     };
   }
+}
+
+export async function existsAsync(pathName: string) {
+  return new Promise(function (resolve, _reject) {
+    access(pathName, constants.R_OK, (err: any) => {
+      if (err) {
+        resolve(false);
+      } else {
+        resolve(true);
+      }
+    });
+  });
 }
