@@ -91,11 +91,10 @@ export default class {
         if (actionDescriptor.isDir) {
           switch (process.platform) {
             case "win32":
-              clipboard.writeSync(`pushd ${actionDescriptor.name}&cls`);
+              await clipboard.write(`pushd ${actionDescriptor.name}&cls`);
               break;
             default:
-              clipboard.writeSync(`cd ${actionDescriptor.name}&cls`);
-              "";
+              await clipboard.write(`cd ${actionDescriptor.name}&clear`);
           }
           process.exit();
         } else {
