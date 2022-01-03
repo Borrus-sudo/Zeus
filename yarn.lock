@@ -319,20 +319,20 @@ signal-exit@^3.0.0:
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.5.tgz#9e3e8cc0c75a99472b44321033a7702e7738252f"
   integrity sha512-KWcOiKeQj6ZyXx7zq4YxSMgHRlod4czeBQZrPb8OKcohcqAXShm7E20kEMle9WBt26hFcAf0qLOcp5zmY7kOqQ==
 
-string-kit@^0.14.1:
-  version "0.14.3"
-  resolved "https://registry.yarnpkg.com/string-kit/-/string-kit-0.14.3.tgz#46be93738c4950b53bbe800a6adeed74a99775c9"
-  integrity sha512-Qq6ljUO7039m0U5JjBxIObjvpTX0kIcx3FUxV++eCs/ZkKKXDRBGmIbehBtmkXQ/QBRKdYnCbmybZpA2VagjsQ==
+string-kit@^0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/string-kit/-/string-kit-0.16.0.tgz#63a1d7b7afd0d2b2214b6ab0d82040b2047d0676"
+  integrity sha512-xiJvm0KiJrOYDFzANh/LnMXEujnveaxcmspx9rg4r5qaIvex9b77h7fa6Ba+/0kEZXMvYcOS6Y7vJzK8lAUbUg==
 
 strip-eof@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/strip-eof/-/strip-eof-1.0.0.tgz#bb43ff5598a6eb05d89b59fcd129c983313606bf"
   integrity sha1-u0P/VZim6wXYm1n80SnJgzE2Br8=
 
-terminal-kit@^2.2.4:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/terminal-kit/-/terminal-kit-2.2.4.tgz#134e3915dab559b716281bc2a33a9038587f349e"
-  integrity sha512-/zMk3L5NYuetexqZpoaloSfxWzUsItnmP2iBdIFBs+6SBFyqNLDN0I1cnAKlhrHrCZA6gc23Rkr0K0oQk/olsA==
+terminal-kit@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/terminal-kit/-/terminal-kit-2.3.0.tgz#ed8d7a7f1eee5efdcf994b67f712e4c2352f7387"
+  integrity sha512-Jyz6zm9r/h6brAv8205zhCcN+sUlMPjXqUSLPhcK4yFXWJ6maYvL8SykBWTjOg3YZ+kNU/MhNGIsWJja1rX7Ag==
   dependencies:
     "@cronvel/get-pixels" "^3.4.0"
     chroma-js "^2.1.2"
@@ -340,7 +340,7 @@ terminal-kit@^2.2.4:
     ndarray "^1.0.19"
     nextgen-events "^1.5.2"
     seventh "^0.7.40"
-    string-kit "^0.14.1"
+    string-kit "^0.16.0"
     tree-kit "^0.7.4"
 
 to-regex-range@^5.0.1:
