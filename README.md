@@ -35,7 +35,7 @@
 - [📨 Installing](./docs/installing.md)
 
 # 🧬 Examples 
-![image](https://user-images.githubusercontent.com/58482194/147903939-79c2c3e1-a1c9-442f-8c14-e9869029a057.png)
+![image](https://user-images.githubusercontent.com/58482194/147904102-d13c72ac-f8cc-4b61-a102-d8946fa5a4d9.png)
 
 # 🕺 Support me
 
