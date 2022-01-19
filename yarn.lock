@@ -329,10 +329,10 @@ strip-eof@^1.0.0:
   resolved "https://registry.yarnpkg.com/strip-eof/-/strip-eof-1.0.0.tgz#bb43ff5598a6eb05d89b59fcd129c983313606bf"
   integrity sha1-u0P/VZim6wXYm1n80SnJgzE2Br8=
 
-terminal-kit@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/terminal-kit/-/terminal-kit-2.3.0.tgz#ed8d7a7f1eee5efdcf994b67f712e4c2352f7387"
-  integrity sha512-Jyz6zm9r/h6brAv8205zhCcN+sUlMPjXqUSLPhcK4yFXWJ6maYvL8SykBWTjOg3YZ+kNU/MhNGIsWJja1rX7Ag==
+terminal-kit@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/terminal-kit/-/terminal-kit-2.4.0.tgz#d572601ee3e25bcf1c05e223990436fce8f1a075"
+  integrity sha512-lQCKNFYCaVoFM23pcurnQ7wOnsz4u588JNu2sfNOnB8IU6Tl4vdOdHNe7bL2aIiB0kA7m94gS4VI0+3CRI1G/A==
   dependencies:
     "@cronvel/get-pixels" "^3.4.0"
     chroma-js "^2.1.2"
