@@ -10,7 +10,7 @@
     "nf-icons": "^0.1.0",
     "pretty-bytes": "^5.6.0",
     "regex-parser": "^2.2.11",
-    "terminal-kit": "^2.4.0"
+    "terminal-kit": "^2.11.5"
   },
   "bin": {
     "zeus": "./dist/index.js"
